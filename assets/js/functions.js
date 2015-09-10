@@ -143,7 +143,7 @@ var MainLayout = (function ($, Hammer, EventEmitter, WSYUtils, win) {
                 top: res
             },
             options: {
-                mobileHA: false
+                //mobileHA: false
             }
         });
     };
@@ -179,7 +179,7 @@ var MainLayout = (function ($, Hammer, EventEmitter, WSYUtils, win) {
                 top: res
             },
             options: {
-                mobileHA: false
+                //mobileHA: false
             }
         });
     };
