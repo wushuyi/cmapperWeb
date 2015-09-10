@@ -131,6 +131,7 @@ var MainLayout = (function ($, Hammer, EventEmitter, WSYUtils, win) {
                 height: res
             },
             options: {
+                mobileHA: false,
                 progress: function () {
                     //console.log(num++);
                     self.emit('review');
@@ -140,6 +141,9 @@ var MainLayout = (function ($, Hammer, EventEmitter, WSYUtils, win) {
         this.$el.main.velocity({
             properties: {
                 top: res
+            },
+            options: {
+                mobileHA: false
             }
         });
     };
@@ -162,16 +166,21 @@ var MainLayout = (function ($, Hammer, EventEmitter, WSYUtils, win) {
                 height: res
             },
             options: {
+                mobileHA: false,
                 progress: function () {
                     //console.log(num++);
                     self.emit('review');
                 }
-            }
+            },
+
         });
         this.$el.main.velocity({
             properties: {
                 top: res
             },
+            options: {
+                mobileHA: false
+            }
         });
     };
     return main;
