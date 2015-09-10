@@ -12,7 +12,7 @@ var MainLayout = (function ($, Hammer, EventEmitter, WSYUtils, win) {
     };
     var p = WSYUtils.extend(main, EventEmitter);
     p.initialize = function (options) {
-        console.log(options);
+        //console.log(options);
         this.$el = {};
         this.top = null;
         this.max_height = null;
@@ -51,7 +51,7 @@ var MainLayout = (function ($, Hammer, EventEmitter, WSYUtils, win) {
         this.top = parseInt(this.$el.main.css('top').split('px')[0]);
     };
     p.panMove = function (evt) {
-        console.log(evt.gesture.deltaY);
+        //console.log(evt.gesture.deltaY);
         var res = this.top + evt.gesture.deltaY;
         if (res < 100) {
             res = 100;
@@ -87,7 +87,7 @@ mainlayout.on('review', function (evt) {
 $el.nav_items = $('.nav-list .nav-item');
 $el.nav_items.on('click', function (evt) {
     var $self = $(this);
-    console.log(evt);
+    //console.log(evt);
     $el.nav_items.removeClass('active');
     $self.addClass('active');
 });
