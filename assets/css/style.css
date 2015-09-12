@@ -167,11 +167,9 @@ body {
     top: 102px;
     bottom: 0;
     width: 100%;
-    /*padding-left: 8px;*/
-    /*padding-right: 8px;*/
-    /*background: red;*/
     overflow: hidden;
     border-radius: 8px;
+    -webkit-mask-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAA5JREFUeNpiYGBgAAgwAAAEAAGbA+oJAAAAAElFTkSuQmCC);
 }
 
 .content .scroll {
@@ -182,8 +180,6 @@ body {
 .content1 {
     width: 100%;
     height: 200px;
-    /*border-top-right-radius: 8px;*/
-    /*border-top-left-radius: 8px;*/
 }
 
 .content2 {
