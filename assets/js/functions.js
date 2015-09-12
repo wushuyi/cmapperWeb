@@ -1,4 +1,4 @@
-FastClick.attach(document.body);
+//FastClick.attach(document.body);
 
 $el = {};
 $el.body = $('body');
@@ -239,3 +239,7 @@ $el.nav_items.on('click', function (evt) {
     $el.nav_items.removeClass('active');
     $self.addClass('active');
 });
+
+//$('#map').on('touchstart', function(evt){
+//   console.log('')
+//});
