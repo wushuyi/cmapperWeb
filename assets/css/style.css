@@ -58,6 +58,22 @@ textarea:-moz-placeholder {
     color: #a9a9a9;
 }
 
+.red {
+    background: red;
+}
+
+.yellow {
+    background: yellow;
+}
+
+.blue {
+    background: blue;
+}
+
+.green {
+    background: green;
+}
+
 .push-right {
     float: right;
 }
@@ -65,11 +81,13 @@ textarea:-moz-placeholder {
 .push-left {
     float: left;
 }
-body{
+
+body {
     /*background-image: url('../images/cmapperWeb/10官方推荐.png');*/
     /*background-size: 100% auto;*/
     background-color: #393248;
 }
+
 .wrapper {
     position: absolute;
     top: 8px;
@@ -155,7 +173,8 @@ body{
     overflow: hidden;
     border-radius: 8px;
 }
-.content .scroll{
+
+.content .scroll {
     border-radius: 8px;
     overflow: hidden;
 }
@@ -165,7 +184,6 @@ body{
     height: 200px;
     /*border-top-right-radius: 8px;*/
     /*border-top-left-radius: 8px;*/
-    background: blue;
 }
 
 .content2 {
@@ -184,6 +202,10 @@ body{
     width: 100%;
     height: 244px;
     background: red;
+}
+
+.swiper-container {
+    height: 100%;
 }
 
 /* Media queries

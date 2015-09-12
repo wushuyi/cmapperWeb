@@ -229,3 +229,12 @@ $el.nav_items.on('tap', function (evt) {
     $el.nav_items.removeClass('active');
     $self.addClass('active');
 });
+
+var mySwiper = new Swiper('.swiper-container', {
+    speed: 400,
+    //spaceBetween: 100,
+    loop: true,
+    pagination: '.swiper-pagination',
+    autoplay: 2500,
+    autoplayDisableOnInteraction: false,
+});
