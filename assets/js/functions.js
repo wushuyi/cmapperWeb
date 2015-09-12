@@ -22,7 +22,7 @@ var MainLayout = (function ($, Hammer, EventEmitter, WSYUtils, win) {
         };
         this.max_height = null;
 
-        this.tapTimeOut = null;
+        this.lock = false;
         this.oldRes = null;
 
         this.$el.height_control = options.$height_control;
@@ -54,26 +54,29 @@ var MainLayout = (function ($, Hammer, EventEmitter, WSYUtils, win) {
         this.$el.height_control.off('.mainlayout');
     };
     p.initHammer = function () {
-        this.$el.height_control.hammer({
-            preset: [
-                [Hammer.Pan, {
-                    direction: Hammer.DIRECTION_VERTICAL,
-                    threshold: 1
-                }],
-                [Hammer.Tap, {interval: 500}],
-                [Hammer.Tap, {event: 'doubletap', interval: 500, taps: 2}, ['tap']],
-            ]
-        });
+        var mc = new Hammer.Manager(this.$el.height_control.get(0));
+        var pan = new Hammer.Pan({direction: Hammer.DIRECTION_VERTICAL});
+        var doubletap = new Hammer.Tap({event: 'doubletap', taps: 2});
+        var singletap = new Hammer.Tap({event: 'singletap'});
+        mc.add([pan, doubletap, singletap]);
+        doubletap.recognizeWith('singletap');
+        singletap.requireFailure('doubletap');
+        this.$el.height_control.data('hammer', mc);
     };
     p.initControl = function () {
         this.$el.height_control.on('panstart.mainlayout', WSYUtils.proxy(this.panStart, this));
-        this.$el.height_control.on('panup.mainlayout pandown.mainlayout', WSYUtils.proxy(this.panMove, this));
-        this.$el.height_control.on('doubletap.mainlayout tap.mainlayout', WSYUtils.proxy(this.tapProcess, this));
+        this.$el.height_control.on('panmove.mainlayout', WSYUtils.proxy(this.panMove, this));
+        this.$el.height_control.on('singletap.mainlayout', WSYUtils.proxy(this.singleTap, this));
+        this.$el.height_control.on('doubletap.mainlayout', WSYUtils.proxy(this.doubletap, this));
     };
+
     p.panStart = function (evt) {
         this.top = parseInt(this.$el.main.css('top').split('px')[0]);
     };
     p.panMove = function (evt) {
+        if (this.lock === true) {
+            return false;
+        }
         var res = this.top + evt.gesture.deltaY;
         var moveCtl = this.moveCtl;
         var _data = this._data;
@@ -101,29 +104,10 @@ var MainLayout = (function ($, Hammer, EventEmitter, WSYUtils, win) {
         this.viewMove(res)
     };
 
-    p.clearTapTimeOut = function () {
-        if (this.tapTimeOut) {
-            clearTimeout(this.tapTimeOut);
-        }
-        this.tapTimeOut = null;
-    };
-    p.tapProcess = function (evt) {
-        if (evt.type === 'tap') {
-            this.clearTapTimeOut();
-            var tapRunFunc = WSYUtils.proxy(this.tapRun, this);
-            var clearTapTimeOutFunc = WSYUtils.proxy(this.clearTapTimeOut, this);
-            this.tapTimeOut = setTimeout(function () {
-                clearTapTimeOutFunc();
-                tapRunFunc();
-            }, 510);
+    p.singleTap = function () {
+        if (this.lock === true) {
             return false;
         }
-        if (evt.type == 'doubletap') {
-            this.clearTapTimeOut();
-            this.doubletapRun();
-        }
-    };
-    p.tapRun = function () {
         var _data = this._data;
         var content_height = this.$el.content.height();
         var map_height = this.$el.map.height();
@@ -141,7 +125,10 @@ var MainLayout = (function ($, Hammer, EventEmitter, WSYUtils, win) {
         }
         this.viewMoveAnima(res);
     };
-    p.doubletapRun = function () {
+    p.doubletap = function () {
+        if (this.lock === true) {
+            return false;
+        }
         var _data = this._data;
         var content_height = this.$el.content.height();
         var map_height = this.$el.map.height();
@@ -178,6 +165,7 @@ var MainLayout = (function ($, Hammer, EventEmitter, WSYUtils, win) {
             return false;
         }
         this.oldRes = res;
+        this.lock = true;
         var self = this;
         var _data = this._data;
         if (res === _data.doubletap_bottom_res) {
@@ -185,6 +173,15 @@ var MainLayout = (function ($, Hammer, EventEmitter, WSYUtils, win) {
         } else if (res == _data.doubletap_top_res) {
             this.moveCtl.nowOn = 'top';
         }
+
+        this.$el.main.velocity({
+            properties: {
+                top: res
+            },
+            options: {
+                //mobileHA: false
+            }
+        });
         this.$el.map.velocity({
             properties: {
                 height: res
@@ -194,15 +191,10 @@ var MainLayout = (function ($, Hammer, EventEmitter, WSYUtils, win) {
                 progress: function () {
                     //console.log(num++);
                     self.emit('review');
+                },
+                complete: function () {
+                    self.lock = false;
                 }
-            }
-        });
-        this.$el.main.velocity({
-            properties: {
-                top: res
-            },
-            options: {
-                //mobileHA: false
             }
         });
     };
@@ -234,12 +226,8 @@ mainlayout.on('review', function (evt) {
 
 
 $el.nav_items = $('.nav-list .nav-item');
-$el.nav_items.on('click', function (evt) {
-    var $self = $(this);
+$el.nav_items.on('tap', function (evt) {
+    $self = $(this);
     $el.nav_items.removeClass('active');
     $self.addClass('active');
 });
-
-//$('#map').on('touchstart', function(evt){
-//   console.log('')
-//});
