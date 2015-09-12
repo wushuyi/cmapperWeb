@@ -23,7 +23,9 @@
         },
         teardown: function () {
             var $self = $(this);
-            $self.removeData('hammer-tap')
+            var mc = $self.data('hammer-tap');
+            mc.destroy();
+            $self.removeData('hammer-tap');
         }
     };
 })(jQuery, Hammer);
