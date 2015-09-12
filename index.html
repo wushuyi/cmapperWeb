@@ -82,7 +82,10 @@
     </div>
 </div>
 <!-- js 紧贴</body> 页面渲染完成 后处理 js 有助于 加快 页面响应速度 -->
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCSqDuHCUNDiT_xUMJNx6wI-67vzrXSHhM&ibraries=geometry"></script>
+<script>
+    localStorage.setItem('hello', '我在domready前就有咯!');
+</script>
+<!--<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCSqDuHCUNDiT_xUMJNx6wI-67vzrXSHhM&ibraries=geometry&markers=scale:2|icon=icon@2x.png&scale=2"></script>-->
 <script src='assets/libs/jquery/1.11.2/jquery.js'></script>
 <script src="assets/libs/velocity/1.2.2/velocity.js"></script>
 <script src="assets/libs/hammer.js/2.0.4/hammer.js"></script>

@@ -2,6 +2,7 @@
  * Created by wushuyi on 2015/9/10.
  */
 (function (global) {
+
     function extend(subclass, superclass) {
         function o() {
             this.constructor = subclass;

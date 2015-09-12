@@ -65,14 +65,18 @@ textarea:-moz-placeholder {
 .push-left {
     float: left;
 }
-
+body{
+    /*background-image: url('../images/cmapperWeb/10官方推荐.png');*/
+    /*background-size: 100% auto;*/
+    background-color: #393248;
+}
 .wrapper {
     position: absolute;
-    top: 0;
-    width: 640px;
-    bottom: 0;
-    background-image: url('../images/cmapperWeb/10官方推荐.png');
-    background-size: 100% auto;
+    top: 8px;
+    left: 8px;
+    right: 8px;
+    bottom: 8px;
+    /*background: red;*/
 }
 
 .map {
@@ -81,6 +85,9 @@ textarea:-moz-placeholder {
     width: 100%;
     height: 265px;
     background: red;
+    /*transform: scale();*/
+    transform-origin: 0% 0%;
+    border-radius: 8px;
 }
 
 .main {
@@ -90,7 +97,6 @@ textarea:-moz-placeholder {
     background: #393248;
     bottom: 0;
     width: 100%;
-
 }
 
 .nav {
@@ -143,18 +149,22 @@ textarea:-moz-placeholder {
     top: 102px;
     bottom: 0;
     width: 100%;
-    padding-left: 8px;
-    padding-right: 8px;
-    overflow: scroll;
-    -webkit-overflow-scrolling: touch;
-
+    /*padding-left: 8px;*/
+    /*padding-right: 8px;*/
+    /*background: red;*/
+    overflow: hidden;
+    border-radius: 8px;
+}
+.content .scroll{
+    border-radius: 8px;
+    overflow: hidden;
 }
 
 .content1 {
     width: 100%;
     height: 200px;
-    border-top-right-radius: 8px;
-    border-top-left-radius: 8px;
+    /*border-top-right-radius: 8px;*/
+    /*border-top-left-radius: 8px;*/
     background: blue;
 }
 
