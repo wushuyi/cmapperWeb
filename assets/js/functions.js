@@ -1,5 +1,3 @@
-//FastClick.attach(document.body);
-
 $el = {};
 $el.body = $('body');
 $el.body.on('touchmove touchstart', function (evt) {
