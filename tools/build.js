@@ -5,7 +5,7 @@ var path = require("path");
 var Builder = require('systemjs-builder');
 
 var builder = new Builder({
-    baseURL: 'assets',
+    baseURL: './assets',
     defaultJSExtensions: true,
     transpiler: 'babel',
     main: 'js/main.js',
@@ -16,9 +16,10 @@ var builder = new Builder({
         'Hammer': 'libs/hammer.js/2.0.4/hammer.js',
         'EventEmitter': 'libs/EventEmitter/4.2.9/EventEmitter.js',
         'velocity': 'libs/velocity/1.2.2/velocity.js',
+        'Swiper': 'libs/Swiper/3.1.2/js/swiper.js',
     }
 })
-    .build('js/main.js', 'outfile.js', {minify: true,})
+    .build('js/main.js', './assets/outfile.js', {minify: false,})
     .then(function () {
         console.log('Build complete');
     })

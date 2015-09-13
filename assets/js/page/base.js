@@ -45,6 +45,9 @@ class PageBase {
         });
         $('.wrapper').on('tap', '[data-router]', function (evt) {
             evt.preventDefault();
+            if(env.router_wait){
+                return false;
+            }
             let $self = $(this);
             let uri = $self.data('router');
             env.router.setRoute(uri);
@@ -57,16 +60,23 @@ class PageBase {
 
         $el.page.removeClass('cached');
         $el.page.addClass('page-content');
+        env.router_wait = true;
+        let callback = ()=> {
+            env.router_wait = false;
+        };
         if (env.page) {
             $el.page.one(animationEnd, function () {
                 $el.page.removeClass('page-from-right-to-center');
+                callback();
             });
             $el.page.addClass('page-content page-from-right-to-center');
+        } else {
+            callback();
         }
         env.page = true;
     }
 
-    endPage() {
+    endPage(cb) {
         let $el = this.$el;
         $el.nav.removeClass('active');
 
@@ -75,6 +85,9 @@ class PageBase {
             $el.page.one(animationEnd, function () {
                 $el.page.removeClass('page-from-center-to-left');
                 $el.page.addClass('cached')
+                if (cb) {
+                    cb();
+                }
             });
             $el.page.addClass('page-from-center-to-left');
         }

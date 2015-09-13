@@ -16,11 +16,8 @@ System.config({
         'Hammer': 'libs/hammer.js/2.0.4/hammer.js',
         'EventEmitter': 'libs/EventEmitter/4.2.9/EventEmitter.js',
         'velocity': 'libs/velocity/1.2.2/velocity.js',
-        'Swiper': 'libs/Swiper/3.1.2/js/swiper.jquery.js',
-    },
-    depCache: {
-        'Swiper': ['jquery'],
-    },
+        'Swiper': 'libs/Swiper/3.1.2/js/swiper.js',
+    }
 });
 
 System.import('js/main.js');
