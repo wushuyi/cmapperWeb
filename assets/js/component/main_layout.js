@@ -63,8 +63,7 @@ class MainLayout extends EventEmitter {
         let pan = new Hammer.Pan({direction: Hammer.DIRECTION_VERTICAL});
         let doubletap = new Hammer.Tap({event: 'doubletap', taps: 2});
         let singletap = new Hammer.Tap({event: 'singletap'});
-        let press = new Hammer.Press();
-        mc.add([pan, doubletap, singletap, press]);
+        mc.add([pan, doubletap, singletap]);
         doubletap.recognizeWith('singletap');
         singletap.requireFailure('doubletap');
         this.$el.height_control.data('hammer', mc);
@@ -77,10 +76,7 @@ class MainLayout extends EventEmitter {
         this.$el.height_control.on('panstart.mainlayout', $.proxy(this.panStart, this));
         this.$el.height_control.on('panmove.mainlayout', $.proxy(this.panMove, this));
         this.$el.height_control.on('singletap.mainlayout', $.proxy(this.singleTap, this));
-        this.$el.height_control.on('press.mainlayout', $.proxy(this.doubletap, this));
-        //this.$el.height_control.on('', function () {
-        //    console.log('press');
-        //});
+        this.$el.height_control.on('doubletap.mainlayout', $.proxy(this.doubletap, this));
     }
 
     panStart(evt) {
@@ -141,7 +137,6 @@ class MainLayout extends EventEmitter {
     }
 
     doubletap(evt) {
-        //alert('press');
         if (this.lock === true) {
             return false;
         }
