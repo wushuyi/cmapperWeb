@@ -1,0 +1,8 @@
+{
+  "name": "application-name",
+  "version": "0.0.1",
+  "dependencies": {
+    "babel-core": "^5.8.24",
+    "systemjs-builder": "^0.13.5"
+  }
+}
