@@ -19,7 +19,7 @@ var builder = new Builder({
         'Swiper': 'libs/Swiper/3.1.2/js/swiper.js',
     }
 })
-    .build('js/main.js', './assets/outfile.js', {minify: false,})
+    .build('js/main.js', './assets/outfile.js', {minify: true,})
     .then(function () {
         console.log('Build complete');
     })
