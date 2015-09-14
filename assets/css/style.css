@@ -65,8 +65,6 @@ img {
   background: #393248;
 }
 .page {
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
   box-sizing: border-box;
   position: absolute;
   left: 0;
@@ -98,8 +96,6 @@ img {
 .page-content {
   overflow: hidden;
   -webkit-overflow-scrolling: touch;
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
   box-sizing: border-box;
   height: 100%;
   position: relative;
@@ -170,10 +166,12 @@ html.android .page-from-center-to-right:before {
 }
 @keyframes pageFromRightToCenter {
   from {
-    transform: translate3d(100%, 0, 0);
+    -webkit-transform: translate3d(100%, 0, 0);
+            transform: translate3d(100%, 0, 0);
   }
   to {
-    transform: translate3d(0, 0, 0);
+    -webkit-transform: translate3d(0, 0, 0);
+            transform: translate3d(0, 0, 0);
   }
 }
 @-webkit-keyframes pageFromRightToCenterShadow {
@@ -202,10 +200,12 @@ html.android .page-from-center-to-right:before {
 }
 @keyframes pageFromCenterToRight {
   from {
-    transform: translate3d(0, 0, 0);
+    -webkit-transform: translate3d(0, 0, 0);
+            transform: translate3d(0, 0, 0);
   }
   to {
-    transform: translate3d(100%, 0, 0);
+    -webkit-transform: translate3d(100%, 0, 0);
+            transform: translate3d(100%, 0, 0);
   }
 }
 @-webkit-keyframes pageFromCenterToRightShadow {
@@ -244,11 +244,13 @@ html.android .page-from-center-to-right:before {
 }
 @keyframes pageFromCenterToLeft {
   from {
-    transform: translate3d(0, 0, 0);
+    -webkit-transform: translate3d(0, 0, 0);
+            transform: translate3d(0, 0, 0);
   }
   to {
     opacity: 0.9;
-    transform: translate3d(-20%, 0, 0);
+    -webkit-transform: translate3d(-20%, 0, 0);
+            transform: translate3d(-20%, 0, 0);
   }
 }
 @-webkit-keyframes pageFromLeftToCenter {
@@ -263,11 +265,13 @@ html.android .page-from-center-to-right:before {
 }
 @keyframes pageFromLeftToCenter {
   from {
-    transform: translate3d(-20%, 0, 0);
+    -webkit-transform: translate3d(-20%, 0, 0);
+            transform: translate3d(-20%, 0, 0);
   }
   to {
     opacity: 1;
-    transform: translate3d(0, 0, 0);
+    -webkit-transform: translate3d(0, 0, 0);
+            transform: translate3d(0, 0, 0);
   }
 }
 .wrapper {
@@ -285,7 +289,9 @@ html.android .page-from-center-to-right:before {
   height: 254px;
   background: red;
   /*transform: scale();*/
-  transform-origin: 0% 0%;
+  -webkit-transform-origin: 0% 0%;
+      -ms-transform-origin: 0% 0%;
+          transform-origin: 0% 0%;
   border-radius: 8px;
 }
 .main {
@@ -320,7 +326,8 @@ html.android .page-from-center-to-right:before {
   line-height: 84px;
 }
 .nav .nav-list .nav-item.active {
-  transform: scale(1.2);
+  -ms-transform: scale(1.2);
+      transform: scale(1.2);
   -webkit-transform: scale(1.2);
 }
 .nav .height-control {
@@ -486,6 +493,85 @@ html.android .page-from-center-to-right:before {
   margin-top: 21px;
   float: left;
   overflow: hidden;
+}
+#page_fxdt > .scroll {
+  border-radius: 8px;
+  overflow: hidden;
+  background: #EEEEEE;
+}
+#page_fxdt .tool-bar {
+  width: 100%;
+  height: 140px;
+  border-top: 1px solid transparent;
+}
+#page_fxdt .vcard-stats {
+  width: 460px;
+  margin-top: 20px;
+  margin-left: 20px;
+  float: left;
+}
+#page_fxdt .vcard-stat {
+  width: 33.33%;
+  float: left;
+  text-align: center;
+}
+#page_fxdt .vcard-stat-count {
+  display: block;
+  font-size: 38px;
+  font-weight: bold;
+  line-height: 48px;
+  color: #333333;
+}
+#page_fxdt .text-muted {
+  font-size: 28px;
+  color: #333333;
+  font-weight: bold;
+}
+#page_fxdt .set-button {
+  width: 102px;
+  height: 102px;
+  margin-right: 10px;
+  margin-top: 20px;
+  border-radius: 51px;
+  background: #D8D8D8;
+  border: 1px solid #9B9B9B;
+  overflow: hidden;
+  float: right;
+  font-size: 28px;
+  line-height: 102px;
+  text-align: center;
+}
+#page_fxdt .map-list {
+  float: left;
+}
+#page_fxdt .map-list li {
+  float: left;
+}
+#page_fxdt .map-box {
+  width: 294px;
+  height: 182px;
+  border-radius: 8px;
+  border: 1px solid #979797;
+  margin-left: 12px;
+  margin-bottom: 12px;
+  overflow: hidden;
+  position: relative;
+}
+#page_fxdt .tit-box {
+  width: 100%;
+  height: 70px;
+  position: absolute;
+  bottom: 0;
+  z-index: 1;
+  background-image: -webkit-linear-gradient(top, rgba(214, 214, 214, 0.2) 0%, rgba(82, 82, 82, 0.8) 100%);
+  background-image: linear-gradient(to bottom, rgba(214, 214, 214, 0.2) 0%, rgba(82, 82, 82, 0.8) 100%);
+}
+#page_fxdt .tit {
+  color: #FFFFFF;
+  font-size: 28px;
+  font-weight: bold;
+  padding-top: 20px;
+  padding-left: 20px;
 }
 /* Media queries
 -------------------------------------------------------------------------------*/

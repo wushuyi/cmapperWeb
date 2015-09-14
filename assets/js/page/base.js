@@ -45,7 +45,7 @@ class PageBase {
         });
         $('.wrapper').on('tap', '[data-router]', function (evt) {
             evt.preventDefault();
-            if(env.router_wait){
+            if (env.router_wait) {
                 return false;
             }
             let $self = $(this);
@@ -82,13 +82,22 @@ class PageBase {
 
         $el.page.removeClass('page-content');
         if (env.page) {
-            $el.page.one(animationEnd, function () {
+            //$el.page.one(animationEnd, function () {
+            //    $el.page.removeClass('page-from-center-to-left');
+            //    $el.page.addClass('cached');
+            //    if (cb) {
+            //        cb();
+            //    }
+            //});
+
+            // 修护回退没执行bug
+            setTimeout(() => {
                 $el.page.removeClass('page-from-center-to-left');
-                $el.page.addClass('cached')
+                $el.page.addClass('cached');
                 if (cb) {
                     cb();
                 }
-            });
+            }, 400);
             $el.page.addClass('page-from-center-to-left');
         }
     }

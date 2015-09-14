@@ -4,7 +4,7 @@
 import $ from 'jquery'
 //import Swiper from 'Swiper'
 import {default as BasePage} from './base.js'
-//import iScroll from 'iScroll';
+import iScroll from 'iScroll';
 
 
 class FxdtPage extends BasePage {
@@ -20,15 +20,22 @@ class FxdtPage extends BasePage {
         super.initialize();
         let $el = {};
         this.$el = $el;
+        let iscrolls = {};
+        this.iscrolls = iscrolls;
         $el.nav = $('.nav-item[data-router="/fxdt"]');
         $el.page = $('#page_fxdt');
         super.startPage();
+        iscrolls.content = new iScroll($el.page.get(0));
     }
 
     destroy() {
-        super.endPage();
-
-        this.$el = null;
+        let iscrolls = this.iscrolls;
+        super.endPage(() => {
+            $.each(iscrolls, function (key, iscroll) {
+                iscroll.destroy();
+            });
+            this.$el = null;
+        });
     }
 
 }
