@@ -146,7 +146,7 @@
                             <div class="scroll">
                                 <ul class="horizontal-list map-list">
                                     <li>
-                                        <div class="map-box">
+                                        <div data-router="/mapinfo" class="map-box">
                                             <img data-src="holder.js/320x216?random=yes&outline=yes&text=地图">
                                         </div>
                                     </li>
@@ -419,6 +419,29 @@
                 </div>
                 <div id="page_fxdt" class="page cached">
                     <div class="scroll">
+                        <ul class="select-list top-list">
+                            <li>
+                                <input type="text" class="search" placeholder="查询关键字"/>
+                            </li>
+                            <li>
+                                距离雷达
+                            </li>
+                            <li>
+                                人气雷达
+                            </li>
+                        </ul>
+                        <ul class="select-list">
+                            <li>餐饮</li>
+                            <li>娱乐</li>
+                            <li>旅游</li>
+                            <li>购物</li>
+                            <li>美容与健身</li>
+                            <li>其他</li>
+                        </ul>
+                    </div>
+                </div>
+                <div id="page_wd" class="page cached">
+                    <div class="scroll">
                         <div class="tool-bar">
                             <div class="vcard-stats">
                                 <div class="vcard-stat">
@@ -548,29 +571,7 @@
                         </div>
                     </div>
                 </div>
-                <div id="page_wd" class="page cached">
-                    <div class="scroll">
-                        <ul class="select-list top-list">
-                            <li>
-                                <input type="text" class="search" placeholder="查询关键字"/>
-                            </li>
-                            <li>
-                               距离雷达
-                            </li>
-                            <li>
-                                人气雷达
-                            </li>
-                        </ul>
-                        <ul class="select-list">
-                            <li>餐饮</li>
-                            <li>娱乐</li>
-                            <li>旅游</li>
-                            <li>购物</li>
-                            <li>美容与健身</li>
-                            <li>其他</li>
-                        </ul>
-                    </div>
-                </div>
+
                 <div id="page_mapinfo" class="red page cached"></div>
                 <div id="page_addressinfo"  class="blue page cached"></div>
             </div>

@@ -66,7 +66,7 @@ class PageBase {
             env.router_wait = false;
         };
         if (env.page) {
-            env.mainlayout.viewMoveAnima(env.mainlayout._data.default_height);
+            //env.mainlayout.viewMoveAnima(env.mainlayout._data.default_height);
             $el.page.one(animationEnd, function () {
                 $el.page.removeClass('page-from-right-to-center');
                 callback();
