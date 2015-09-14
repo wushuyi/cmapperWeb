@@ -2,6 +2,7 @@
  * Created by wushuyi on 2015/9/13.
  */
 import $ from 'jquery'
+import _ from 'lodash'
 import '../utils/jquery.touch.js'
 import {default as MainLayout} from '../component/main_layout.js'
 import {default as env} from '../utils/env.js'
@@ -84,19 +85,17 @@ class PageBase {
 
         $el.page.removeClass('page-content');
         if (env.page) {
-            let timeout;
-            let fireback = function () {
-                clearTimeout(timeout);
+            let fireback = _.once(()=> {
                 $el.page.removeClass('page-from-center-to-left');
                 $el.page.addClass('cached');
                 if (cb) {
                     cb();
                 }
-            };
+            });
             // 修护回退没执行bug
-            timeout = setTimeout(() => {
+            setTimeout(() => {
                 fireback();
-            }, 600);
+            }, 500);
             $el.page.one(animationEnd, function () {
                 fireback()
             });

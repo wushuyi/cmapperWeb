@@ -17,6 +17,7 @@ System.config({
         'EventEmitter': 'libs/EventEmitter/4.2.9/EventEmitter.js',
         'velocity': 'libs/velocity/1.2.2/velocity.js',
         'Swiper': 'libs/Swiper/3.1.2/js/swiper.js',
+        'lodash': 'libs/lodash.js/3.9.3/lodash.js',
     }
 });
 
