@@ -24,7 +24,7 @@ class MainLayout extends EventEmitter {
         this.max_height = null;
 
         this.lock = false;
-        this.oldRes = null;
+        this.oldRes = options.default_height;
 
         this.$el.height_control = options.$height_control;
         this.$el.map = options.$map;
@@ -42,6 +42,7 @@ class MainLayout extends EventEmitter {
         _data.tap_bottom_res = _data.win_height - _data.move_min_height - _data.nav_height;
         _data.doubletap_top_res = 0;
         _data.doubletap_bottom_res = _data.win_height - _data.nav_height;
+        _data.default_height = options.default_height
 
         this._data = _data;
 

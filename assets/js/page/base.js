@@ -26,6 +26,7 @@ class PageBase {
         }
         env.mainlayout = new MainLayout({
             move_min_height: 128,
+            default_height: 254,
             $height_control: $('.height-control'),
             $main: $('.main'),
             $map: $('.map'),
@@ -65,6 +66,7 @@ class PageBase {
             env.router_wait = false;
         };
         if (env.page) {
+            env.mainlayout.viewMoveAnima(env.mainlayout._data.default_height);
             $el.page.one(animationEnd, function () {
                 $el.page.removeClass('page-from-right-to-center');
                 callback();
@@ -82,22 +84,22 @@ class PageBase {
 
         $el.page.removeClass('page-content');
         if (env.page) {
-            //$el.page.one(animationEnd, function () {
-            //    $el.page.removeClass('page-from-center-to-left');
-            //    $el.page.addClass('cached');
-            //    if (cb) {
-            //        cb();
-            //    }
-            //});
-
-            // 修护回退没执行bug
-            setTimeout(() => {
+            let timeout;
+            let fireback = function () {
+                clearTimeout(timeout);
                 $el.page.removeClass('page-from-center-to-left');
                 $el.page.addClass('cached');
                 if (cb) {
                     cb();
                 }
+            };
+            // 修护回退没执行bug
+            timeout = setTimeout(() => {
+                fireback();
             }, 600);
+            $el.page.one(animationEnd, function () {
+                fireback()
+            });
             $el.page.addClass('page-from-center-to-left');
         }
     }
