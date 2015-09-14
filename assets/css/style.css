@@ -573,6 +573,47 @@ html.android .page-from-center-to-right:before {
   padding-top: 20px;
   padding-left: 20px;
 }
+#page_wd > .scroll {
+  border-radius: 8px;
+  overflow: hidden;
+  background: #EEEEEE;
+  padding-top: 40px;
+  padding-bottom: 40px;
+}
+#page_wd .select-list {
+  background: #EEEEEE;
+  width: 100%;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+#page_wd .select-list li {
+  width: 100%;
+  height: 96px;
+  border-bottom: 1px solid #979797;
+  font-size: 32px;
+  color: #000000;
+  text-align: center;
+  line-height: 96px;
+}
+#page_wd .top-list {
+  border-bottom: 1px solid #979797;
+}
+#page_wd .top-list li:nth-child(1) {
+  border-bottom: none;
+}
+#page_wd .top-list:last-of-type {
+  border-bottom: none;
+}
+#page_wd .search {
+  width: 100%;
+  border: 1px solid #9B9B9B;
+  border-radius: 16px;
+  height: 100%;
+  outline: none;
+  font-size: 32px;
+  color: #000000;
+  text-align: center;
+}
 /* Media queries
 -------------------------------------------------------------------------------*/
 /* Print styles
