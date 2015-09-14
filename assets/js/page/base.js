@@ -97,7 +97,7 @@ class PageBase {
                 if (cb) {
                     cb();
                 }
-            }, 400);
+            }, 600);
             $el.page.addClass('page-from-center-to-left');
         }
     }
