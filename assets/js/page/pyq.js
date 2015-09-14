@@ -2,9 +2,8 @@
  * Created by wushuyi on 2015/9/13.
  */
 import $ from 'jquery'
-//import Swiper from 'Swiper'
 import {default as BasePage} from './base.js'
-//import iScroll from 'iScroll';
+import iScroll from 'iScroll';
 
 
 class PyqPage extends BasePage {
@@ -20,16 +19,22 @@ class PyqPage extends BasePage {
         super.initialize();
         let $el = {};
         this.$el = $el;
+        let iscrolls = {};
+        this.iscrolls = iscrolls;
         $el.nav = $('.nav-item[data-router="/pyq"]');
         $el.page = $('#page_pyq');
-
         super.startPage();
+        iscrolls.content = new iScroll($el.page.get(0));
     }
 
     destroy() {
-        super.endPage();
-
-        this.$el = null;
+        let iscrolls = this.iscrolls;
+        super.endPage(() => {
+            $.each(iscrolls, function (key, iscroll) {
+                iscroll.destroy();
+            });
+            this.$el = null;
+        });
     }
 
 }

@@ -53,13 +53,9 @@ class MainLayout extends EventEmitter {
         this.initControl();
     }
 
-    destroy() {
-        this.$el.height_control.removeData('hammer');
-        this.$el.height_control.off('.mainlayout');
-    }
-
     initHammer() {
         let mc = new Hammer.Manager(this.$el.height_control.get(0));
+        this.hammer = mc;
         let pan = new Hammer.Pan({direction: Hammer.DIRECTION_VERTICAL});
         let doubletap = new Hammer.Tap({event: 'doubletap', taps: 2});
         let singletap = new Hammer.Tap({event: 'singletap'});
@@ -209,6 +205,12 @@ class MainLayout extends EventEmitter {
                 }
             }
         });
+    }
+
+    destroy() {
+        this.hammer.destroy();
+        this.$el.height_control.off('.mainlayout');
+        this.$el = null;
     }
 }
 

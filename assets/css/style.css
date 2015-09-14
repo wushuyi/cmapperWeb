@@ -395,6 +395,7 @@ html.android .page-from-center-to-right:before {
   height: 120px;
   background: #D8D8D8;
   border-radius: 60px;
+  overflow: hidden;
 }
 #page_gftj .top-people .name {
   margin-top: 10px;
@@ -432,6 +433,59 @@ html.android .page-from-center-to-right:before {
 }
 #page_gftj .classify2 {
   background: #F6D090;
+}
+#page_pyq > .scroll {
+  border-radius: 8px;
+  overflow: hidden;
+}
+#page_pyq .vertical-list {
+  width: 100%;
+}
+#page_pyq .vertical-list li {
+  width: 100%;
+}
+#page_pyq .vertical-list li:first-of-type .info-box {
+  border-bottom: none;
+}
+#page_pyq .info-box {
+  width: 100%;
+  height: 120px;
+  background: #EEEEEE;
+  border-top: 1px solid #979797;
+}
+#page_pyq .photo {
+  width: 82px;
+  height: 82px;
+  margin: 21px 0 0 21px;
+  border-radius: 41px;
+  border: 1px solid #9B9B9B;
+  background: #D8D8D8;
+  float: left;
+  overflow: hidden;
+}
+#page_pyq .msg {
+  width: 380px;
+  height: 90px;
+  float: left;
+  margin: 15px 20px 15px 20px;
+  display: table;
+}
+#page_pyq .msg p {
+  line-height: 30px;
+  font-size: 26px;
+  font-weight: bolder;
+  display: table-cell;
+  vertical-align: middle;
+}
+#page_pyq .thumbnail {
+  width: 82px;
+  height: 82px;
+  border-radius: 8px;
+  border: 1px solid #9B9B9B;
+  background: #D8D8D8;
+  margin-top: 21px;
+  float: left;
+  overflow: hidden;
 }
 /* Media queries
 -------------------------------------------------------------------------------*/
