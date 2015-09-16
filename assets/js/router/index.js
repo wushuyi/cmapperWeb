@@ -7,6 +7,7 @@ import {default as register_pyq} from './pyq.js'
 import {default as register_fxdt} from './fxdt.js'
 import {default as register_wd} from './wd.js'
 import {default as register_mapinfo} from './mapinfo.js'
+import {default as register_maplist} from './maplist.js'
 import env from '../utils/env.js'
 
 export let router = new Director.Router();
@@ -17,6 +18,7 @@ function register_all() {
     register_fxdt(router);
     register_wd(router);
     register_mapinfo(router);
+    register_maplist(router);
 }
 
 export default register_all;

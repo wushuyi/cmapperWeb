@@ -58,7 +58,9 @@ class PageBase {
 
     startPage() {
         let $el = this.$el;
-        $el.nav.addClass('active');
+        if ($el.nav) {
+            $el.nav.addClass('active');
+        }
 
         $el.page.removeClass('cached');
         $el.page.addClass('page-content');
@@ -81,7 +83,9 @@ class PageBase {
 
     endPage(cb) {
         let $el = this.$el;
-        $el.nav.removeClass('active');
+        if ($el.nav) {
+            $el.nav.removeClass('active');
+        }
 
         $el.page.removeClass('page-content');
         if (env.page) {

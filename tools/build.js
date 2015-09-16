@@ -20,7 +20,7 @@ var builder = new Builder({
         'lodash': 'libs/lodash.js/3.9.3/lodash.js',
     }
 })
-    .build('js/main.js', './assets/outfile.js', {minify: true,})
+    .build('js/main.js', './assets/outfile.js', {minify: false,})
     .then(function () {
         console.log('Build complete');
     })

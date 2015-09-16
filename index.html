@@ -33,7 +33,7 @@
 <div class="wrapper">
     <div id="map" class="map"></div>
     <div class="main">
-        <div class="nav">
+        <div id="nav" class="nav">
             <div class="push-left">
                 <ul class="nav-list">
                     <li>
@@ -146,7 +146,7 @@
                             <div class="scroll">
                                 <ul class="horizontal-list map-list">
                                     <li>
-                                        <div data-router="/mapinfo" class="map-box">
+                                        <div data-router="mapinfo/archives/12321" class="map-box">
                                             <img data-src="holder.js/320x216?random=yes&outline=yes&text=地图">
                                         </div>
                                     </li>
@@ -443,6 +443,12 @@
                 <div id="page_wd" class="page cached">
                     <div class="scroll">
                         <div class="tool-bar">
+                            <div class="role-img">头像</div>
+                            <h2 class="role-name">名字名字</h2>
+
+                            <div class="set-button">
+                                设定
+                            </div>
                             <div class="vcard-stats">
                                 <div class="vcard-stat">
                                     <strong class="vcard-stat-count">372</strong>
@@ -456,9 +462,6 @@
                                     <strong class="vcard-stat-count">331</strong>
                                     <span class="text-muted">Favourite</span>
                                 </div>
-                            </div>
-                            <div class="set-button">
-                                设定
                             </div>
                         </div>
                         <div class="map-content">
@@ -514,14 +517,14 @@
                                     </div>
                                 </li>
                                 <li>
-                                <div class="map-box">
-                                    <img data-src="holder.js/294x182?random=yes&outline=yes&text=地图">
+                                    <div class="map-box">
+                                        <img data-src="holder.js/294x182?random=yes&outline=yes&text=地图">
 
-                                    <div class="tit-box">
-                                        <h3 class="tit">地图标题</h3>
+                                        <div class="tit-box">
+                                            <h3 class="tit">地图标题</h3>
+                                        </div>
                                     </div>
-                                </div>
-                            </li>
+                                </li>
                                 <li>
                                     <div class="map-box">
                                         <img data-src="holder.js/294x182?random=yes&outline=yes&text=地图">
@@ -572,21 +575,224 @@
                     </div>
                 </div>
 
-                <div id="page_mapinfo" class="red page cached"></div>
-                <div id="page_addressinfo"  class="blue page cached"></div>
+                <div id="page_mapinfo" class="page cached">
+                    <div class="scroll">
+                        <div class="tab-bar">
+                            <div class="tab-close">X</div>
+                            <div class="tab-item active tab-archives">地图档案</div>
+                            <div class="tab-item tab-list">地点列表(888)</div>
+                        </div>
+                        <div class="archives-box">
+                            <div class="big-img">
+                                <div class="tit-box">
+                                    <h3 class="tit">地图名称地图名称名称名称<br/>换行什么的</h3>
+                                </div>
+                                <div class="avatar"></div>
+                                <div class="name">地图作者名</div>
+                            </div>
+                            <div class="label-box">
+                                <ul class="horizontal-list">
+                                    <li><span class="label">标签1</span></li>
+                                    <li><span class="label">标签2</span></li>
+                                    <li><span class="label">标签3</span></li>
+                                </ul>
+                            </div>
+                            <div class="abstract">
+                                地图简介,作者对这地图的描述, 地图简介,作者对这地图的描述, 地图简介,作者对这地图的描述, 地图简介,作者对这地图的描述, 地图简介,作者对这地图的描述,
+                                地图简介,作者对这地图的描述,
+                            </div>
+                            <div class="hot-num-box">
+                                <ul class="horizontal-list">
+                                    <li>
+                                        <div class="praise-num hot-box">点赞icon 点赞数</div>
+                                    </li>
+                                    <li>
+                                        <div class="comment-num hot-box">评论icon 评论数</div>
+                                    </li>
+                                </ul>
+
+
+                            </div>
+                        </div>
+                        <div class="comment-box">
+                                <div class="updata clearfix">
+                                    <textarea  class="input"></textarea>
+                                    <div class="submit">评论</div>
+                                </div>
+                                <ul class="comment-list">
+                                    <li>
+                                        <div class="comment clearfix">
+                                            <div class="avatar"></div>
+                                            <div class="msg">评论这是一条评论它评论评论这是一条评论它评论评论这是一条评论它评论</div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="comment clearfix self">
+                                            <div class="avatar"></div>
+                                            <div class="msg">评论这是一条评论它评论评论这是一条评论它评论评论这是一条评论它评论</div>
+                                            <div class="del">x</div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="comment clearfix">
+                                            <div class="avatar"></div>
+                                            <div class="msg">评论这是一条评论它评论评论这是一条评论它评论评论这是一条评论它评论</div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="comment clearfix self">
+                                            <div class="avatar"></div>
+                                            <div class="msg">评论这是一条评论它评论评论这是一条评论它评论评论这是一条评论它评论</div>
+                                            <div class="del">x</div>
+                                        </div>
+                                    </li>
+
+                                </ul>
+                            <div class="prompt">下拉以加载更多</div>
+                        </div>
+                    </div>
+                </div>
+                <div id="page_maplist" class="page cached">
+                    <div class="scroll">
+                        <div class="tab-bar">
+                            <div class="tab-close">X</div>
+                            <div class="tab-item tab-archives">地图档案</div>
+                            <div class="tab-item active tab-list">地点列表(888)</div>
+                        </div>
+                        <div class="maplist-box">
+                            <div class="address-list">
+                                <ul class="horizontal-list">
+                                    <li>
+                                        <div class="address-box clearfix">
+                                            <div class="order"></div>
+                                            <div class="address-name">地点名称地点名称地点名称</div>
+                                            <div class="bottm-bar">
+                                                <div class="btn-xxx">赞数</div>
+                                                <div class="btn-xxx">出现地图数</div>
+                                                <div class="btn-xxx">checkin数</div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="address-box clearfix">
+                                            <div class="order"></div>
+                                            <div class="address-name">地点名称地点名称地点名称</div>
+                                            <div class="bottm-bar">
+                                                <div class="btn-xxx">赞数</div>
+                                                <div class="btn-xxx">出现地图数</div>
+                                                <div class="btn-xxx">checkin数</div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="address-box clearfix">
+                                            <div class="order"></div>
+                                            <div class="address-name">地点名称地点名称地点名称</div>
+                                            <div class="bottm-bar">
+                                                <div class="btn-xxx">赞数</div>
+                                                <div class="btn-xxx">出现地图数</div>
+                                                <div class="btn-xxx">checkin数</div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="address-box clearfix">
+                                            <div class="order"></div>
+                                            <div class="address-name">地点名称地点名称地点名称</div>
+                                            <div class="bottm-bar">
+                                                <div class="btn-xxx">赞数</div>
+                                                <div class="btn-xxx">出现地图数</div>
+                                                <div class="btn-xxx">checkin数</div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="address-box clearfix">
+                                            <div class="order"></div>
+                                            <div class="address-name">地点名称地点名称地点名称</div>
+                                            <div class="bottm-bar">
+                                                <div class="btn-xxx">赞数</div>
+                                                <div class="btn-xxx">出现地图数</div>
+                                                <div class="btn-xxx">checkin数</div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="address-box clearfix">
+                                            <div class="order"></div>
+                                            <div class="address-name">地点名称地点名称地点名称</div>
+                                            <div class="bottm-bar">
+                                                <div class="btn-xxx">赞数</div>
+                                                <div class="btn-xxx">出现地图数</div>
+                                                <div class="btn-xxx">checkin数</div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="address-box clearfix">
+                                            <div class="order"></div>
+                                            <div class="address-name">地点名称地点名称地点名称</div>
+                                            <div class="bottm-bar">
+                                                <div class="btn-xxx">赞数</div>
+                                                <div class="btn-xxx">出现地图数</div>
+                                                <div class="btn-xxx">checkin数</div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="address-box clearfix">
+                                            <div class="order"></div>
+                                            <div class="address-name">地点名称地点名称地点名称</div>
+                                            <div class="bottm-bar">
+                                                <div class="btn-xxx">赞数</div>
+                                                <div class="btn-xxx">出现地图数</div>
+                                                <div class="btn-xxx">checkin数</div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="address-box clearfix">
+                                            <div class="order"></div>
+                                            <div class="address-name">地点名称地点名称地点名称</div>
+                                            <div class="bottm-bar">
+                                                <div class="btn-xxx">赞数</div>
+                                                <div class="btn-xxx">出现地图数</div>
+                                                <div class="btn-xxx">checkin数</div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="address-box clearfix">
+                                            <div class="order"></div>
+                                            <div class="address-name">地点名称地点名称地点名称</div>
+                                            <div class="bottm-bar">
+                                                <div class="btn-xxx">赞数</div>
+                                                <div class="btn-xxx">出现地图数</div>
+                                                <div class="btn-xxx">checkin数</div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="page_addressinfo" class="blue page cached">
+
+                </div>
             </div>
         </div>
     </div>
 </div>
-<script src="assets/babel_helpers.min.js"></script>
-<script src="assets/libs/systemjs/0.18.4/system.js"></script>
-<script src="assets/outfile.js"></script>
-<script>
-System.import('js/main.js');
-</script>
+<!--<script src="assets/babel_helpers.min.js"></script>-->
+<!--<script src="assets/libs/systemjs/0.18.4/system.js"></script>-->
+<!--<script src="assets/outfile.js"></script>-->
+<!--<script>-->
+<!--System.import('js/main.js');-->
+<!--</script>-->
 
-<!--<script src="assets/libs/systemjs/0.18.17/system-polyfills.src.js"></script>-->
-<!--<script src="assets/libs/systemjs/0.18.17/system.src.js"></script>-->
-<!--<script src="assets/js/systemjs.config.js"></script>-->
+<script src="assets/libs/systemjs/0.18.17/system-polyfills.src.js"></script>
+<script src="assets/libs/systemjs/0.18.17/system.src.js"></script>
+<script src="assets/js/systemjs.config.js"></script>
 </body>
 </html>

@@ -25,7 +25,7 @@ class GftjPage extends BasePage {
         this.iscrolls = iscrolls;
         $el.nav = $('.nav-item[data-router="/gftj"]');
         $el.page = $('#page_gftj');
-        $el.swiper = $('.swiper-container');
+        $el.swiper = $el.page.find('.swiper-container');
         $el.topPeople = $('.top-people');
         $el.classify1 = $('.classify1');
         $el.classify2 = $('.classify2');
