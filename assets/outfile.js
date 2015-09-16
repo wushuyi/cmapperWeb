@@ -15287,6 +15287,214 @@ _removeDefine();
 })();
 (function() {
 var _removeDefine = System.get("@@amd-helpers").createDefine();
+(function() {
+  'use strict';
+  function EventEmitter() {}
+  var proto = EventEmitter.prototype;
+  var exports = this;
+  var originalGlobalValue = exports.EventEmitter;
+  function indexOfListener(listeners, listener) {
+    var i = listeners.length;
+    while (i--) {
+      if (listeners[i].listener === listener) {
+        return i;
+      }
+    }
+    return -1;
+  }
+  function alias(name) {
+    return function aliasClosure() {
+      return this[name].apply(this, arguments);
+    };
+  }
+  proto.getListeners = function getListeners(evt) {
+    var events = this._getEvents();
+    var response;
+    var key;
+    if (evt instanceof RegExp) {
+      response = {};
+      for (key in events) {
+        if (events.hasOwnProperty(key) && evt.test(key)) {
+          response[key] = events[key];
+        }
+      }
+    } else {
+      response = events[evt] || (events[evt] = []);
+    }
+    return response;
+  };
+  proto.flattenListeners = function flattenListeners(listeners) {
+    var flatListeners = [];
+    var i;
+    for (i = 0; i < listeners.length; i += 1) {
+      flatListeners.push(listeners[i].listener);
+    }
+    return flatListeners;
+  };
+  proto.getListenersAsObject = function getListenersAsObject(evt) {
+    var listeners = this.getListeners(evt);
+    var response;
+    if (listeners instanceof Array) {
+      response = {};
+      response[evt] = listeners;
+    }
+    return response || listeners;
+  };
+  proto.addListener = function addListener(evt, listener) {
+    var listeners = this.getListenersAsObject(evt);
+    var listenerIsWrapped = typeof listener === 'object';
+    var key;
+    for (key in listeners) {
+      if (listeners.hasOwnProperty(key) && indexOfListener(listeners[key], listener) === -1) {
+        listeners[key].push(listenerIsWrapped ? listener : {
+          listener: listener,
+          once: false
+        });
+      }
+    }
+    return this;
+  };
+  proto.on = alias('addListener');
+  proto.addOnceListener = function addOnceListener(evt, listener) {
+    return this.addListener(evt, {
+      listener: listener,
+      once: true
+    });
+  };
+  proto.once = alias('addOnceListener');
+  proto.defineEvent = function defineEvent(evt) {
+    this.getListeners(evt);
+    return this;
+  };
+  proto.defineEvents = function defineEvents(evts) {
+    for (var i = 0; i < evts.length; i += 1) {
+      this.defineEvent(evts[i]);
+    }
+    return this;
+  };
+  proto.removeListener = function removeListener(evt, listener) {
+    var listeners = this.getListenersAsObject(evt);
+    var index;
+    var key;
+    for (key in listeners) {
+      if (listeners.hasOwnProperty(key)) {
+        index = indexOfListener(listeners[key], listener);
+        if (index !== -1) {
+          listeners[key].splice(index, 1);
+        }
+      }
+    }
+    return this;
+  };
+  proto.off = alias('removeListener');
+  proto.addListeners = function addListeners(evt, listeners) {
+    return this.manipulateListeners(false, evt, listeners);
+  };
+  proto.removeListeners = function removeListeners(evt, listeners) {
+    return this.manipulateListeners(true, evt, listeners);
+  };
+  proto.manipulateListeners = function manipulateListeners(remove, evt, listeners) {
+    var i;
+    var value;
+    var single = remove ? this.removeListener : this.addListener;
+    var multiple = remove ? this.removeListeners : this.addListeners;
+    if (typeof evt === 'object' && !(evt instanceof RegExp)) {
+      for (i in evt) {
+        if (evt.hasOwnProperty(i) && (value = evt[i])) {
+          if (typeof value === 'function') {
+            single.call(this, i, value);
+          } else {
+            multiple.call(this, i, value);
+          }
+        }
+      }
+    } else {
+      i = listeners.length;
+      while (i--) {
+        single.call(this, evt, listeners[i]);
+      }
+    }
+    return this;
+  };
+  proto.removeEvent = function removeEvent(evt) {
+    var type = typeof evt;
+    var events = this._getEvents();
+    var key;
+    if (type === 'string') {
+      delete events[evt];
+    } else if (evt instanceof RegExp) {
+      for (key in events) {
+        if (events.hasOwnProperty(key) && evt.test(key)) {
+          delete events[key];
+        }
+      }
+    } else {
+      delete this._events;
+    }
+    return this;
+  };
+  proto.removeAllListeners = alias('removeEvent');
+  proto.emitEvent = function emitEvent(evt, args) {
+    var listeners = this.getListenersAsObject(evt);
+    var listener;
+    var i;
+    var key;
+    var response;
+    for (key in listeners) {
+      if (listeners.hasOwnProperty(key)) {
+        i = listeners[key].length;
+        while (i--) {
+          listener = listeners[key][i];
+          if (listener.once === true) {
+            this.removeListener(evt, listener.listener);
+          }
+          response = listener.listener.apply(this, args || []);
+          if (response === this._getOnceReturnValue()) {
+            this.removeListener(evt, listener.listener);
+          }
+        }
+      }
+    }
+    return this;
+  };
+  proto.trigger = alias('emitEvent');
+  proto.emit = function emit(evt) {
+    var args = Array.prototype.slice.call(arguments, 1);
+    return this.emitEvent(evt, args);
+  };
+  proto.setOnceReturnValue = function setOnceReturnValue(value) {
+    this._onceReturnValue = value;
+    return this;
+  };
+  proto._getOnceReturnValue = function _getOnceReturnValue() {
+    if (this.hasOwnProperty('_onceReturnValue')) {
+      return this._onceReturnValue;
+    } else {
+      return true;
+    }
+  };
+  proto._getEvents = function _getEvents() {
+    return this._events || (this._events = {});
+  };
+  EventEmitter.noConflict = function noConflict() {
+    exports.EventEmitter = originalGlobalValue;
+    return EventEmitter;
+  };
+  if (typeof define === 'function' && define.amd) {
+    define("libs/EventEmitter/4.2.9/EventEmitter.js", [], function() {
+      return EventEmitter;
+    });
+  } else if (typeof module === 'object' && module.exports) {
+    module.exports = EventEmitter;
+  } else {
+    exports.EventEmitter = EventEmitter;
+  }
+}.call(this));
+
+_removeDefine();
+})();
+(function() {
+var _removeDefine = System.get("@@amd-helpers").createDefine();
 (function(window, document, exportName, undefined) {
   'use strict';
   var VENDOR_PREFIXES = ['', 'webkit', 'moz', 'MS', 'ms', 'o'];
@@ -16641,214 +16849,6 @@ var _removeDefine = System.get("@@amd-helpers").createDefine();
     window[exportName] = Hammer;
   }
 })(window, document, 'Hammer');
-
-_removeDefine();
-})();
-(function() {
-var _removeDefine = System.get("@@amd-helpers").createDefine();
-(function() {
-  'use strict';
-  function EventEmitter() {}
-  var proto = EventEmitter.prototype;
-  var exports = this;
-  var originalGlobalValue = exports.EventEmitter;
-  function indexOfListener(listeners, listener) {
-    var i = listeners.length;
-    while (i--) {
-      if (listeners[i].listener === listener) {
-        return i;
-      }
-    }
-    return -1;
-  }
-  function alias(name) {
-    return function aliasClosure() {
-      return this[name].apply(this, arguments);
-    };
-  }
-  proto.getListeners = function getListeners(evt) {
-    var events = this._getEvents();
-    var response;
-    var key;
-    if (evt instanceof RegExp) {
-      response = {};
-      for (key in events) {
-        if (events.hasOwnProperty(key) && evt.test(key)) {
-          response[key] = events[key];
-        }
-      }
-    } else {
-      response = events[evt] || (events[evt] = []);
-    }
-    return response;
-  };
-  proto.flattenListeners = function flattenListeners(listeners) {
-    var flatListeners = [];
-    var i;
-    for (i = 0; i < listeners.length; i += 1) {
-      flatListeners.push(listeners[i].listener);
-    }
-    return flatListeners;
-  };
-  proto.getListenersAsObject = function getListenersAsObject(evt) {
-    var listeners = this.getListeners(evt);
-    var response;
-    if (listeners instanceof Array) {
-      response = {};
-      response[evt] = listeners;
-    }
-    return response || listeners;
-  };
-  proto.addListener = function addListener(evt, listener) {
-    var listeners = this.getListenersAsObject(evt);
-    var listenerIsWrapped = typeof listener === 'object';
-    var key;
-    for (key in listeners) {
-      if (listeners.hasOwnProperty(key) && indexOfListener(listeners[key], listener) === -1) {
-        listeners[key].push(listenerIsWrapped ? listener : {
-          listener: listener,
-          once: false
-        });
-      }
-    }
-    return this;
-  };
-  proto.on = alias('addListener');
-  proto.addOnceListener = function addOnceListener(evt, listener) {
-    return this.addListener(evt, {
-      listener: listener,
-      once: true
-    });
-  };
-  proto.once = alias('addOnceListener');
-  proto.defineEvent = function defineEvent(evt) {
-    this.getListeners(evt);
-    return this;
-  };
-  proto.defineEvents = function defineEvents(evts) {
-    for (var i = 0; i < evts.length; i += 1) {
-      this.defineEvent(evts[i]);
-    }
-    return this;
-  };
-  proto.removeListener = function removeListener(evt, listener) {
-    var listeners = this.getListenersAsObject(evt);
-    var index;
-    var key;
-    for (key in listeners) {
-      if (listeners.hasOwnProperty(key)) {
-        index = indexOfListener(listeners[key], listener);
-        if (index !== -1) {
-          listeners[key].splice(index, 1);
-        }
-      }
-    }
-    return this;
-  };
-  proto.off = alias('removeListener');
-  proto.addListeners = function addListeners(evt, listeners) {
-    return this.manipulateListeners(false, evt, listeners);
-  };
-  proto.removeListeners = function removeListeners(evt, listeners) {
-    return this.manipulateListeners(true, evt, listeners);
-  };
-  proto.manipulateListeners = function manipulateListeners(remove, evt, listeners) {
-    var i;
-    var value;
-    var single = remove ? this.removeListener : this.addListener;
-    var multiple = remove ? this.removeListeners : this.addListeners;
-    if (typeof evt === 'object' && !(evt instanceof RegExp)) {
-      for (i in evt) {
-        if (evt.hasOwnProperty(i) && (value = evt[i])) {
-          if (typeof value === 'function') {
-            single.call(this, i, value);
-          } else {
-            multiple.call(this, i, value);
-          }
-        }
-      }
-    } else {
-      i = listeners.length;
-      while (i--) {
-        single.call(this, evt, listeners[i]);
-      }
-    }
-    return this;
-  };
-  proto.removeEvent = function removeEvent(evt) {
-    var type = typeof evt;
-    var events = this._getEvents();
-    var key;
-    if (type === 'string') {
-      delete events[evt];
-    } else if (evt instanceof RegExp) {
-      for (key in events) {
-        if (events.hasOwnProperty(key) && evt.test(key)) {
-          delete events[key];
-        }
-      }
-    } else {
-      delete this._events;
-    }
-    return this;
-  };
-  proto.removeAllListeners = alias('removeEvent');
-  proto.emitEvent = function emitEvent(evt, args) {
-    var listeners = this.getListenersAsObject(evt);
-    var listener;
-    var i;
-    var key;
-    var response;
-    for (key in listeners) {
-      if (listeners.hasOwnProperty(key)) {
-        i = listeners[key].length;
-        while (i--) {
-          listener = listeners[key][i];
-          if (listener.once === true) {
-            this.removeListener(evt, listener.listener);
-          }
-          response = listener.listener.apply(this, args || []);
-          if (response === this._getOnceReturnValue()) {
-            this.removeListener(evt, listener.listener);
-          }
-        }
-      }
-    }
-    return this;
-  };
-  proto.trigger = alias('emitEvent');
-  proto.emit = function emit(evt) {
-    var args = Array.prototype.slice.call(arguments, 1);
-    return this.emitEvent(evt, args);
-  };
-  proto.setOnceReturnValue = function setOnceReturnValue(value) {
-    this._onceReturnValue = value;
-    return this;
-  };
-  proto._getOnceReturnValue = function _getOnceReturnValue() {
-    if (this.hasOwnProperty('_onceReturnValue')) {
-      return this._onceReturnValue;
-    } else {
-      return true;
-    }
-  };
-  proto._getEvents = function _getEvents() {
-    return this._events || (this._events = {});
-  };
-  EventEmitter.noConflict = function noConflict() {
-    exports.EventEmitter = originalGlobalValue;
-    return EventEmitter;
-  };
-  if (typeof define === 'function' && define.amd) {
-    define("libs/EventEmitter/4.2.9/EventEmitter.js", [], function() {
-      return EventEmitter;
-    });
-  } else if (typeof module === 'object' && module.exports) {
-    module.exports = EventEmitter;
-  } else {
-    exports.EventEmitter = EventEmitter;
-  }
-}.call(this));
 
 _removeDefine();
 })();
@@ -19088,73 +19088,6 @@ System.register("js/utils/env.js", [], function (_export) {
     }
   };
 });
-System.register('js/router/wd.js', ['js/page/wd.js', 'js/utils/env.js'], function (_export) {
-    /**
-     * Created by wushuyi on 2015/9/13.
-     */
-    'use strict';
-
-    var WdPage, env;
-
-    function register(router) {
-        router.on('/wd', function () {
-            env.wd_page = new WdPage();
-        });
-        router.on('after', '/wd', function () {
-            env.wd_page.destroy();
-            delete env.wd_page;
-        });
-    }
-
-    return {
-        setters: [function (_jsPageWdJs) {
-            WdPage = _jsPageWdJs['default'];
-        }, function (_jsUtilsEnvJs) {
-            env = _jsUtilsEnvJs['default'];
-        }],
-        execute: function () {
-            _export('default', register);
-        }
-    };
-});
-System.register('js/router/mapinfo.js', ['js/page/mapinfo.js', 'js/utils/env.js'], function (_export) {
-    /**
-     * Created by wushuyi on 2015/9/14.
-     */
-    'use strict';
-
-    var MapInfoPage, env;
-
-    function register(router) {
-        var route = '/mapinfo/archives/:id';
-        router.on(route, function () {
-            env.page_status = env.page_status || {};
-            env.page_status.now = route;
-        });
-        router.on(route, function (id) {
-            env.mapinfo_close_route = env.page_status.prve;
-            env.mapinfo_page = new MapInfoPage({
-                id: id,
-                close_route: env.mapinfo_close_route
-            });
-        });
-        router.on('after', route, function () {
-            env.mapinfo_page.destroy();
-            delete env.mapinfo_page;
-        });
-    }
-
-    return {
-        setters: [function (_jsPageMapinfoJs) {
-            MapInfoPage = _jsPageMapinfoJs['default'];
-        }, function (_jsUtilsEnvJs) {
-            env = _jsUtilsEnvJs['default'];
-        }],
-        execute: function () {
-            _export('default', register);
-        }
-    };
-});
 System.register('js/router/pyq.js', ['js/page/pyq.js', 'js/utils/env.js'], function (_export) {
     /**
      * Created by wushuyi on 2015/9/13.
@@ -19176,6 +19109,35 @@ System.register('js/router/pyq.js', ['js/page/pyq.js', 'js/utils/env.js'], funct
     return {
         setters: [function (_jsPagePyqJs) {
             GftjPage = _jsPagePyqJs['default'];
+        }, function (_jsUtilsEnvJs) {
+            env = _jsUtilsEnvJs['default'];
+        }],
+        execute: function () {
+            _export('default', register);
+        }
+    };
+});
+System.register('js/router/wd.js', ['js/page/wd.js', 'js/utils/env.js'], function (_export) {
+    /**
+     * Created by wushuyi on 2015/9/13.
+     */
+    'use strict';
+
+    var WdPage, env;
+
+    function register(router) {
+        router.on('/wd', function () {
+            env.wd_page = new WdPage();
+        });
+        router.on('after', '/wd', function () {
+            env.wd_page.destroy();
+            delete env.wd_page;
+        });
+    }
+
+    return {
+        setters: [function (_jsPageWdJs) {
+            WdPage = _jsPageWdJs['default'];
         }, function (_jsUtilsEnvJs) {
             env = _jsUtilsEnvJs['default'];
         }],
@@ -19249,6 +19211,44 @@ System.register('js/router/gftj.js', ['js/page/gftj.js', 'js/utils/env.js'], fun
     return {
         setters: [function (_jsPageGftjJs) {
             GftjPage = _jsPageGftjJs['default'];
+        }, function (_jsUtilsEnvJs) {
+            env = _jsUtilsEnvJs['default'];
+        }],
+        execute: function () {
+            _export('default', register);
+        }
+    };
+});
+System.register('js/router/mapinfo.js', ['js/page/mapinfo.js', 'js/utils/env.js'], function (_export) {
+    /**
+     * Created by wushuyi on 2015/9/14.
+     */
+    'use strict';
+
+    var MapInfoPage, env;
+
+    function register(router) {
+        var route = '/mapinfo/archives/:id';
+        router.on(route, function () {
+            env.page_status = env.page_status || {};
+            env.page_status.now = route;
+        });
+        router.on(route, function (id) {
+            env.mapinfo_close_route = env.page_status.prve;
+            env.mapinfo_page = new MapInfoPage({
+                id: id,
+                close_route: env.mapinfo_close_route
+            });
+        });
+        router.on('after', route, function () {
+            env.mapinfo_page.destroy();
+            delete env.mapinfo_page;
+        });
+    }
+
+    return {
+        setters: [function (_jsPageMapinfoJs) {
+            MapInfoPage = _jsPageMapinfoJs['default'];
         }, function (_jsUtilsEnvJs) {
             env = _jsUtilsEnvJs['default'];
         }],
@@ -19348,198 +19348,6 @@ System.register('js/page/wd.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base.j
             })(BasePage);
 
             _export('default', WdPage);
-        }
-    };
-});
-System.register('js/page/mapinfo.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base.js', 'libs/iScroll/5.1.3/iscroll-lite.js', 'js/utils/wsy_utils.js'], function (_export) {
-    /**
-     * Created by wushuyi on 2015/9/14.
-     */
-    'use strict';
-
-    var $, BasePage, iScroll, proxy, MapInfoPage;
-    return {
-        setters: [function (_libsJquery214JqueryJs) {
-            $ = _libsJquery214JqueryJs['default'];
-        }, function (_jsPageBaseJs) {
-            BasePage = _jsPageBaseJs['default'];
-        }, function (_libsIScroll513IscrollLiteJs) {
-            iScroll = _libsIScroll513IscrollLiteJs['default'];
-        }, function (_jsUtilsWsy_utilsJs) {
-            proxy = _jsUtilsWsy_utilsJs.proxy;
-        }],
-        execute: function () {
-            MapInfoPage = (function (_BasePage) {
-                babelHelpers.inherits(MapInfoPage, _BasePage);
-
-                function MapInfoPage() {
-                    babelHelpers.classCallCheck(this, MapInfoPage);
-
-                    if (arguments[0] === false) {
-                        return false;
-                    }
-                    babelHelpers.get(Object.getPrototypeOf(MapInfoPage.prototype), 'constructor', this).call(this, false);
-                    this.initialize.apply(this, arguments);
-                }
-
-                babelHelpers.createClass(MapInfoPage, [{
-                    key: 'initialize',
-                    value: function initialize(options) {
-                        babelHelpers.get(Object.getPrototypeOf(MapInfoPage.prototype), 'initialize', this).call(this);
-                        var $el = {};
-                        this.$el = $el;
-                        var iscrolls = {};
-                        this.iscrolls = iscrolls;
-                        $el.page = $('#page_mapinfo');
-                        $el.close = $el.page.find('.tab-close');
-                        $el.tabList = $el.page.find('.tab-list');
-                        $el.commentList = $el.page.find('.comment-list');
-                        $el.prompt = $el.commentList.next('.prompt');
-                        $el.hotNumBox = $('.hot-num-box');
-                        $el.commentBox = $('.comment-box');
-                        babelHelpers.get(Object.getPrototypeOf(MapInfoPage.prototype), 'startPage', this).call(this);
-                        iscrolls.content = new iScroll($el.page.get(0));
-
-                        $el.close.attr('data-router', options.close_route);
-                        $el.close.on('tap', function () {
-                            delete env.mapinfo_close_route;
-                        });
-                        $el.tabList.attr('data-router', '/mapinfo/list/' + options.id);
-                        var pullFunc = proxy(function () {
-                            if (this.pullUpActionLock) {
-                                return true;
-                            }
-                            if (iscrolls.content.maxScrollY - iscrolls.content.y > 100) {
-                                this.pullUpAction();
-                            }
-                        }, this);
-                        iscrolls.content.on('scrollStart', function () {
-                            $el.page.one('touchend', pullFunc);
-                        });
-
-                        var $updata = $el.commentBox.find('.updata');
-                        var $submit = $el.commentBox.find('.submit');
-                        var $input = $el.commentBox.find('.input');
-                        $el.hotNumBox.find('.comment-num').one('tap', function () {
-                            $updata.velocity({
-                                height: 112
-                            }, {
-                                complete: function complete() {
-                                    iscrolls.content.refresh();
-                                }
-                            });
-                        });
-                        $submit.on('tap', function () {
-                            $input.val('');
-                        });
-                    }
-                }, {
-                    key: 'pullUpAction',
-                    value: function pullUpAction() {
-                        var temp = '<li>' + '<div class="comment clearfix">' + '<div class="avatar"></div>' + '<div class="msg">new 评论这是一条评论它评论评论这是一条评论它评论评论这是一条评论它评论</div>' + '</div>' + '</li>';
-                        var reshtml = '';
-                        for (var i = 10; i > 0; i--) {
-                            reshtml = reshtml + temp;
-                        }
-                        this.pullUpActionLock = true;
-                        var $el = this.$el;
-                        var iscrolls = this.iscrolls;
-                        var scrollTo = $el.commentList.find('.comment:last').get(0);
-
-                        $el.loading = $('<li class="loading">loging...</li>');
-                        $el.prompt.hide();
-                        $el.commentList.append($el.loading);
-                        iscrolls.content.refresh();
-                        setTimeout(proxy(function () {
-                            $el.loading.hide().remove();
-                            $el.commentList.append(reshtml);
-                            $el.prompt.show();
-                            iscrolls.content.refresh();
-                            this.pullUpActionLock = false;
-                            iscrolls.content.scrollToElement(scrollTo, 1000);
-                        }, this), 3000);
-                    }
-                }, {
-                    key: 'destroy',
-                    value: function destroy() {
-                        var _this = this;
-
-                        var iscrolls = this.iscrolls;
-                        babelHelpers.get(Object.getPrototypeOf(MapInfoPage.prototype), 'endPage', this).call(this, function () {
-                            $.each(iscrolls, function (key, iscroll) {
-                                iscroll.destroy();
-                            });
-                            _this.$el = null;
-                        });
-                    }
-                }]);
-                return MapInfoPage;
-            })(BasePage);
-
-            _export('default', MapInfoPage);
-        }
-    };
-});
-System.register('js/page/pyq.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base.js', 'libs/iScroll/5.1.3/iscroll-lite.js'], function (_export) {
-    /**
-     * Created by wushuyi on 2015/9/13.
-     */
-    'use strict';
-
-    var $, BasePage, iScroll, PyqPage;
-    return {
-        setters: [function (_libsJquery214JqueryJs) {
-            $ = _libsJquery214JqueryJs['default'];
-        }, function (_jsPageBaseJs) {
-            BasePage = _jsPageBaseJs['default'];
-        }, function (_libsIScroll513IscrollLiteJs) {
-            iScroll = _libsIScroll513IscrollLiteJs['default'];
-        }],
-        execute: function () {
-            PyqPage = (function (_BasePage) {
-                babelHelpers.inherits(PyqPage, _BasePage);
-
-                function PyqPage() {
-                    babelHelpers.classCallCheck(this, PyqPage);
-
-                    if (arguments[0] === false) {
-                        return false;
-                    }
-                    babelHelpers.get(Object.getPrototypeOf(PyqPage.prototype), 'constructor', this).call(this, false);
-                    this.initialize.apply(this, arguments);
-                }
-
-                babelHelpers.createClass(PyqPage, [{
-                    key: 'initialize',
-                    value: function initialize() {
-                        babelHelpers.get(Object.getPrototypeOf(PyqPage.prototype), 'initialize', this).call(this);
-                        var $el = {};
-                        this.$el = $el;
-                        var iscrolls = {};
-                        this.iscrolls = iscrolls;
-                        $el.nav = $('.nav-item[data-router="/pyq"]');
-                        $el.page = $('#page_pyq');
-                        babelHelpers.get(Object.getPrototypeOf(PyqPage.prototype), 'startPage', this).call(this);
-                        iscrolls.content = new iScroll($el.page.get(0));
-                    }
-                }, {
-                    key: 'destroy',
-                    value: function destroy() {
-                        var _this = this;
-
-                        var iscrolls = this.iscrolls;
-                        babelHelpers.get(Object.getPrototypeOf(PyqPage.prototype), 'endPage', this).call(this, function () {
-                            $.each(iscrolls, function (key, iscroll) {
-                                iscroll.destroy();
-                            });
-                            _this.$el = null;
-                        });
-                    }
-                }]);
-                return PyqPage;
-            })(BasePage);
-
-            _export('default', PyqPage);
         }
     };
 });
@@ -19737,6 +19545,135 @@ System.register('js/page/gftj.js', ['libs/jquery/2.1.4/jquery.js', 'libs/Swiper/
         }
     };
 });
+System.register('js/page/mapinfo.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base.js', 'libs/iScroll/5.1.3/iscroll-lite.js', 'js/utils/wsy_utils.js'], function (_export) {
+    /**
+     * Created by wushuyi on 2015/9/14.
+     */
+    'use strict';
+
+    var $, BasePage, iScroll, proxy, MapInfoPage;
+    return {
+        setters: [function (_libsJquery214JqueryJs) {
+            $ = _libsJquery214JqueryJs['default'];
+        }, function (_jsPageBaseJs) {
+            BasePage = _jsPageBaseJs['default'];
+        }, function (_libsIScroll513IscrollLiteJs) {
+            iScroll = _libsIScroll513IscrollLiteJs['default'];
+        }, function (_jsUtilsWsy_utilsJs) {
+            proxy = _jsUtilsWsy_utilsJs.proxy;
+        }],
+        execute: function () {
+            MapInfoPage = (function (_BasePage) {
+                babelHelpers.inherits(MapInfoPage, _BasePage);
+
+                function MapInfoPage() {
+                    babelHelpers.classCallCheck(this, MapInfoPage);
+
+                    if (arguments[0] === false) {
+                        return false;
+                    }
+                    babelHelpers.get(Object.getPrototypeOf(MapInfoPage.prototype), 'constructor', this).call(this, false);
+                    this.initialize.apply(this, arguments);
+                }
+
+                babelHelpers.createClass(MapInfoPage, [{
+                    key: 'initialize',
+                    value: function initialize(options) {
+                        babelHelpers.get(Object.getPrototypeOf(MapInfoPage.prototype), 'initialize', this).call(this);
+                        var $el = {};
+                        this.$el = $el;
+                        var iscrolls = {};
+                        this.iscrolls = iscrolls;
+                        $el.page = $('#page_mapinfo');
+                        $el.close = $el.page.find('.tab-close');
+                        $el.tabList = $el.page.find('.tab-list');
+                        $el.commentList = $el.page.find('.comment-list');
+                        $el.prompt = $el.commentList.next('.prompt');
+                        $el.hotNumBox = $('.hot-num-box');
+                        $el.commentBox = $('.comment-box');
+                        babelHelpers.get(Object.getPrototypeOf(MapInfoPage.prototype), 'startPage', this).call(this);
+                        iscrolls.content = new iScroll($el.page.get(0));
+
+                        $el.close.attr('data-router', options.close_route);
+                        $el.close.on('tap', function () {
+                            delete env.mapinfo_close_route;
+                        });
+                        $el.tabList.attr('data-router', '/mapinfo/list/' + options.id);
+                        var pullFunc = proxy(function () {
+                            if (this.pullUpActionLock) {
+                                return true;
+                            }
+                            if (iscrolls.content.maxScrollY - iscrolls.content.y > 100) {
+                                this.pullUpAction();
+                            }
+                        }, this);
+                        iscrolls.content.on('scrollStart', function () {
+                            $el.page.one('touchend', pullFunc);
+                        });
+
+                        var $updata = $el.commentBox.find('.updata');
+                        var $submit = $el.commentBox.find('.submit');
+                        var $input = $el.commentBox.find('.input');
+                        $el.hotNumBox.find('.comment-num').one('tap', function () {
+                            $updata.velocity({
+                                height: 112
+                            }, {
+                                complete: function complete() {
+                                    iscrolls.content.refresh();
+                                }
+                            });
+                        });
+                        $submit.on('tap', function () {
+                            $input.val('');
+                        });
+                    }
+                }, {
+                    key: 'pullUpAction',
+                    value: function pullUpAction() {
+                        var temp = '<li>' + '<div class="comment clearfix">' + '<div class="avatar"></div>' + '<div class="msg">new 评论这是一条评论它评论评论这是一条评论它评论评论这是一条评论它评论</div>' + '</div>' + '</li>';
+                        var reshtml = '';
+                        for (var i = 10; i > 0; i--) {
+                            reshtml = reshtml + temp;
+                        }
+                        this.pullUpActionLock = true;
+                        var $el = this.$el;
+                        var iscrolls = this.iscrolls;
+                        var scrollTo = $el.commentList.find('.comment:last').get(0);
+
+                        $el.loading = $('<li class="loading">loging...</li>');
+                        $el.prompt.hide();
+                        $el.commentList.append($el.loading);
+                        iscrolls.content.refresh();
+                        setTimeout(proxy(function () {
+                            $el.loading.hide().remove();
+                            $el.commentList.append(reshtml);
+                            $el.prompt.show();
+                            iscrolls.content.refresh();
+                            this.pullUpActionLock = false;
+                            iscrolls.content.scrollToElement(scrollTo, 1000);
+                        }, this), 3000);
+                    }
+                }, {
+                    key: 'destroy',
+                    value: function destroy() {
+                        var _this = this;
+
+                        var iscrolls = this.iscrolls;
+                        babelHelpers.get(Object.getPrototypeOf(MapInfoPage.prototype), 'endPage', this).call(this, function () {
+                            $.each(iscrolls, function (key, iscroll) {
+                                iscroll.destroy();
+                            });
+                            _this.$el = null;
+                        });
+                    }
+                }]);
+                return MapInfoPage;
+            })(BasePage);
+
+            _export('default', MapInfoPage);
+        }
+    };
+});
 System.register('js/page/fxdt.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base.js', 'libs/iScroll/5.1.3/iscroll-lite.js'], function (_export) {
     /**
      * Created by wushuyi on 2015/9/13.
@@ -19802,90 +19739,66 @@ System.register('js/page/fxdt.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base
         }
     };
 });
-System.register("js/utils/wsy_utils.js", [], function (_export) {
+System.register('js/page/pyq.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base.js', 'libs/iScroll/5.1.3/iscroll-lite.js'], function (_export) {
     /**
-     * Created by wushuyi on 2015/9/10.
+     * Created by wushuyi on 2015/9/13.
      */
-    "use strict";
+    'use strict';
 
-    var transitionEnd, animationEnd;
-
-    _export("extend", extend);
-
-    _export("promote", promote);
-
-    _export("proxy", proxy);
-
-    function extend(subclass, superclass) {
-        function o() {
-            this.constructor = subclass;
-        }
-
-        o.prototype = superclass.prototype;
-        return subclass.prototype = new o();
-    }
-
-    function promote(subclass, prefix) {
-        var subP = subclass.prototype,
-            supP = Object.getPrototypeOf && Object.getPrototypeOf(subP) || subP.__proto__;
-        if (supP) {
-            subP[(prefix += "_") + "constructor"] = supP.constructor; // constructor is not always innumerable
-            for (var n in supP) {
-                if (subP.hasOwnProperty(n) && typeof supP[n] == "function") {
-                    subP[prefix + n] = supP[n];
-                }
-            }
-        }
-        return subclass;
-    }
-
-    function proxy(method, scope) {
-        var aArgs = Array.prototype.slice.call(arguments, 2);
-        return function () {
-            return method.apply(scope, Array.prototype.slice.call(arguments, 0).concat(aArgs));
-        };
-    }
-
+    var $, BasePage, iScroll, PyqPage;
     return {
-        setters: [],
+        setters: [function (_libsJquery214JqueryJs) {
+            $ = _libsJquery214JqueryJs['default'];
+        }, function (_jsPageBaseJs) {
+            BasePage = _jsPageBaseJs['default'];
+        }, function (_libsIScroll513IscrollLiteJs) {
+            iScroll = _libsIScroll513IscrollLiteJs['default'];
+        }],
         execute: function () {
-            transitionEnd = (function () {
-                var div = document.createElement('div');
-                var transitions = {
-                    transition: 'transitionend',
-                    WebkitTransition: 'webkitTransitionEnd',
-                    MozTransition: 'mozTransitionEnd',
-                    OTransition: 'oTransitionEnd',
-                    msTransition: 'MSTransitionEnd'
-                };
+            PyqPage = (function (_BasePage) {
+                babelHelpers.inherits(PyqPage, _BasePage);
 
-                for (var t in transitions) {
-                    if (div.style[t] !== undefined) {
-                        return transitions[t];
+                function PyqPage() {
+                    babelHelpers.classCallCheck(this, PyqPage);
+
+                    if (arguments[0] === false) {
+                        return false;
                     }
+                    babelHelpers.get(Object.getPrototypeOf(PyqPage.prototype), 'constructor', this).call(this, false);
+                    this.initialize.apply(this, arguments);
                 }
-            })();
 
-            _export("transitionEnd", transitionEnd);
-
-            animationEnd = (function () {
-                var div = document.createElement('div');
-                var transitions = {
-                    animation: 'animationend',
-                    WebkitAnimation: 'webkitAnimationEnd',
-                    MozAnimation: 'mozAnimationEnd',
-                    OAnimation: 'oAnimationEnd',
-                    msAnimation: 'MSAnimationEnd'
-                };
-
-                for (var t in transitions) {
-                    if (div.style[t] !== undefined) {
-                        return transitions[t];
+                babelHelpers.createClass(PyqPage, [{
+                    key: 'initialize',
+                    value: function initialize() {
+                        babelHelpers.get(Object.getPrototypeOf(PyqPage.prototype), 'initialize', this).call(this);
+                        var $el = {};
+                        this.$el = $el;
+                        var iscrolls = {};
+                        this.iscrolls = iscrolls;
+                        $el.nav = $('.nav-item[data-router="/pyq"]');
+                        $el.page = $('#page_pyq');
+                        babelHelpers.get(Object.getPrototypeOf(PyqPage.prototype), 'startPage', this).call(this);
+                        iscrolls.content = new iScroll($el.page.get(0));
                     }
-                }
-            })();
+                }, {
+                    key: 'destroy',
+                    value: function destroy() {
+                        var _this = this;
 
-            _export("animationEnd", animationEnd);
+                        var iscrolls = this.iscrolls;
+                        babelHelpers.get(Object.getPrototypeOf(PyqPage.prototype), 'endPage', this).call(this, function () {
+                            $.each(iscrolls, function (key, iscroll) {
+                                iscroll.destroy();
+                            });
+                            _this.$el = null;
+                        });
+                    }
+                }]);
+                return PyqPage;
+            })(BasePage);
+
+            _export('default', PyqPage);
         }
     };
 });
@@ -19959,7 +19872,7 @@ System.register('js/page/base.js', ['libs/jquery/2.1.4/jquery.js', 'libs/lodash.
                         });
                         env.mainlayout.on('moveStart', function () {
                             $map.height('100%');
-                            google.maps.event.trigger(env.gmap, 'resize');
+                            //google.maps.event.trigger(env.gmap, 'resize');
                         });
                         env.mainlayout.on('moveEnd', function (res) {
                             $map.height(res);
@@ -20051,6 +19964,93 @@ System.register('js/page/base.js', ['libs/jquery/2.1.4/jquery.js', 'libs/lodash.
             })();
 
             _export('default', PageBase);
+        }
+    };
+});
+System.register("js/utils/wsy_utils.js", [], function (_export) {
+    /**
+     * Created by wushuyi on 2015/9/10.
+     */
+    "use strict";
+
+    var transitionEnd, animationEnd;
+
+    _export("extend", extend);
+
+    _export("promote", promote);
+
+    _export("proxy", proxy);
+
+    function extend(subclass, superclass) {
+        function o() {
+            this.constructor = subclass;
+        }
+
+        o.prototype = superclass.prototype;
+        return subclass.prototype = new o();
+    }
+
+    function promote(subclass, prefix) {
+        var subP = subclass.prototype,
+            supP = Object.getPrototypeOf && Object.getPrototypeOf(subP) || subP.__proto__;
+        if (supP) {
+            subP[(prefix += "_") + "constructor"] = supP.constructor; // constructor is not always innumerable
+            for (var n in supP) {
+                if (subP.hasOwnProperty(n) && typeof supP[n] == "function") {
+                    subP[prefix + n] = supP[n];
+                }
+            }
+        }
+        return subclass;
+    }
+
+    function proxy(method, scope) {
+        var aArgs = Array.prototype.slice.call(arguments, 2);
+        return function () {
+            return method.apply(scope, Array.prototype.slice.call(arguments, 0).concat(aArgs));
+        };
+    }
+
+    return {
+        setters: [],
+        execute: function () {
+            transitionEnd = (function () {
+                var div = document.createElement('div');
+                var transitions = {
+                    transition: 'transitionend',
+                    WebkitTransition: 'webkitTransitionEnd',
+                    MozTransition: 'mozTransitionEnd',
+                    OTransition: 'oTransitionEnd',
+                    msTransition: 'MSTransitionEnd'
+                };
+
+                for (var t in transitions) {
+                    if (div.style[t] !== undefined) {
+                        return transitions[t];
+                    }
+                }
+            })();
+
+            _export("transitionEnd", transitionEnd);
+
+            animationEnd = (function () {
+                var div = document.createElement('div');
+                var transitions = {
+                    animation: 'animationend',
+                    WebkitAnimation: 'webkitAnimationEnd',
+                    MozAnimation: 'mozAnimationEnd',
+                    OAnimation: 'oAnimationEnd',
+                    msAnimation: 'MSAnimationEnd'
+                };
+
+                for (var t in transitions) {
+                    if (div.style[t] !== undefined) {
+                        return transitions[t];
+                    }
+                }
+            })();
+
+            _export("animationEnd", animationEnd);
         }
     };
 });

@@ -51,7 +51,7 @@ class PageBase {
         });
         env.mainlayout.on('moveStart', function(){
             $map.height('100%');
-            google.maps.event.trigger(env.gmap, 'resize');
+            //google.maps.event.trigger(env.gmap, 'resize');
         });
         env.mainlayout.on('moveEnd', function(res){
             $map.height(res);
