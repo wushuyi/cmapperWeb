@@ -958,6 +958,32 @@ html.android .page-from-center-to-right:before {
   line-height: 30px;
   margin-top: 8px;
 }
+#map-xjdd,
+#map-dw {
+  width: 100px;
+  height: 100px;
+  border-radius: 50px;
+  overflow: hidden;
+  border: 1px solid #999B9A;
+  font-size: 20px;
+  font-weight: bold;
+  line-height: 100px;
+  text-align: center;
+  position: relative;
+  margin-bottom: 10px;
+}
+#map-xjdd:before,
+#map-dw:before {
+  position: absolute;
+  content: '';
+  display: block;
+  width: 100px;
+  height: 100px;
+  top: 0;
+  left: 0;
+  background: #27EAB7;
+  opacity: 0.8;
+}
 /* Media queries
 -------------------------------------------------------------------------------*/
 /* Print styles

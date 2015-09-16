@@ -19,6 +19,7 @@ class PageBase {
     initialize() {
         this.initMainLayout();
         this.initRouterEvent();
+        this.initGoolgeMap();
     }
 
     initMainLayout() {
@@ -35,6 +36,32 @@ class PageBase {
             $content: $('.content'),
             $out_box: $('.wrapper')
         });
+
+    }
+
+    initGoolgeMap() {
+        if (env.gmap) {
+            return false;
+        }
+        let $map = $('#map');
+        env.gmap = new google.maps.Map($map.get(0), {
+            center: new google.maps.LatLng(27.653981735563498, 117.98527836799622),
+            zoom: 14,
+            disableDefaultUI: true,
+        });
+        env.mainlayout.on('moveStart', function(){
+            $map.height('100%');
+            google.maps.event.trigger(env.gmap, 'resize');
+        });
+        env.mainlayout.on('moveEnd', function(res){
+            $map.height(res);
+            google.maps.event.trigger(env.gmap, 'resize');
+        });
+
+        let $map_xjdd = $('<div id="map-xjdd">新建地点</div>');
+        let $map_dw = $('<div id="map-dw">定位</div>');
+        let $map_ctl = $('<div id="map-ctl"></div>').append($map_xjdd).append($map_dw);
+        env.gmap.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push($map_ctl.get(0));
     }
 
     initRouterEvent() {

@@ -72,12 +72,18 @@ class MainLayout extends EventEmitter {
         //})
         this.$el.height_control.on('panstart.mainlayout', $.proxy(this.panStart, this));
         this.$el.height_control.on('panmove.mainlayout', $.proxy(this.panMove, this));
+        this.$el.height_control.on('panend.mainlayout', $.proxy(this.panEnd, this));
         this.$el.height_control.on('singletap.mainlayout', $.proxy(this.singleTap, this));
         //this.$el.height_control.on('doubletap.mainlayout', $.proxy(this.doubletap, this));
     }
 
     panStart(evt) {
         this.top = parseInt(this.$el.main.css('top').split('px')[0]);
+        this.emit('moveStart');
+    }
+
+    panEnd(evt) {
+        this.emit('moveEnd', this.oldRes);
     }
 
     panMove(evt) {
@@ -117,7 +123,7 @@ class MainLayout extends EventEmitter {
         }
         let _data = this._data;
         let content_height = this.$el.content.height();
-        let map_height = this.$el.map.height();
+        let map_height = this._data.win_height - this.$el.main.height();
         let res = null;
         if (content_height > map_height) {
             res = _data.tap_top_res;
@@ -139,7 +145,7 @@ class MainLayout extends EventEmitter {
         }
         let _data = this._data;
         let content_height = this.$el.content.height();
-        let map_height = this.$el.map.height();
+        let map_height = this._data.win_height - this.$el.main.height();
         let res = null;
         if (content_height > map_height) {
             res = _data.doubletap_top_res;
@@ -163,9 +169,9 @@ class MainLayout extends EventEmitter {
         this.$el.main.css({
             top: res + 'px'
         });
-        this.$el.map.css({
-            height: res + 'px'
-        });
+        /* this.$el.map.css({
+         height: res + 'px'
+         });*/
         this.emit('review');
     }
 
@@ -189,23 +195,34 @@ class MainLayout extends EventEmitter {
             },
             options: {
                 //mobileHA: false
-            }
-        });
-        this.$el.map.velocity({
-            properties: {
-                height: res
-            },
-            options: {
-                mobileHA: false,
+                begin: function () {
+                    self.emit('moveStart');
+                },
                 progress: function () {
                     //console.log(num++);
                     self.emit('review');
                 },
                 complete: function () {
                     self.lock = false;
+                    self.emit('moveEnd');
                 }
             }
         });
+        /* this.$el.map.velocity({
+         properties: {
+         height: res
+         },
+         options: {
+         mobileHA: false,
+         progress: function () {
+         //console.log(num++);
+         self.emit('review');
+         },
+         complete: function () {
+         self.lock = false;
+         }
+         }
+         });*/
     }
 
     destroy() {
