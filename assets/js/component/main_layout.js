@@ -204,7 +204,7 @@ class MainLayout extends EventEmitter {
                 },
                 complete: function () {
                     self.lock = false;
-                    self.emit('moveEnd');
+                    self.emit('moveEnd', self.oldRes);
                 }
             }
         });
