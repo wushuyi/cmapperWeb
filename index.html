@@ -31,6 +31,10 @@
 
 <body>
 <div class="wrapper">
+    <div class="prevent_touch prevent_top"></div>
+    <div class="prevent_touch prevent_right"></div>
+    <div class="prevent_touch prevent_bottom"></div>
+    <div class="prevent_touch prevent_left"></div>
     <div id="map" class="map"></div>
     <div class="main">
         <div id="nav" class="nav">
@@ -95,7 +99,7 @@
                             <div class="scroll">
                                 <ul class="horizontal-list portrait-list">
                                     <li>
-                                        <div class="portrait">
+                                        <div class="portrait" data-router="/role/123">
                                             <div class="photo">
                                                 <img data-src="holder.js/120x120?random=yes">
                                             </div>
@@ -446,7 +450,7 @@
                             <div class="role-img">头像</div>
                             <h2 class="role-name">名字名字</h2>
 
-                            <div class="set-button">
+                            <div class="set-button" data-router="/modal/set">
                                 设定
                             </div>
                             <div class="vcard-stats">
@@ -662,6 +666,14 @@
                             <div class="tab-item tab-archives">地图档案</div>
                             <div class="tab-item active tab-list">地点列表(888)</div>
                         </div>
+                        <div class="maplist-tab">
+                            <ul class="vertical-list">
+                                <li></li>
+                                <li class="active"></li>
+                                <li></li>
+                                <li></li>
+                            </ul>
+                        </div>
                         <div class="maplist-box">
                             <div class="address-list">
                                 <ul class="horizontal-list">
@@ -780,23 +792,165 @@
                         </div>
                     </div>
                 </div>
-                <div id="page_addressinfo" class="blue page cached">
+                <div id="page_role" class="page cached">
+                    <div class="scroll">
+                        <div class="tool-bar">
+                            <div class="role-img">头像</div>
+                            <h2 class="role-name">名字名字</h2>
 
+                            <div class="set-button" data-router="/modal/set">
+                                设定
+                            </div>
+                            <div class="vcard-stats">
+                                <div class="vcard-stat">
+                                    <strong class="vcard-stat-count">372</strong>
+                                    <span class="text-muted">Following</span>
+                                </div>
+                                <div class="vcard-stat">
+                                    <strong class="vcard-stat-count">1771</strong>
+                                    <span class="text-muted">Follower</span>
+                                </div>
+                                <div class="vcard-stat">
+                                    <strong class="vcard-stat-count">331</strong>
+                                    <span class="text-muted">Favourite</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="map-content">
+                            <div class="pagination-box">
+
+                            </div>
+                            <ul class="map-list">
+                                <li>
+                                    <div class="map-box">
+                                        <img data-src="holder.js/294x182?random=yes&outline=yes&text=新建地图">
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="map-box">
+                                        <img data-src="holder.js/294x182?random=yes&outline=yes&text=地图">
+
+                                        <div class="tit-box">
+                                            <h3 class="tit">地图标题</h3>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="map-box">
+                                        <img data-src="holder.js/294x182?random=yes&outline=yes&text=地图">
+
+                                        <div class="tit-box">
+                                            <h3 class="tit">地图标题</h3>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="map-box">
+                                        <img data-src="holder.js/294x182?random=yes&outline=yes&text=地图">
+
+                                        <div class="tit-box">
+                                            <h3 class="tit">地图标题</h3>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="map-box">
+                                        <img data-src="holder.js/294x182?random=yes&outline=yes&text=地图">
+
+                                        <div class="tit-box">
+                                            <h3 class="tit">地图标题</h3>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="map-box">
+                                        <img data-src="holder.js/294x182?random=yes&outline=yes&text=地图">
+
+                                        <div class="tit-box">
+                                            <h3 class="tit">地图标题</h3>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="map-box">
+                                        <img data-src="holder.js/294x182?random=yes&outline=yes&text=地图">
+
+                                        <div class="tit-box">
+                                            <h3 class="tit">地图标题</h3>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="map-box">
+                                        <img data-src="holder.js/294x182?random=yes&outline=yes&text=地图">
+
+                                        <div class="tit-box">
+                                            <h3 class="tit">地图标题</h3>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="map-box">
+                                        <img data-src="holder.js/294x182?random=yes&outline=yes&text=地图">
+
+                                        <div class="tit-box">
+                                            <h3 class="tit">地图标题</h3>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="map-box">
+                                        <img data-src="holder.js/294x182?random=yes&outline=yes&text=地图">
+
+                                        <div class="tit-box">
+                                            <h3 class="tit">地图标题</h3>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="map-box">
+                                        <img data-src="holder.js/294x182?random=yes&outline=yes&text=地图">
+
+                                        <div class="tit-box">
+                                            <h3 class="tit">地图标题</h3>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="map-box">
+                                        <img data-src="holder.js/294x182?random=yes&outline=yes&text=地图">
+
+                                        <div class="tit-box">
+                                            <h3 class="tit">地图标题</h3>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+    <div id="modal-box">
+        <div class="modal" id="modal-set">
+            <div class="top-bar">
+                <div class="close"><</div>
+                <div class="title">设定</div>
+            </div>
+        </div>
+    </div>
 </div>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCSqDuHCUNDiT_xUMJNx6wI-67vzrXSHhM&ibraries=geometry"></script>
-<script src="assets/babel_helpers.min.js"></script>
-<script src="assets/libs/systemjs/0.18.4/system.js"></script>
-<script src="assets/outfile.js"></script>
-<script>
-System.import('js/main.js');
-</script>
+<!--<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCSqDuHCUNDiT_xUMJNx6wI-67vzrXSHhM&ibraries=geometry"></script>-->
+<!--<script src="assets/babel_helpers.min.js"></script>-->
+<!--<script src="assets/libs/systemjs/0.18.4/system.js"></script>-->
+<!--<script src="assets/outfile.js"></script>-->
+<!--<script>-->
+<!--System.import('js/main.js');-->
+<!--</script>-->
 
-<!--<script src="assets/libs/systemjs/0.18.17/system-polyfills.src.js"></script>-->
-<!--<script src="assets/libs/systemjs/0.18.17/system.src.js"></script>-->
-<!--<script src="assets/js/systemjs.config.js"></script>-->
+<script src="assets/libs/systemjs/0.18.17/system-polyfills.src.js"></script>
+<script src="assets/libs/systemjs/0.18.17/system.src.js"></script>
+<script src="assets/js/systemjs.config.js"></script>
 </body>
 </html>

@@ -19020,7 +19020,7 @@ System.register('js/main.js', ['libs/jquery/2.1.4/jquery.js', 'js/router/index.j
     }],
     execute: function () {
 
-      $('#map, #nav').on('touchstart', function (evt) {
+      $('#map, #nav, .prevent_touch').on('touchstart', function (evt) {
         evt.preventDefault();
       });
       register_all();
@@ -19030,13 +19030,13 @@ System.register('js/main.js', ['libs/jquery/2.1.4/jquery.js', 'js/router/index.j
     }
   };
 });
-System.register('js/router/index.js', ['libs/Director/1.2.8/director.js', 'js/router/gftj.js', 'js/router/pyq.js', 'js/router/fxdt.js', 'js/router/wd.js', 'js/router/mapinfo.js', 'js/router/maplist.js', 'js/utils/env.js'], function (_export) {
+System.register('js/router/index.js', ['libs/Director/1.2.8/director.js', 'js/router/gftj.js', 'js/router/pyq.js', 'js/router/fxdt.js', 'js/router/wd.js', 'js/router/mapinfo.js', 'js/router/maplist.js', 'js/router/modal.js', 'js/router/role.js', 'js/utils/env.js'], function (_export) {
     /**
      * Created by wushuyi on 2015/9/13.
      */
     'use strict';
 
-    var Director, register_gftj, register_pyq, register_fxdt, register_wd, register_mapinfo, register_maplist, env, router;
+    var Director, register_gftj, register_pyq, register_fxdt, register_wd, register_mapinfo, register_maplist, register_modal, register_role, env, router;
 
     function register_all() {
         register_gftj(router);
@@ -19045,6 +19045,8 @@ System.register('js/router/index.js', ['libs/Director/1.2.8/director.js', 'js/ro
         register_wd(router);
         register_mapinfo(router);
         register_maplist(router);
+        register_modal(router);
+        register_role(router);
     }
 
     return {
@@ -19062,6 +19064,10 @@ System.register('js/router/index.js', ['libs/Director/1.2.8/director.js', 'js/ro
             register_mapinfo = _jsRouterMapinfoJs['default'];
         }, function (_jsRouterMaplistJs) {
             register_maplist = _jsRouterMaplistJs['default'];
+        }, function (_jsRouterModalJs) {
+            register_modal = _jsRouterModalJs['default'];
+        }, function (_jsRouterRoleJs) {
+            register_role = _jsRouterRoleJs['default'];
         }, function (_jsUtilsEnvJs) {
             env = _jsUtilsEnvJs['default'];
         }],
@@ -19087,6 +19093,42 @@ System.register("js/utils/env.js", [], function (_export) {
       _export("default", {});
     }
   };
+});
+System.register('js/router/gftj.js', ['js/page/gftj.js', 'js/utils/env.js'], function (_export) {
+    /**
+     * Created by wushuyi on 2015/9/13.
+     */
+    'use strict';
+
+    var GftjPage, env;
+
+    function register(router) {
+        var route = '/gftj';
+        router.on('before', route, function () {
+            env.page_status = env.page_status || {};
+            env.page_status.now = route;
+        });
+        router.on(route, function () {
+            env.gftj_page = new GftjPage();
+        });
+        router.on('after', route, function () {
+            env.page_status = env.page_status || {};
+            env.page_status.prve = route;
+            env.gftj_page.destroy();
+            delete env.gftj_page;
+        });
+    }
+
+    return {
+        setters: [function (_jsPageGftjJs) {
+            GftjPage = _jsPageGftjJs['default'];
+        }, function (_jsUtilsEnvJs) {
+            env = _jsUtilsEnvJs['default'];
+        }],
+        execute: function () {
+            _export('default', register);
+        }
+    };
 });
 System.register('js/router/pyq.js', ['js/page/pyq.js', 'js/utils/env.js'], function (_export) {
     /**
@@ -19117,6 +19159,35 @@ System.register('js/router/pyq.js', ['js/page/pyq.js', 'js/utils/env.js'], funct
         }
     };
 });
+System.register('js/router/fxdt.js', ['js/page/fxdt.js', 'js/utils/env.js'], function (_export) {
+    /**
+     * Created by wushuyi on 2015/9/13.
+     */
+    'use strict';
+
+    var FxdtPage, env;
+
+    function register(router) {
+        router.on('/fxdt', function () {
+            env.fxdt_page = new FxdtPage();
+        });
+        router.on('after', '/fxdt', function () {
+            env.fxdt_page.destroy();
+            delete env.fxdt_page;
+        });
+    }
+
+    return {
+        setters: [function (_jsPageFxdtJs) {
+            FxdtPage = _jsPageFxdtJs['default'];
+        }, function (_jsUtilsEnvJs) {
+            env = _jsUtilsEnvJs['default'];
+        }],
+        execute: function () {
+            _export('default', register);
+        }
+    };
+});
 System.register('js/router/wd.js', ['js/page/wd.js', 'js/utils/env.js'], function (_export) {
     /**
      * Created by wushuyi on 2015/9/13.
@@ -19126,10 +19197,21 @@ System.register('js/router/wd.js', ['js/page/wd.js', 'js/utils/env.js'], functio
     var WdPage, env;
 
     function register(router) {
-        router.on('/wd', function () {
+        var route = '/wd';
+        router.on('before', route, function () {
+            env.page_status = env.page_status || {};
+            env.page_status.now = route;
+        });
+        router.on(route, function () {
+            if (env.wd_page) {
+                return false;
+            }
             env.wd_page = new WdPage();
         });
-        router.on('after', '/wd', function () {
+        router.on('after', route, function () {
+            if (env.router.getRoute(0) === 'modal') {
+                return false;
+            }
             env.wd_page.destroy();
             delete env.wd_page;
         });
@@ -19138,79 +19220,6 @@ System.register('js/router/wd.js', ['js/page/wd.js', 'js/utils/env.js'], functio
     return {
         setters: [function (_jsPageWdJs) {
             WdPage = _jsPageWdJs['default'];
-        }, function (_jsUtilsEnvJs) {
-            env = _jsUtilsEnvJs['default'];
-        }],
-        execute: function () {
-            _export('default', register);
-        }
-    };
-});
-System.register('js/router/maplist.js', ['js/page/maplist.js', 'js/utils/env.js'], function (_export) {
-    /**
-     * Created by wushuyi on 2015/9/14.
-     */
-    'use strict';
-
-    var MapListPage, env;
-
-    function register(router) {
-        var route = 'mapinfo/list/:id';
-        router.on(route, function () {
-            env.page_status = env.page_status || {};
-            env.page_status.now = route;
-        });
-        router.on(route, function (id) {
-            env.maplist_page = new MapListPage({
-                id: id,
-                close_route: env.mapinfo_close_route
-            });
-        });
-        router.on('after', route, function () {
-            env.maplist_page.destroy();
-            delete env.maplist_page;
-        });
-    }
-
-    return {
-        setters: [function (_jsPageMaplistJs) {
-            MapListPage = _jsPageMaplistJs['default'];
-        }, function (_jsUtilsEnvJs) {
-            env = _jsUtilsEnvJs['default'];
-        }],
-        execute: function () {
-            _export('default', register);
-        }
-    };
-});
-System.register('js/router/gftj.js', ['js/page/gftj.js', 'js/utils/env.js'], function (_export) {
-    /**
-     * Created by wushuyi on 2015/9/13.
-     */
-    'use strict';
-
-    var GftjPage, env;
-
-    function register(router) {
-        var route = '/gftj';
-        router.on('before', route, function () {
-            env.page_status = env.page_status || {};
-            env.page_status.now = route;
-        });
-        router.on(route, function () {
-            env.gftj_page = new GftjPage();
-        });
-        router.on('after', route, function () {
-            env.page_status = env.page_status || {};
-            env.page_status.prve = route;
-            env.gftj_page.destroy();
-            delete env.gftj_page;
-        });
-    }
-
-    return {
-        setters: [function (_jsPageGftjJs) {
-            GftjPage = _jsPageGftjJs['default'];
         }, function (_jsUtilsEnvJs) {
             env = _jsUtilsEnvJs['default'];
         }],
@@ -19257,27 +19266,35 @@ System.register('js/router/mapinfo.js', ['js/page/mapinfo.js', 'js/utils/env.js'
         }
     };
 });
-System.register('js/router/fxdt.js', ['js/page/fxdt.js', 'js/utils/env.js'], function (_export) {
+System.register('js/router/maplist.js', ['js/page/maplist.js', 'js/utils/env.js'], function (_export) {
     /**
-     * Created by wushuyi on 2015/9/13.
+     * Created by wushuyi on 2015/9/14.
      */
     'use strict';
 
-    var FxdtPage, env;
+    var MapListPage, env;
 
     function register(router) {
-        router.on('/fxdt', function () {
-            env.fxdt_page = new FxdtPage();
+        var route = 'mapinfo/list/:id';
+        router.on(route, function () {
+            env.page_status = env.page_status || {};
+            env.page_status.now = route;
         });
-        router.on('after', '/fxdt', function () {
-            env.fxdt_page.destroy();
-            delete env.fxdt_page;
+        router.on(route, function (id) {
+            env.maplist_page = new MapListPage({
+                id: id,
+                close_route: env.mapinfo_close_route
+            });
+        });
+        router.on('after', route, function () {
+            env.maplist_page.destroy();
+            delete env.maplist_page;
         });
     }
 
     return {
-        setters: [function (_jsPageFxdtJs) {
-            FxdtPage = _jsPageFxdtJs['default'];
+        setters: [function (_jsPageMaplistJs) {
+            MapListPage = _jsPageMaplistJs['default'];
         }, function (_jsUtilsEnvJs) {
             env = _jsUtilsEnvJs['default'];
         }],
@@ -19286,142 +19303,77 @@ System.register('js/router/fxdt.js', ['js/page/fxdt.js', 'js/utils/env.js'], fun
         }
     };
 });
-System.register('js/page/wd.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base.js', 'libs/iScroll/5.1.3/iscroll-lite.js'], function (_export) {
+System.register('js/router/role.js', ['js/page/role.js', 'js/utils/env.js'], function (_export) {
     /**
-     * Created by wushuyi on 2015/9/13.
-     */
-
-    //import Swiper from 'Swiper'
-    'use strict';
-
-    var $, BasePage, iScroll, WdPage;
-    return {
-        setters: [function (_libsJquery214JqueryJs) {
-            $ = _libsJquery214JqueryJs['default'];
-        }, function (_jsPageBaseJs) {
-            BasePage = _jsPageBaseJs['default'];
-        }, function (_libsIScroll513IscrollLiteJs) {
-            iScroll = _libsIScroll513IscrollLiteJs['default'];
-        }],
-        execute: function () {
-            WdPage = (function (_BasePage) {
-                babelHelpers.inherits(WdPage, _BasePage);
-
-                function WdPage() {
-                    babelHelpers.classCallCheck(this, WdPage);
-
-                    if (arguments[0] === false) {
-                        return false;
-                    }
-                    babelHelpers.get(Object.getPrototypeOf(WdPage.prototype), 'constructor', this).call(this, false);
-                    this.initialize.apply(this, arguments);
-                }
-
-                babelHelpers.createClass(WdPage, [{
-                    key: 'initialize',
-                    value: function initialize() {
-                        babelHelpers.get(Object.getPrototypeOf(WdPage.prototype), 'initialize', this).call(this);
-                        var $el = {};
-                        this.$el = $el;
-                        var iscrolls = {};
-                        this.iscrolls = iscrolls;
-                        $el.nav = $('.nav-item[data-router="/wd"]');
-                        $el.page = $('#page_wd');
-                        babelHelpers.get(Object.getPrototypeOf(WdPage.prototype), 'startPage', this).call(this);
-                        iscrolls.content = new iScroll($el.page.get(0));
-                    }
-                }, {
-                    key: 'destroy',
-                    value: function destroy() {
-                        var _this = this;
-
-                        var iscrolls = this.iscrolls;
-                        babelHelpers.get(Object.getPrototypeOf(WdPage.prototype), 'endPage', this).call(this, function () {
-                            $.each(iscrolls, function (key, iscroll) {
-                                iscroll.destroy();
-                            });
-                            _this.$el = null;
-                        });
-                    }
-                }]);
-                return WdPage;
-            })(BasePage);
-
-            _export('default', WdPage);
-        }
-    };
-});
-System.register('js/page/maplist.js', ['libs/jquery/2.1.4/jquery.js', 'libs/Swiper/3.1.2/js/swiper.js', 'js/page/base.js', 'libs/iScroll/5.1.3/iscroll-lite.js', 'js/utils/env.js'], function (_export) {
-    /**
-     * Created by wushuyi on 2015/9/13.
+     * Created by wushuyi on 2015/9/18.
      */
     'use strict';
 
-    var $, Swiper, BasePage, iScroll, env, MapListPage;
+    var RolePage, env;
+
+    function register(router) {
+        var route = '/role/:id';
+        router.on('before', route, function () {
+            env.page_status = env.page_status || {};
+            env.page_status.now = route;
+        });
+        router.on(route, function () {
+            if (env.wd_page) {
+                return false;
+            }
+            env.wd_page = new RolePage();
+        });
+        router.on('after', route, function () {
+            if (env.router.getRoute(0) === 'modal') {
+                return false;
+            }
+            env.wd_page.destroy();
+            delete env.wd_page;
+        });
+    }
+
     return {
-        setters: [function (_libsJquery214JqueryJs) {
-            $ = _libsJquery214JqueryJs['default'];
-        }, function (_libsSwiper312JsSwiperJs) {
-            Swiper = _libsSwiper312JsSwiperJs['default'];
-        }, function (_jsPageBaseJs) {
-            BasePage = _jsPageBaseJs['default'];
-        }, function (_libsIScroll513IscrollLiteJs) {
-            iScroll = _libsIScroll513IscrollLiteJs['default'];
+        setters: [function (_jsPageRoleJs) {
+            RolePage = _jsPageRoleJs['default'];
         }, function (_jsUtilsEnvJs) {
             env = _jsUtilsEnvJs['default'];
         }],
         execute: function () {
-            MapListPage = (function (_BasePage) {
-                babelHelpers.inherits(MapListPage, _BasePage);
+            _export('default', register);
+        }
+    };
+});
+System.register('js/router/modal.js', ['js/page/modal.js', 'js/utils/env.js'], function (_export) {
+    /**
+     * Created by wushuyi on 2015/9/17.
+     */
+    'use strict';
 
-                function MapListPage() {
-                    babelHelpers.classCallCheck(this, MapListPage);
+    var ModalManage, env;
 
-                    if (arguments[0] === false) {
-                        return false;
-                    }
-                    babelHelpers.get(Object.getPrototypeOf(MapListPage.prototype), 'constructor', this).call(this, false);
-                    this.initialize.apply(this, arguments);
-                }
+    function register(router) {
+        var route = '/modal/:page';
+        router.on(route, function (page) {
+            env.modal = new ModalManage({
+                modal: page,
+                close_router: env.page_status && env.page_status.now || '/wd'
+            });
+            //env.wd_page = new WdPage();
+        });
+        router.on('after', 'route', function () {
+            //env.wd_page.destroy();
+            //delete env.wd_page;
+        });
+    }
 
-                babelHelpers.createClass(MapListPage, [{
-                    key: 'initialize',
-                    value: function initialize(options) {
-                        babelHelpers.get(Object.getPrototypeOf(MapListPage.prototype), 'initialize', this).call(this);
-                        var $el = {};
-                        this.$el = $el;
-                        var iscrolls = {};
-                        this.iscrolls = iscrolls;
-                        $el.page = $('#page_maplist');
-                        $el.close = $el.page.find('.tab-close');
-                        $el.tabArchives = $el.page.find('.tab-archives');
-                        babelHelpers.get(Object.getPrototypeOf(MapListPage.prototype), 'startPage', this).call(this);
-                        $el.close.attr('data-router', options.close_route);
-                        $el.close.on('tap', function () {
-                            delete env.mapinfo_close_route;
-                        });
-                        $el.tabArchives.attr('data-router', '/mapinfo/archives/' + options.id);
-
-                        iscrolls.content = new iScroll($el.page.get(0));
-                    }
-                }, {
-                    key: 'destroy',
-                    value: function destroy() {
-                        var _this = this;
-
-                        var iscrolls = this.iscrolls;
-                        babelHelpers.get(Object.getPrototypeOf(MapListPage.prototype), 'endPage', this).call(this, function () {
-                            $.each(iscrolls, function (key, iscroll) {
-                                iscroll.destroy();
-                            });
-                            _this.$el = null;
-                        });
-                    }
-                }]);
-                return MapListPage;
-            })(BasePage);
-
-            _export('default', MapListPage);
+    return {
+        setters: [function (_jsPageModalJs) {
+            ModalManage = _jsPageModalJs['default'];
+        }, function (_jsUtilsEnvJs) {
+            env = _jsUtilsEnvJs['default'];
+        }],
+        execute: function () {
+            _export('default', register);
         }
     };
 });
@@ -19542,6 +19494,197 @@ System.register('js/page/gftj.js', ['libs/jquery/2.1.4/jquery.js', 'libs/Swiper/
             })(BasePage);
 
             _export('default', GftjPage);
+        }
+    };
+});
+System.register('js/page/pyq.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base.js', 'libs/iScroll/5.1.3/iscroll-lite.js'], function (_export) {
+    /**
+     * Created by wushuyi on 2015/9/13.
+     */
+    'use strict';
+
+    var $, BasePage, iScroll, PyqPage;
+    return {
+        setters: [function (_libsJquery214JqueryJs) {
+            $ = _libsJquery214JqueryJs['default'];
+        }, function (_jsPageBaseJs) {
+            BasePage = _jsPageBaseJs['default'];
+        }, function (_libsIScroll513IscrollLiteJs) {
+            iScroll = _libsIScroll513IscrollLiteJs['default'];
+        }],
+        execute: function () {
+            PyqPage = (function (_BasePage) {
+                babelHelpers.inherits(PyqPage, _BasePage);
+
+                function PyqPage() {
+                    babelHelpers.classCallCheck(this, PyqPage);
+
+                    if (arguments[0] === false) {
+                        return false;
+                    }
+                    babelHelpers.get(Object.getPrototypeOf(PyqPage.prototype), 'constructor', this).call(this, false);
+                    this.initialize.apply(this, arguments);
+                }
+
+                babelHelpers.createClass(PyqPage, [{
+                    key: 'initialize',
+                    value: function initialize() {
+                        babelHelpers.get(Object.getPrototypeOf(PyqPage.prototype), 'initialize', this).call(this);
+                        var $el = {};
+                        this.$el = $el;
+                        var iscrolls = {};
+                        this.iscrolls = iscrolls;
+                        $el.nav = $('.nav-item[data-router="/pyq"]');
+                        $el.page = $('#page_pyq');
+                        babelHelpers.get(Object.getPrototypeOf(PyqPage.prototype), 'startPage', this).call(this);
+                        iscrolls.content = new iScroll($el.page.get(0));
+                    }
+                }, {
+                    key: 'destroy',
+                    value: function destroy() {
+                        var _this = this;
+
+                        var iscrolls = this.iscrolls;
+                        babelHelpers.get(Object.getPrototypeOf(PyqPage.prototype), 'endPage', this).call(this, function () {
+                            $.each(iscrolls, function (key, iscroll) {
+                                iscroll.destroy();
+                            });
+                            _this.$el = null;
+                        });
+                    }
+                }]);
+                return PyqPage;
+            })(BasePage);
+
+            _export('default', PyqPage);
+        }
+    };
+});
+System.register('js/page/fxdt.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base.js', 'libs/iScroll/5.1.3/iscroll-lite.js'], function (_export) {
+    /**
+     * Created by wushuyi on 2015/9/13.
+     */
+    'use strict';
+
+    var $, BasePage, iScroll, FxdtPage;
+    return {
+        setters: [function (_libsJquery214JqueryJs) {
+            $ = _libsJquery214JqueryJs['default'];
+        }, function (_jsPageBaseJs) {
+            BasePage = _jsPageBaseJs['default'];
+        }, function (_libsIScroll513IscrollLiteJs) {
+            iScroll = _libsIScroll513IscrollLiteJs['default'];
+        }],
+        execute: function () {
+            FxdtPage = (function (_BasePage) {
+                babelHelpers.inherits(FxdtPage, _BasePage);
+
+                function FxdtPage() {
+                    babelHelpers.classCallCheck(this, FxdtPage);
+
+                    if (arguments[0] === false) {
+                        return false;
+                    }
+                    babelHelpers.get(Object.getPrototypeOf(FxdtPage.prototype), 'constructor', this).call(this, false);
+                    this.initialize.apply(this, arguments);
+                }
+
+                babelHelpers.createClass(FxdtPage, [{
+                    key: 'initialize',
+                    value: function initialize() {
+                        babelHelpers.get(Object.getPrototypeOf(FxdtPage.prototype), 'initialize', this).call(this);
+                        var $el = {};
+                        this.$el = $el;
+                        var iscrolls = {};
+                        this.iscrolls = iscrolls;
+                        $el.nav = $('.nav-item[data-router="/fxdt"]');
+                        $el.page = $('#page_fxdt');
+                        babelHelpers.get(Object.getPrototypeOf(FxdtPage.prototype), 'startPage', this).call(this);
+                        iscrolls.content = new iScroll($el.page.get(0));
+                    }
+                }, {
+                    key: 'destroy',
+                    value: function destroy() {
+                        var _this = this;
+
+                        var iscrolls = this.iscrolls;
+                        babelHelpers.get(Object.getPrototypeOf(FxdtPage.prototype), 'endPage', this).call(this, function () {
+                            $.each(iscrolls, function (key, iscroll) {
+                                iscroll.destroy();
+                            });
+                            _this.$el = null;
+                        });
+                    }
+                }]);
+                return FxdtPage;
+            })(BasePage);
+
+            _export('default', FxdtPage);
+        }
+    };
+});
+System.register('js/page/wd.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base.js', 'libs/iScroll/5.1.3/iscroll-lite.js'], function (_export) {
+    /**
+     * Created by wushuyi on 2015/9/13.
+     */
+
+    //import Swiper from 'Swiper'
+    'use strict';
+
+    var $, BasePage, iScroll, WdPage;
+    return {
+        setters: [function (_libsJquery214JqueryJs) {
+            $ = _libsJquery214JqueryJs['default'];
+        }, function (_jsPageBaseJs) {
+            BasePage = _jsPageBaseJs['default'];
+        }, function (_libsIScroll513IscrollLiteJs) {
+            iScroll = _libsIScroll513IscrollLiteJs['default'];
+        }],
+        execute: function () {
+            WdPage = (function (_BasePage) {
+                babelHelpers.inherits(WdPage, _BasePage);
+
+                function WdPage() {
+                    babelHelpers.classCallCheck(this, WdPage);
+
+                    if (arguments[0] === false) {
+                        return false;
+                    }
+                    babelHelpers.get(Object.getPrototypeOf(WdPage.prototype), 'constructor', this).call(this, false);
+                    this.initialize.apply(this, arguments);
+                }
+
+                babelHelpers.createClass(WdPage, [{
+                    key: 'initialize',
+                    value: function initialize() {
+                        babelHelpers.get(Object.getPrototypeOf(WdPage.prototype), 'initialize', this).call(this);
+                        var $el = {};
+                        this.$el = $el;
+                        var iscrolls = {};
+                        this.iscrolls = iscrolls;
+                        $el.nav = $('.nav-item[data-router="/wd"]');
+                        $el.page = $('#page_wd');
+                        babelHelpers.get(Object.getPrototypeOf(WdPage.prototype), 'startPage', this).call(this);
+                        iscrolls.content = new iScroll($el.page.get(0));
+                    }
+                }, {
+                    key: 'destroy',
+                    value: function destroy() {
+                        var _this = this;
+
+                        var iscrolls = this.iscrolls;
+                        babelHelpers.get(Object.getPrototypeOf(WdPage.prototype), 'endPage', this).call(this, function () {
+                            $.each(iscrolls, function (key, iscroll) {
+                                iscroll.destroy();
+                            });
+                            _this.$el = null;
+                        });
+                    }
+                }]);
+                return WdPage;
+            })(BasePage);
+
+            _export('default', WdPage);
         }
     };
 });
@@ -19674,15 +19817,150 @@ System.register('js/page/mapinfo.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/b
         }
     };
 });
-System.register('js/page/fxdt.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base.js', 'libs/iScroll/5.1.3/iscroll-lite.js'], function (_export) {
+System.register('js/page/maplist.js', ['libs/jquery/2.1.4/jquery.js', 'libs/Swiper/3.1.2/js/swiper.js', 'js/page/base.js', 'libs/iScroll/5.1.3/iscroll-lite.js', 'js/utils/env.js'], function (_export) {
     /**
      * Created by wushuyi on 2015/9/13.
+     */
+    'use strict';
+
+    var $, Swiper, BasePage, iScroll, env, MapListPage;
+    return {
+        setters: [function (_libsJquery214JqueryJs) {
+            $ = _libsJquery214JqueryJs['default'];
+        }, function (_libsSwiper312JsSwiperJs) {
+            Swiper = _libsSwiper312JsSwiperJs['default'];
+        }, function (_jsPageBaseJs) {
+            BasePage = _jsPageBaseJs['default'];
+        }, function (_libsIScroll513IscrollLiteJs) {
+            iScroll = _libsIScroll513IscrollLiteJs['default'];
+        }, function (_jsUtilsEnvJs) {
+            env = _jsUtilsEnvJs['default'];
+        }],
+        execute: function () {
+            MapListPage = (function (_BasePage) {
+                babelHelpers.inherits(MapListPage, _BasePage);
+
+                function MapListPage() {
+                    babelHelpers.classCallCheck(this, MapListPage);
+
+                    if (arguments[0] === false) {
+                        return false;
+                    }
+                    babelHelpers.get(Object.getPrototypeOf(MapListPage.prototype), 'constructor', this).call(this, false);
+                    this.initialize.apply(this, arguments);
+                }
+
+                babelHelpers.createClass(MapListPage, [{
+                    key: 'initialize',
+                    value: function initialize(options) {
+                        babelHelpers.get(Object.getPrototypeOf(MapListPage.prototype), 'initialize', this).call(this);
+                        var $el = {};
+                        this.$el = $el;
+                        var iscrolls = {};
+                        this.iscrolls = iscrolls;
+                        $el.page = $('#page_maplist');
+                        $el.close = $el.page.find('.tab-close');
+                        $el.tabArchives = $el.page.find('.tab-archives');
+                        babelHelpers.get(Object.getPrototypeOf(MapListPage.prototype), 'startPage', this).call(this);
+                        $el.close.attr('data-router', options.close_route);
+                        $el.close.on('tap', function () {
+                            delete env.mapinfo_close_route;
+                        });
+                        $el.tabArchives.attr('data-router', '/mapinfo/archives/' + options.id);
+
+                        iscrolls.content = new iScroll($el.page.get(0));
+                    }
+                }, {
+                    key: 'destroy',
+                    value: function destroy() {
+                        var _this = this;
+
+                        var iscrolls = this.iscrolls;
+                        babelHelpers.get(Object.getPrototypeOf(MapListPage.prototype), 'endPage', this).call(this, function () {
+                            $.each(iscrolls, function (key, iscroll) {
+                                iscroll.destroy();
+                            });
+                            _this.$el = null;
+                        });
+                    }
+                }]);
+                return MapListPage;
+            })(BasePage);
+
+            _export('default', MapListPage);
+        }
+    };
+});
+System.register('js/page/modal.js', ['libs/jquery/2.1.4/jquery.js', 'js/utils/wsy_utils.js'], function (_export) {
+    /**
+     * Created by wushuyi on 2015/9/17.
+     */
+    'use strict';
+
+    var $, transitionEnd, ModalManage;
+    return {
+        setters: [function (_libsJquery214JqueryJs) {
+            $ = _libsJquery214JqueryJs['default'];
+        }, function (_jsUtilsWsy_utilsJs) {
+            transitionEnd = _jsUtilsWsy_utilsJs.transitionEnd;
+        }],
+        execute: function () {
+            ModalManage = (function () {
+                function ModalManage() {
+                    babelHelpers.classCallCheck(this, ModalManage);
+
+                    this.initialize.apply(this, arguments);
+                }
+
+                babelHelpers.createClass(ModalManage, [{
+                    key: 'initialize',
+                    value: function initialize(options) {
+                        var $el = {};
+                        this.$el = $el;
+                        $el.modalBox = $('#modal-box');
+                        this['modal_' + options.modal](options);
+                    }
+                }, {
+                    key: 'modal_set',
+                    value: function modal_set(options) {
+                        var $el = this.$el;
+
+                        $el.modal = $('#modal-set');
+                        $el.modalBox.show();
+                        $el.close = $el.modal.find('.close');
+
+                        $el.close.attr('data-router', options.close_router);
+                        $el.close.on('tap', function () {
+                            $el.modal.removeClass('active');
+                        });
+
+                        $el.modal.one(transitionEnd, function () {
+                            $el.modal.one(transitionEnd, function () {
+                                $el.modalBox.hide();
+                            });
+                        });
+
+                        setTimeout(function () {
+                            $el.modal.addClass('active');
+                        }, 100);
+                    }
+                }]);
+                return ModalManage;
+            })();
+
+            _export('default', ModalManage);
+        }
+    };
+});
+System.register('js/page/role.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base.js', 'libs/iScroll/5.1.3/iscroll-lite.js'], function (_export) {
+    /**
+     * Created by wushuyi on 2015/9/18.
      */
 
     //import Swiper from 'Swiper'
     'use strict';
 
-    var $, BasePage, iScroll, FxdtPage;
+    var $, BasePage, iScroll, RolePage;
     return {
         setters: [function (_libsJquery214JqueryJs) {
             $ = _libsJquery214JqueryJs['default'];
@@ -19692,30 +19970,29 @@ System.register('js/page/fxdt.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base
             iScroll = _libsIScroll513IscrollLiteJs['default'];
         }],
         execute: function () {
-            FxdtPage = (function (_BasePage) {
-                babelHelpers.inherits(FxdtPage, _BasePage);
+            RolePage = (function (_BasePage) {
+                babelHelpers.inherits(RolePage, _BasePage);
 
-                function FxdtPage() {
-                    babelHelpers.classCallCheck(this, FxdtPage);
+                function RolePage() {
+                    babelHelpers.classCallCheck(this, RolePage);
 
                     if (arguments[0] === false) {
                         return false;
                     }
-                    babelHelpers.get(Object.getPrototypeOf(FxdtPage.prototype), 'constructor', this).call(this, false);
+                    babelHelpers.get(Object.getPrototypeOf(RolePage.prototype), 'constructor', this).call(this, false);
                     this.initialize.apply(this, arguments);
                 }
 
-                babelHelpers.createClass(FxdtPage, [{
+                babelHelpers.createClass(RolePage, [{
                     key: 'initialize',
                     value: function initialize() {
-                        babelHelpers.get(Object.getPrototypeOf(FxdtPage.prototype), 'initialize', this).call(this);
+                        babelHelpers.get(Object.getPrototypeOf(RolePage.prototype), 'initialize', this).call(this);
                         var $el = {};
                         this.$el = $el;
                         var iscrolls = {};
                         this.iscrolls = iscrolls;
-                        $el.nav = $('.nav-item[data-router="/fxdt"]');
-                        $el.page = $('#page_fxdt');
-                        babelHelpers.get(Object.getPrototypeOf(FxdtPage.prototype), 'startPage', this).call(this);
+                        $el.page = $('#page_role');
+                        babelHelpers.get(Object.getPrototypeOf(RolePage.prototype), 'startPage', this).call(this);
                         iscrolls.content = new iScroll($el.page.get(0));
                     }
                 }, {
@@ -19724,7 +20001,7 @@ System.register('js/page/fxdt.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base
                         var _this = this;
 
                         var iscrolls = this.iscrolls;
-                        babelHelpers.get(Object.getPrototypeOf(FxdtPage.prototype), 'endPage', this).call(this, function () {
+                        babelHelpers.get(Object.getPrototypeOf(RolePage.prototype), 'endPage', this).call(this, function () {
                             $.each(iscrolls, function (key, iscroll) {
                                 iscroll.destroy();
                             });
@@ -19732,73 +20009,10 @@ System.register('js/page/fxdt.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base
                         });
                     }
                 }]);
-                return FxdtPage;
+                return RolePage;
             })(BasePage);
 
-            _export('default', FxdtPage);
-        }
-    };
-});
-System.register('js/page/pyq.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base.js', 'libs/iScroll/5.1.3/iscroll-lite.js'], function (_export) {
-    /**
-     * Created by wushuyi on 2015/9/13.
-     */
-    'use strict';
-
-    var $, BasePage, iScroll, PyqPage;
-    return {
-        setters: [function (_libsJquery214JqueryJs) {
-            $ = _libsJquery214JqueryJs['default'];
-        }, function (_jsPageBaseJs) {
-            BasePage = _jsPageBaseJs['default'];
-        }, function (_libsIScroll513IscrollLiteJs) {
-            iScroll = _libsIScroll513IscrollLiteJs['default'];
-        }],
-        execute: function () {
-            PyqPage = (function (_BasePage) {
-                babelHelpers.inherits(PyqPage, _BasePage);
-
-                function PyqPage() {
-                    babelHelpers.classCallCheck(this, PyqPage);
-
-                    if (arguments[0] === false) {
-                        return false;
-                    }
-                    babelHelpers.get(Object.getPrototypeOf(PyqPage.prototype), 'constructor', this).call(this, false);
-                    this.initialize.apply(this, arguments);
-                }
-
-                babelHelpers.createClass(PyqPage, [{
-                    key: 'initialize',
-                    value: function initialize() {
-                        babelHelpers.get(Object.getPrototypeOf(PyqPage.prototype), 'initialize', this).call(this);
-                        var $el = {};
-                        this.$el = $el;
-                        var iscrolls = {};
-                        this.iscrolls = iscrolls;
-                        $el.nav = $('.nav-item[data-router="/pyq"]');
-                        $el.page = $('#page_pyq');
-                        babelHelpers.get(Object.getPrototypeOf(PyqPage.prototype), 'startPage', this).call(this);
-                        iscrolls.content = new iScroll($el.page.get(0));
-                    }
-                }, {
-                    key: 'destroy',
-                    value: function destroy() {
-                        var _this = this;
-
-                        var iscrolls = this.iscrolls;
-                        babelHelpers.get(Object.getPrototypeOf(PyqPage.prototype), 'endPage', this).call(this, function () {
-                            $.each(iscrolls, function (key, iscroll) {
-                                iscroll.destroy();
-                            });
-                            _this.$el = null;
-                        });
-                    }
-                }]);
-                return PyqPage;
-            })(BasePage);
-
-            _export('default', PyqPage);
+            _export('default', RolePage);
         }
     };
 });
@@ -19865,20 +20079,25 @@ System.register('js/page/base.js', ['libs/jquery/2.1.4/jquery.js', 'libs/lodash.
                             return false;
                         }
                         var $map = $('#map');
-                        env.gmap = new google.maps.Map($map.get(0), {
-                            center: new google.maps.LatLng(27.653981735563498, 117.98527836799622),
-                            zoom: 14,
-                            disableDefaultUI: true
-                        });
                         env.mainlayout.on('moveStart', function () {
                             $map.height('100%');
                             //google.maps.event.trigger(env.gmap, 'resize');
                         });
                         env.mainlayout.on('moveEnd', function (res) {
                             $map.height(res);
-                            google.maps.event.trigger(env.gmap, 'resize');
+                        });
+                        if (!window.google) {
+                            return false;
+                        }
+                        env.gmap = new google.maps.Map($map.get(0), {
+                            center: new google.maps.LatLng(27.653981735563498, 117.98527836799622),
+                            zoom: 14,
+                            disableDefaultUI: true
                         });
 
+                        env.mainlayout.on('moveEnd', function (res) {
+                            google.maps.event.trigger(env.gmap, 'resize');
+                        });
                         var $map_xjdd = $('<div id="map-xjdd">新建地点</div>');
                         var $map_dw = $('<div id="map-dw">定位</div>');
                         var $map_ctl = $('<div id="map-ctl"></div>').append($map_xjdd).append($map_dw);

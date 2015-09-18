@@ -1,0 +1,39 @@
+#modal-set {
+  transform: translateY(-100%);
+  transition: transform 400ms;
+  transition-timing-function: ease-out;
+  border-radius: 8px;
+  overflow: hidden;
+  .fix-overflow-hidden();
+  &.active {
+    transform: translateY(0%);
+  }
+  .top-bar {
+    width: 100%;
+    height: 70px;
+    position: relative;
+  }
+  .close {
+    position: absolute;
+    left: 0;
+    width: 70px;
+    height: 70px;
+    font-size: 40px;
+    font-weight: bold;
+    text-align: center;
+    line-height: 70px;
+    color: #000000;
+    z-index: 1;
+  }
+  .title {
+    position: absolute;
+    right: 0;
+    width: 100%;
+    height: 70px;
+    font-size: 40px;
+    font-weight: bold;
+    text-align: center;
+    line-height: 70px;
+    color: #000000;
+  }
+}

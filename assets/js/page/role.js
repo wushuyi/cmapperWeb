@@ -1,12 +1,13 @@
 /**
- * Created by wushuyi on 2015/9/13.
+ * Created by wushuyi on 2015/9/18.
  */
 import $ from 'jquery'
+//import Swiper from 'Swiper'
 import {default as BasePage} from './base.js'
 import iScroll from 'iScroll';
 
 
-class FxdtPage extends BasePage {
+class RolePage extends BasePage {
     constructor(...arg) {
         if (arg[0] === false) {
             return false;
@@ -21,8 +22,7 @@ class FxdtPage extends BasePage {
         this.$el = $el;
         let iscrolls = {};
         this.iscrolls = iscrolls;
-        $el.nav = $('.nav-item[data-router="/fxdt"]');
-        $el.page = $('#page_fxdt');
+        $el.page = $('#page_role');
         super.startPage();
         iscrolls.content = new iScroll($el.page.get(0));
     }
@@ -39,4 +39,4 @@ class FxdtPage extends BasePage {
 
 }
 
-export default FxdtPage;
+export default RolePage;

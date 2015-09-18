@@ -5,7 +5,7 @@ import $ from 'jquery'
 import {default as register_all, router} from './router/index.js'
 import env from './utils/env.js'
 
-$('#map, #nav').on('touchstart', (evt) => {
+$('#map, #nav, .prevent_touch').on('touchstart', (evt) => {
     evt.preventDefault();
 });
 register_all();
