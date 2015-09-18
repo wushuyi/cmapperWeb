@@ -2,12 +2,11 @@
  * Created by wushuyi on 2015/9/18.
  */
 import $ from 'jquery'
-//import Swiper from 'Swiper'
 import {default as BasePage} from './base.js'
 import iScroll from 'iScroll';
 
 
-class RolePage extends BasePage {
+class FollowPage extends BasePage {
     constructor(...arg) {
         if (arg[0] === false) {
             return false;
@@ -22,7 +21,7 @@ class RolePage extends BasePage {
         this.$el = $el;
         let iscrolls = {};
         this.iscrolls = iscrolls;
-        $el.page = $('#page_role');
+        $el.page = $('#page_follow');
         $el.close = $el.page.find('.close');
         $el.close.attr('data-router', options.close_router);
         super.startPage();
@@ -41,4 +40,4 @@ class RolePage extends BasePage {
 
 }
 
-export default RolePage;
+export default FollowPage;

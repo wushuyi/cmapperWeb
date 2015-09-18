@@ -10822,162 +10822,6 @@ if (typeof(module) !== 'undefined') {
 
 _removeDefine();
 })();
-System.registerDynamic("js/utils/jquery.touch.js", [], false, function(__require, __exports, __module) {
-  var _retrieveGlobal = System.get("@@global-helpers").prepareGlobal(__module.id, null, null);
-  (function() {
-    (function($) {
-      "use strict";
-      var touch = {},
-          touchTimeout,
-          tapTimeout,
-          swipeTimeout,
-          longTapTimeout,
-          longTapDelay = 750,
-          gesture;
-      function swipeDirection(x1, x2, y1, y2) {
-        return Math.abs(x1 - x2) >= Math.abs(y1 - y2) ? (x1 - x2 > 0 ? 'Left' : 'Right') : (y1 - y2 > 0 ? 'Up' : 'Down');
-      }
-      function longTap() {
-        longTapTimeout = null;
-        if (touch.last) {
-          touch.el.trigger('longTap');
-          touch = {};
-        }
-      }
-      function cancelLongTap() {
-        if (longTapTimeout) {
-          clearTimeout(longTapTimeout);
-        }
-        longTapTimeout = null;
-      }
-      function cancelAll() {
-        if (touchTimeout) {
-          clearTimeout(touchTimeout);
-        }
-        if (tapTimeout) {
-          clearTimeout(tapTimeout);
-        }
-        if (swipeTimeout) {
-          clearTimeout(swipeTimeout);
-        }
-        if (longTapTimeout) {
-          clearTimeout(longTapTimeout);
-        }
-        touchTimeout = tapTimeout = swipeTimeout = longTapTimeout = null;
-        touch = {};
-      }
-      function isPrimaryTouch(event) {
-        return (event.pointerType === 'touch' || event.pointerType === event.MSPOINTER_TYPE_TOUCH) && event.isPrimary;
-      }
-      function isPointerEventType(e, type) {
-        return (e.type === 'pointer' + type || e.type.toLowerCase() === 'mspointer' + type);
-      }
-      $(document).ready(function() {
-        var now,
-            delta,
-            deltaX = 0,
-            deltaY = 0,
-            firstTouch,
-            _isPointerType;
-        if ('MSGesture' in window) {
-          gesture = new MSGesture();
-          gesture.target = document.body;
-        }
-        $(document).on('MSGestureEnd', function(e) {
-          e = e.originalEvent;
-          var swipeDirectionFromVelocity = e.velocityX > 1 ? 'Right' : e.velocityX < -1 ? 'Left' : e.velocityY > 1 ? 'Down' : e.velocityY < -1 ? 'Up' : null;
-          if (swipeDirectionFromVelocity) {
-            touch.el.trigger('swipe');
-            touch.el.trigger('swipe' + swipeDirectionFromVelocity);
-          }
-        }).on('touchstart MSPointerDown pointerdown', function(e) {
-          e = e.originalEvent;
-          if ((_isPointerType = isPointerEventType(e, 'down')) && !isPrimaryTouch(e)) {
-            return;
-          }
-          firstTouch = _isPointerType ? e : e.touches[0];
-          if (e.touches && e.touches.length === 1 && touch.x2) {
-            touch.x2 = undefined;
-            touch.y2 = undefined;
-          }
-          now = Date.now();
-          delta = now - (touch.last || now);
-          touch.el = $('tagName' in firstTouch.target ? firstTouch.target : firstTouch.target.parentNode);
-          if (touchTimeout) {
-            clearTimeout(touchTimeout);
-          }
-          touch.x1 = firstTouch.pageX;
-          touch.y1 = firstTouch.pageY;
-          if (delta > 0 && delta <= 250) {
-            touch.isDoubleTap = true;
-          }
-          touch.last = now;
-          longTapTimeout = setTimeout(longTap, longTapDelay);
-          if (gesture && _isPointerType) {
-            gesture.addPointer(e.pointerId);
-          }
-        }).on('touchmove MSPointerMove pointermove', function(e) {
-          e = e.originalEvent;
-          if ((_isPointerType = isPointerEventType(e, 'move')) && !isPrimaryTouch(e)) {
-            return;
-          }
-          firstTouch = _isPointerType ? e : e.touches[0];
-          cancelLongTap();
-          touch.x2 = firstTouch.pageX;
-          touch.y2 = firstTouch.pageY;
-          deltaX += Math.abs(touch.x1 - touch.x2);
-          deltaY += Math.abs(touch.y1 - touch.y2);
-        }).on('touchend MSPointerUp pointerup', function(e) {
-          e = e.originalEvent;
-          if ((_isPointerType = isPointerEventType(e, 'up')) && !isPrimaryTouch(e)) {
-            return;
-          }
-          cancelLongTap();
-          if ((touch.x2 && Math.abs(touch.x1 - touch.x2) > 30) || (touch.y2 && Math.abs(touch.y1 - touch.y2) > 30)) {
-            swipeTimeout = setTimeout(function() {
-              touch.el.trigger('swipe');
-              touch.el.trigger('swipe' + (swipeDirection(touch.x1, touch.x2, touch.y1, touch.y2)));
-              touch = {};
-            }, 0);
-          } else if ('last' in touch) {
-            if (deltaX < 30 && deltaY < 30) {
-              tapTimeout = setTimeout(function() {
-                var event = $.Event('tap');
-                event.cancelTouch = cancelAll;
-                touch.el.trigger(event);
-                if (touch.isDoubleTap) {
-                  if (touch.el) {
-                    touch.el.trigger('doubleTap');
-                  }
-                  touch = {};
-                } else {
-                  touchTimeout = setTimeout(function() {
-                    touchTimeout = null;
-                    if (touch.el) {
-                      touch.el.trigger('singleTap');
-                    }
-                    touch = {};
-                  }, 250);
-                }
-              }, 0);
-            } else {
-              touch = {};
-            }
-          }
-          deltaX = deltaY = 0;
-        }).on('touchcancel MSPointerCancel pointercancel', cancelAll);
-        $(window).on('scroll', cancelAll);
-      });
-      $.each(['swipe', 'swipeLeft', 'swipeRight', 'swipeUp', 'swipeDown', 'doubleTap', 'tap', 'singleTap', 'longTap'], function(index, item) {
-        $.fn[item] = function(callback) {
-          return this.on(item, callback);
-        };
-      });
-    })(jQuery);
-  })();
-  return _retrieveGlobal();
-});
-
 (function() {
 var _removeDefine = System.get("@@amd-helpers").createDefine();
 ;
@@ -15285,214 +15129,162 @@ var _removeDefine = System.get("@@amd-helpers").createDefine();
 
 _removeDefine();
 })();
-(function() {
-var _removeDefine = System.get("@@amd-helpers").createDefine();
-(function() {
-  'use strict';
-  function EventEmitter() {}
-  var proto = EventEmitter.prototype;
-  var exports = this;
-  var originalGlobalValue = exports.EventEmitter;
-  function indexOfListener(listeners, listener) {
-    var i = listeners.length;
-    while (i--) {
-      if (listeners[i].listener === listener) {
-        return i;
+System.registerDynamic("js/utils/jquery.touch.js", [], false, function(__require, __exports, __module) {
+  var _retrieveGlobal = System.get("@@global-helpers").prepareGlobal(__module.id, null, null);
+  (function() {
+    (function($) {
+      "use strict";
+      var touch = {},
+          touchTimeout,
+          tapTimeout,
+          swipeTimeout,
+          longTapTimeout,
+          longTapDelay = 750,
+          gesture;
+      function swipeDirection(x1, x2, y1, y2) {
+        return Math.abs(x1 - x2) >= Math.abs(y1 - y2) ? (x1 - x2 > 0 ? 'Left' : 'Right') : (y1 - y2 > 0 ? 'Up' : 'Down');
       }
-    }
-    return -1;
-  }
-  function alias(name) {
-    return function aliasClosure() {
-      return this[name].apply(this, arguments);
-    };
-  }
-  proto.getListeners = function getListeners(evt) {
-    var events = this._getEvents();
-    var response;
-    var key;
-    if (evt instanceof RegExp) {
-      response = {};
-      for (key in events) {
-        if (events.hasOwnProperty(key) && evt.test(key)) {
-          response[key] = events[key];
+      function longTap() {
+        longTapTimeout = null;
+        if (touch.last) {
+          touch.el.trigger('longTap');
+          touch = {};
         }
       }
-    } else {
-      response = events[evt] || (events[evt] = []);
-    }
-    return response;
-  };
-  proto.flattenListeners = function flattenListeners(listeners) {
-    var flatListeners = [];
-    var i;
-    for (i = 0; i < listeners.length; i += 1) {
-      flatListeners.push(listeners[i].listener);
-    }
-    return flatListeners;
-  };
-  proto.getListenersAsObject = function getListenersAsObject(evt) {
-    var listeners = this.getListeners(evt);
-    var response;
-    if (listeners instanceof Array) {
-      response = {};
-      response[evt] = listeners;
-    }
-    return response || listeners;
-  };
-  proto.addListener = function addListener(evt, listener) {
-    var listeners = this.getListenersAsObject(evt);
-    var listenerIsWrapped = typeof listener === 'object';
-    var key;
-    for (key in listeners) {
-      if (listeners.hasOwnProperty(key) && indexOfListener(listeners[key], listener) === -1) {
-        listeners[key].push(listenerIsWrapped ? listener : {
-          listener: listener,
-          once: false
-        });
-      }
-    }
-    return this;
-  };
-  proto.on = alias('addListener');
-  proto.addOnceListener = function addOnceListener(evt, listener) {
-    return this.addListener(evt, {
-      listener: listener,
-      once: true
-    });
-  };
-  proto.once = alias('addOnceListener');
-  proto.defineEvent = function defineEvent(evt) {
-    this.getListeners(evt);
-    return this;
-  };
-  proto.defineEvents = function defineEvents(evts) {
-    for (var i = 0; i < evts.length; i += 1) {
-      this.defineEvent(evts[i]);
-    }
-    return this;
-  };
-  proto.removeListener = function removeListener(evt, listener) {
-    var listeners = this.getListenersAsObject(evt);
-    var index;
-    var key;
-    for (key in listeners) {
-      if (listeners.hasOwnProperty(key)) {
-        index = indexOfListener(listeners[key], listener);
-        if (index !== -1) {
-          listeners[key].splice(index, 1);
+      function cancelLongTap() {
+        if (longTapTimeout) {
+          clearTimeout(longTapTimeout);
         }
+        longTapTimeout = null;
       }
-    }
-    return this;
-  };
-  proto.off = alias('removeListener');
-  proto.addListeners = function addListeners(evt, listeners) {
-    return this.manipulateListeners(false, evt, listeners);
-  };
-  proto.removeListeners = function removeListeners(evt, listeners) {
-    return this.manipulateListeners(true, evt, listeners);
-  };
-  proto.manipulateListeners = function manipulateListeners(remove, evt, listeners) {
-    var i;
-    var value;
-    var single = remove ? this.removeListener : this.addListener;
-    var multiple = remove ? this.removeListeners : this.addListeners;
-    if (typeof evt === 'object' && !(evt instanceof RegExp)) {
-      for (i in evt) {
-        if (evt.hasOwnProperty(i) && (value = evt[i])) {
-          if (typeof value === 'function') {
-            single.call(this, i, value);
-          } else {
-            multiple.call(this, i, value);
+      function cancelAll() {
+        if (touchTimeout) {
+          clearTimeout(touchTimeout);
+        }
+        if (tapTimeout) {
+          clearTimeout(tapTimeout);
+        }
+        if (swipeTimeout) {
+          clearTimeout(swipeTimeout);
+        }
+        if (longTapTimeout) {
+          clearTimeout(longTapTimeout);
+        }
+        touchTimeout = tapTimeout = swipeTimeout = longTapTimeout = null;
+        touch = {};
+      }
+      function isPrimaryTouch(event) {
+        return (event.pointerType === 'touch' || event.pointerType === event.MSPOINTER_TYPE_TOUCH) && event.isPrimary;
+      }
+      function isPointerEventType(e, type) {
+        return (e.type === 'pointer' + type || e.type.toLowerCase() === 'mspointer' + type);
+      }
+      $(document).ready(function() {
+        var now,
+            delta,
+            deltaX = 0,
+            deltaY = 0,
+            firstTouch,
+            _isPointerType;
+        if ('MSGesture' in window) {
+          gesture = new MSGesture();
+          gesture.target = document.body;
+        }
+        $(document).on('MSGestureEnd', function(e) {
+          e = e.originalEvent;
+          var swipeDirectionFromVelocity = e.velocityX > 1 ? 'Right' : e.velocityX < -1 ? 'Left' : e.velocityY > 1 ? 'Down' : e.velocityY < -1 ? 'Up' : null;
+          if (swipeDirectionFromVelocity) {
+            touch.el.trigger('swipe');
+            touch.el.trigger('swipe' + swipeDirectionFromVelocity);
           }
-        }
-      }
-    } else {
-      i = listeners.length;
-      while (i--) {
-        single.call(this, evt, listeners[i]);
-      }
-    }
-    return this;
-  };
-  proto.removeEvent = function removeEvent(evt) {
-    var type = typeof evt;
-    var events = this._getEvents();
-    var key;
-    if (type === 'string') {
-      delete events[evt];
-    } else if (evt instanceof RegExp) {
-      for (key in events) {
-        if (events.hasOwnProperty(key) && evt.test(key)) {
-          delete events[key];
-        }
-      }
-    } else {
-      delete this._events;
-    }
-    return this;
-  };
-  proto.removeAllListeners = alias('removeEvent');
-  proto.emitEvent = function emitEvent(evt, args) {
-    var listeners = this.getListenersAsObject(evt);
-    var listener;
-    var i;
-    var key;
-    var response;
-    for (key in listeners) {
-      if (listeners.hasOwnProperty(key)) {
-        i = listeners[key].length;
-        while (i--) {
-          listener = listeners[key][i];
-          if (listener.once === true) {
-            this.removeListener(evt, listener.listener);
+        }).on('touchstart MSPointerDown pointerdown', function(e) {
+          e = e.originalEvent;
+          if ((_isPointerType = isPointerEventType(e, 'down')) && !isPrimaryTouch(e)) {
+            return;
           }
-          response = listener.listener.apply(this, args || []);
-          if (response === this._getOnceReturnValue()) {
-            this.removeListener(evt, listener.listener);
+          firstTouch = _isPointerType ? e : e.touches[0];
+          if (e.touches && e.touches.length === 1 && touch.x2) {
+            touch.x2 = undefined;
+            touch.y2 = undefined;
           }
-        }
-      }
-    }
-    return this;
-  };
-  proto.trigger = alias('emitEvent');
-  proto.emit = function emit(evt) {
-    var args = Array.prototype.slice.call(arguments, 1);
-    return this.emitEvent(evt, args);
-  };
-  proto.setOnceReturnValue = function setOnceReturnValue(value) {
-    this._onceReturnValue = value;
-    return this;
-  };
-  proto._getOnceReturnValue = function _getOnceReturnValue() {
-    if (this.hasOwnProperty('_onceReturnValue')) {
-      return this._onceReturnValue;
-    } else {
-      return true;
-    }
-  };
-  proto._getEvents = function _getEvents() {
-    return this._events || (this._events = {});
-  };
-  EventEmitter.noConflict = function noConflict() {
-    exports.EventEmitter = originalGlobalValue;
-    return EventEmitter;
-  };
-  if (typeof define === 'function' && define.amd) {
-    define("libs/EventEmitter/4.2.9/EventEmitter.js", [], function() {
-      return EventEmitter;
-    });
-  } else if (typeof module === 'object' && module.exports) {
-    module.exports = EventEmitter;
-  } else {
-    exports.EventEmitter = EventEmitter;
-  }
-}.call(this));
+          now = Date.now();
+          delta = now - (touch.last || now);
+          touch.el = $('tagName' in firstTouch.target ? firstTouch.target : firstTouch.target.parentNode);
+          if (touchTimeout) {
+            clearTimeout(touchTimeout);
+          }
+          touch.x1 = firstTouch.pageX;
+          touch.y1 = firstTouch.pageY;
+          if (delta > 0 && delta <= 250) {
+            touch.isDoubleTap = true;
+          }
+          touch.last = now;
+          longTapTimeout = setTimeout(longTap, longTapDelay);
+          if (gesture && _isPointerType) {
+            gesture.addPointer(e.pointerId);
+          }
+        }).on('touchmove MSPointerMove pointermove', function(e) {
+          e = e.originalEvent;
+          if ((_isPointerType = isPointerEventType(e, 'move')) && !isPrimaryTouch(e)) {
+            return;
+          }
+          firstTouch = _isPointerType ? e : e.touches[0];
+          cancelLongTap();
+          touch.x2 = firstTouch.pageX;
+          touch.y2 = firstTouch.pageY;
+          deltaX += Math.abs(touch.x1 - touch.x2);
+          deltaY += Math.abs(touch.y1 - touch.y2);
+        }).on('touchend MSPointerUp pointerup', function(e) {
+          e = e.originalEvent;
+          if ((_isPointerType = isPointerEventType(e, 'up')) && !isPrimaryTouch(e)) {
+            return;
+          }
+          cancelLongTap();
+          if ((touch.x2 && Math.abs(touch.x1 - touch.x2) > 30) || (touch.y2 && Math.abs(touch.y1 - touch.y2) > 30)) {
+            swipeTimeout = setTimeout(function() {
+              touch.el.trigger('swipe');
+              touch.el.trigger('swipe' + (swipeDirection(touch.x1, touch.x2, touch.y1, touch.y2)));
+              touch = {};
+            }, 0);
+          } else if ('last' in touch) {
+            if (deltaX < 30 && deltaY < 30) {
+              tapTimeout = setTimeout(function() {
+                var event = $.Event('tap');
+                event.cancelTouch = cancelAll;
+                touch.el.trigger(event);
+                if (touch.isDoubleTap) {
+                  if (touch.el) {
+                    touch.el.trigger('doubleTap');
+                  }
+                  touch = {};
+                } else {
+                  touchTimeout = setTimeout(function() {
+                    touchTimeout = null;
+                    if (touch.el) {
+                      touch.el.trigger('singleTap');
+                    }
+                    touch = {};
+                  }, 250);
+                }
+              }, 0);
+            } else {
+              touch = {};
+            }
+          }
+          deltaX = deltaY = 0;
+        }).on('touchcancel MSPointerCancel pointercancel', cancelAll);
+        $(window).on('scroll', cancelAll);
+      });
+      $.each(['swipe', 'swipeLeft', 'swipeRight', 'swipeUp', 'swipeDown', 'doubleTap', 'tap', 'singleTap', 'longTap'], function(index, item) {
+        $.fn[item] = function(callback) {
+          return this.on(item, callback);
+        };
+      });
+    })(jQuery);
+  })();
+  return _retrieveGlobal();
+});
 
-_removeDefine();
-})();
 (function() {
 var _removeDefine = System.get("@@amd-helpers").createDefine();
 (function(window, document, exportName, undefined) {
@@ -16849,6 +16641,214 @@ var _removeDefine = System.get("@@amd-helpers").createDefine();
     window[exportName] = Hammer;
   }
 })(window, document, 'Hammer');
+
+_removeDefine();
+})();
+(function() {
+var _removeDefine = System.get("@@amd-helpers").createDefine();
+(function() {
+  'use strict';
+  function EventEmitter() {}
+  var proto = EventEmitter.prototype;
+  var exports = this;
+  var originalGlobalValue = exports.EventEmitter;
+  function indexOfListener(listeners, listener) {
+    var i = listeners.length;
+    while (i--) {
+      if (listeners[i].listener === listener) {
+        return i;
+      }
+    }
+    return -1;
+  }
+  function alias(name) {
+    return function aliasClosure() {
+      return this[name].apply(this, arguments);
+    };
+  }
+  proto.getListeners = function getListeners(evt) {
+    var events = this._getEvents();
+    var response;
+    var key;
+    if (evt instanceof RegExp) {
+      response = {};
+      for (key in events) {
+        if (events.hasOwnProperty(key) && evt.test(key)) {
+          response[key] = events[key];
+        }
+      }
+    } else {
+      response = events[evt] || (events[evt] = []);
+    }
+    return response;
+  };
+  proto.flattenListeners = function flattenListeners(listeners) {
+    var flatListeners = [];
+    var i;
+    for (i = 0; i < listeners.length; i += 1) {
+      flatListeners.push(listeners[i].listener);
+    }
+    return flatListeners;
+  };
+  proto.getListenersAsObject = function getListenersAsObject(evt) {
+    var listeners = this.getListeners(evt);
+    var response;
+    if (listeners instanceof Array) {
+      response = {};
+      response[evt] = listeners;
+    }
+    return response || listeners;
+  };
+  proto.addListener = function addListener(evt, listener) {
+    var listeners = this.getListenersAsObject(evt);
+    var listenerIsWrapped = typeof listener === 'object';
+    var key;
+    for (key in listeners) {
+      if (listeners.hasOwnProperty(key) && indexOfListener(listeners[key], listener) === -1) {
+        listeners[key].push(listenerIsWrapped ? listener : {
+          listener: listener,
+          once: false
+        });
+      }
+    }
+    return this;
+  };
+  proto.on = alias('addListener');
+  proto.addOnceListener = function addOnceListener(evt, listener) {
+    return this.addListener(evt, {
+      listener: listener,
+      once: true
+    });
+  };
+  proto.once = alias('addOnceListener');
+  proto.defineEvent = function defineEvent(evt) {
+    this.getListeners(evt);
+    return this;
+  };
+  proto.defineEvents = function defineEvents(evts) {
+    for (var i = 0; i < evts.length; i += 1) {
+      this.defineEvent(evts[i]);
+    }
+    return this;
+  };
+  proto.removeListener = function removeListener(evt, listener) {
+    var listeners = this.getListenersAsObject(evt);
+    var index;
+    var key;
+    for (key in listeners) {
+      if (listeners.hasOwnProperty(key)) {
+        index = indexOfListener(listeners[key], listener);
+        if (index !== -1) {
+          listeners[key].splice(index, 1);
+        }
+      }
+    }
+    return this;
+  };
+  proto.off = alias('removeListener');
+  proto.addListeners = function addListeners(evt, listeners) {
+    return this.manipulateListeners(false, evt, listeners);
+  };
+  proto.removeListeners = function removeListeners(evt, listeners) {
+    return this.manipulateListeners(true, evt, listeners);
+  };
+  proto.manipulateListeners = function manipulateListeners(remove, evt, listeners) {
+    var i;
+    var value;
+    var single = remove ? this.removeListener : this.addListener;
+    var multiple = remove ? this.removeListeners : this.addListeners;
+    if (typeof evt === 'object' && !(evt instanceof RegExp)) {
+      for (i in evt) {
+        if (evt.hasOwnProperty(i) && (value = evt[i])) {
+          if (typeof value === 'function') {
+            single.call(this, i, value);
+          } else {
+            multiple.call(this, i, value);
+          }
+        }
+      }
+    } else {
+      i = listeners.length;
+      while (i--) {
+        single.call(this, evt, listeners[i]);
+      }
+    }
+    return this;
+  };
+  proto.removeEvent = function removeEvent(evt) {
+    var type = typeof evt;
+    var events = this._getEvents();
+    var key;
+    if (type === 'string') {
+      delete events[evt];
+    } else if (evt instanceof RegExp) {
+      for (key in events) {
+        if (events.hasOwnProperty(key) && evt.test(key)) {
+          delete events[key];
+        }
+      }
+    } else {
+      delete this._events;
+    }
+    return this;
+  };
+  proto.removeAllListeners = alias('removeEvent');
+  proto.emitEvent = function emitEvent(evt, args) {
+    var listeners = this.getListenersAsObject(evt);
+    var listener;
+    var i;
+    var key;
+    var response;
+    for (key in listeners) {
+      if (listeners.hasOwnProperty(key)) {
+        i = listeners[key].length;
+        while (i--) {
+          listener = listeners[key][i];
+          if (listener.once === true) {
+            this.removeListener(evt, listener.listener);
+          }
+          response = listener.listener.apply(this, args || []);
+          if (response === this._getOnceReturnValue()) {
+            this.removeListener(evt, listener.listener);
+          }
+        }
+      }
+    }
+    return this;
+  };
+  proto.trigger = alias('emitEvent');
+  proto.emit = function emit(evt) {
+    var args = Array.prototype.slice.call(arguments, 1);
+    return this.emitEvent(evt, args);
+  };
+  proto.setOnceReturnValue = function setOnceReturnValue(value) {
+    this._onceReturnValue = value;
+    return this;
+  };
+  proto._getOnceReturnValue = function _getOnceReturnValue() {
+    if (this.hasOwnProperty('_onceReturnValue')) {
+      return this._onceReturnValue;
+    } else {
+      return true;
+    }
+  };
+  proto._getEvents = function _getEvents() {
+    return this._events || (this._events = {});
+  };
+  EventEmitter.noConflict = function noConflict() {
+    exports.EventEmitter = originalGlobalValue;
+    return EventEmitter;
+  };
+  if (typeof define === 'function' && define.amd) {
+    define("libs/EventEmitter/4.2.9/EventEmitter.js", [], function() {
+      return EventEmitter;
+    });
+  } else if (typeof module === 'object' && module.exports) {
+    module.exports = EventEmitter;
+  } else {
+    exports.EventEmitter = EventEmitter;
+  }
+}.call(this));
 
 _removeDefine();
 })();
@@ -19030,13 +19030,13 @@ System.register('js/main.js', ['libs/jquery/2.1.4/jquery.js', 'js/router/index.j
     }
   };
 });
-System.register('js/router/index.js', ['libs/Director/1.2.8/director.js', 'js/router/gftj.js', 'js/router/pyq.js', 'js/router/fxdt.js', 'js/router/wd.js', 'js/router/mapinfo.js', 'js/router/maplist.js', 'js/router/modal.js', 'js/router/role.js', 'js/utils/env.js'], function (_export) {
+System.register('js/router/index.js', ['libs/Director/1.2.8/director.js', 'js/router/gftj.js', 'js/router/pyq.js', 'js/router/fxdt.js', 'js/router/wd.js', 'js/router/mapinfo.js', 'js/router/maplist.js', 'js/router/modal.js', 'js/router/role.js', 'js/router/follow.js', 'js/utils/env.js'], function (_export) {
     /**
      * Created by wushuyi on 2015/9/13.
      */
     'use strict';
 
-    var Director, register_gftj, register_pyq, register_fxdt, register_wd, register_mapinfo, register_maplist, register_modal, register_role, env, router;
+    var Director, register_gftj, register_pyq, register_fxdt, register_wd, register_mapinfo, register_maplist, register_modal, register_role, register_follow, env, router;
 
     function register_all() {
         register_gftj(router);
@@ -19047,6 +19047,7 @@ System.register('js/router/index.js', ['libs/Director/1.2.8/director.js', 'js/ro
         register_maplist(router);
         register_modal(router);
         register_role(router);
+        register_follow(router);
     }
 
     return {
@@ -19068,6 +19069,8 @@ System.register('js/router/index.js', ['libs/Director/1.2.8/director.js', 'js/ro
             register_modal = _jsRouterModalJs['default'];
         }, function (_jsRouterRoleJs) {
             register_role = _jsRouterRoleJs['default'];
+        }, function (_jsRouterFollowJs) {
+            register_follow = _jsRouterFollowJs['default'];
         }, function (_jsUtilsEnvJs) {
             env = _jsUtilsEnvJs['default'];
         }],
@@ -19130,29 +19133,44 @@ System.register('js/router/gftj.js', ['js/page/gftj.js', 'js/utils/env.js'], fun
         }
     };
 });
-System.register('js/router/pyq.js', ['js/page/pyq.js', 'js/utils/env.js'], function (_export) {
+System.register('js/router/wd.js', ['js/page/wd.js', 'js/utils/env.js', 'js/router/utils.js'], function (_export) {
     /**
      * Created by wushuyi on 2015/9/13.
      */
     'use strict';
 
-    var GftjPage, env;
+    var WdPage, env, getRouter;
 
     function register(router) {
-        router.on('/pyq', function () {
-            env.pyq_page = new GftjPage();
+        var route = '/wd';
+        router.on('before', route, function () {
+            env.page_status = env.page_status || {};
+            env.page_status.now = getRouter();
         });
-        router.on('after', '/pyq', function () {
-            env.pyq_page.destroy();
-            delete env.pyq_page;
+        router.on(route, function () {
+            if (env.wd_page) {
+                return false;
+            }
+            env.wd_page = new WdPage();
+        });
+        router.on('after', route, function () {
+            env.page_status = env.page_status || {};
+            env.page_status.prve = route;
+            if (env.router.getRoute(0) === 'modal') {
+                return false;
+            }
+            env.wd_page.destroy();
+            delete env.wd_page;
         });
     }
 
     return {
-        setters: [function (_jsPagePyqJs) {
-            GftjPage = _jsPagePyqJs['default'];
+        setters: [function (_jsPageWdJs) {
+            WdPage = _jsPageWdJs['default'];
         }, function (_jsUtilsEnvJs) {
             env = _jsUtilsEnvJs['default'];
+        }, function (_jsRouterUtilsJs) {
+            getRouter = _jsRouterUtilsJs.getRouter;
         }],
         execute: function () {
             _export('default', register);
@@ -19188,38 +19206,27 @@ System.register('js/router/fxdt.js', ['js/page/fxdt.js', 'js/utils/env.js'], fun
         }
     };
 });
-System.register('js/router/wd.js', ['js/page/wd.js', 'js/utils/env.js'], function (_export) {
+System.register('js/router/pyq.js', ['js/page/pyq.js', 'js/utils/env.js'], function (_export) {
     /**
      * Created by wushuyi on 2015/9/13.
      */
     'use strict';
 
-    var WdPage, env;
+    var GftjPage, env;
 
     function register(router) {
-        var route = '/wd';
-        router.on('before', route, function () {
-            env.page_status = env.page_status || {};
-            env.page_status.now = route;
+        router.on('/pyq', function () {
+            env.pyq_page = new GftjPage();
         });
-        router.on(route, function () {
-            if (env.wd_page) {
-                return false;
-            }
-            env.wd_page = new WdPage();
-        });
-        router.on('after', route, function () {
-            if (env.router.getRoute(0) === 'modal') {
-                return false;
-            }
-            env.wd_page.destroy();
-            delete env.wd_page;
+        router.on('after', '/pyq', function () {
+            env.pyq_page.destroy();
+            delete env.pyq_page;
         });
     }
 
     return {
-        setters: [function (_jsPageWdJs) {
-            WdPage = _jsPageWdJs['default'];
+        setters: [function (_jsPagePyqJs) {
+            GftjPage = _jsPagePyqJs['default'];
         }, function (_jsUtilsEnvJs) {
             env = _jsUtilsEnvJs['default'];
         }],
@@ -19303,46 +19310,6 @@ System.register('js/router/maplist.js', ['js/page/maplist.js', 'js/utils/env.js'
         }
     };
 });
-System.register('js/router/role.js', ['js/page/role.js', 'js/utils/env.js'], function (_export) {
-    /**
-     * Created by wushuyi on 2015/9/18.
-     */
-    'use strict';
-
-    var RolePage, env;
-
-    function register(router) {
-        var route = '/role/:id';
-        router.on('before', route, function () {
-            env.page_status = env.page_status || {};
-            env.page_status.now = route;
-        });
-        router.on(route, function () {
-            if (env.wd_page) {
-                return false;
-            }
-            env.wd_page = new RolePage();
-        });
-        router.on('after', route, function () {
-            if (env.router.getRoute(0) === 'modal') {
-                return false;
-            }
-            env.wd_page.destroy();
-            delete env.wd_page;
-        });
-    }
-
-    return {
-        setters: [function (_jsPageRoleJs) {
-            RolePage = _jsPageRoleJs['default'];
-        }, function (_jsUtilsEnvJs) {
-            env = _jsUtilsEnvJs['default'];
-        }],
-        execute: function () {
-            _export('default', register);
-        }
-    };
-});
 System.register('js/router/modal.js', ['js/page/modal.js', 'js/utils/env.js'], function (_export) {
     /**
      * Created by wushuyi on 2015/9/17.
@@ -19374,6 +19341,157 @@ System.register('js/router/modal.js', ['js/page/modal.js', 'js/utils/env.js'], f
         }],
         execute: function () {
             _export('default', register);
+        }
+    };
+});
+System.register('js/router/role.js', ['js/page/role.js', 'js/utils/env.js', 'js/router/utils.js'], function (_export) {
+    /**
+     * Created by wushuyi on 2015/9/18.
+     */
+    'use strict';
+
+    var RolePage, env, pageStatus, getRouter;
+
+    function register(router) {
+        var route = '/role/:id';
+        router.on('before', route, function () {
+            pageStatus.set('now', getRouter());
+        });
+        router.on(route, function (id) {
+            if (env.wd_role) {
+                return false;
+            }
+            env.wd_role = new RolePage({
+                id: id,
+                close_router: pageStatus.get('prve')
+            });
+        });
+        router.on('after', route, function () {
+            pageStatus.set('prve', pageStatus.get('now'));
+            env.wd_role.destroy();
+            delete env.wd_role;
+        });
+    }
+
+    return {
+        setters: [function (_jsPageRoleJs) {
+            RolePage = _jsPageRoleJs['default'];
+        }, function (_jsUtilsEnvJs) {
+            env = _jsUtilsEnvJs['default'];
+        }, function (_jsRouterUtilsJs) {
+            pageStatus = _jsRouterUtilsJs.pageStatus;
+            getRouter = _jsRouterUtilsJs.getRouter;
+        }],
+        execute: function () {
+            _export('default', register);
+        }
+    };
+});
+System.register('js/router/follow.js', ['js/page/follow.js', 'js/utils/env.js', 'js/router/utils.js'], function (_export) {
+    /**
+     * Created by wushuyi on 2015/9/13.
+     */
+    'use strict';
+
+    var FollowPage, env, pageStatus, getRouter;
+
+    function register(router) {
+        var route = '/follow/:type/:id';
+        router.on('before', route, function () {
+            pageStatus.set('now', getRouter());
+        });
+        router.on(route, function (id) {
+            if (env.follow_page) {
+                return false;
+            }
+            env.follow_page = new FollowPage({
+                id: id,
+                close_router: pageStatus.get('prve')
+            });
+        });
+        router.on('after', route, function () {
+            pageStatus.set('prve', pageStatus.get('now'));
+            env.follow_page.destroy();
+            delete env.follow_page;
+        });
+    }
+
+    return {
+        setters: [function (_jsPageFollowJs) {
+            FollowPage = _jsPageFollowJs['default'];
+        }, function (_jsUtilsEnvJs) {
+            env = _jsUtilsEnvJs['default'];
+        }, function (_jsRouterUtilsJs) {
+            pageStatus = _jsRouterUtilsJs.pageStatus;
+            getRouter = _jsRouterUtilsJs.getRouter;
+        }],
+        execute: function () {
+            _export('default', register);
+        }
+    };
+});
+System.register('js/page/wd.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base.js', 'libs/iScroll/5.1.3/iscroll-lite.js'], function (_export) {
+    /**
+     * Created by wushuyi on 2015/9/13.
+     */
+
+    //import Swiper from 'Swiper'
+    'use strict';
+
+    var $, BasePage, iScroll, WdPage;
+    return {
+        setters: [function (_libsJquery214JqueryJs) {
+            $ = _libsJquery214JqueryJs['default'];
+        }, function (_jsPageBaseJs) {
+            BasePage = _jsPageBaseJs['default'];
+        }, function (_libsIScroll513IscrollLiteJs) {
+            iScroll = _libsIScroll513IscrollLiteJs['default'];
+        }],
+        execute: function () {
+            WdPage = (function (_BasePage) {
+                babelHelpers.inherits(WdPage, _BasePage);
+
+                function WdPage() {
+                    babelHelpers.classCallCheck(this, WdPage);
+
+                    if (arguments[0] === false) {
+                        return false;
+                    }
+                    babelHelpers.get(Object.getPrototypeOf(WdPage.prototype), 'constructor', this).call(this, false);
+                    this.initialize.apply(this, arguments);
+                }
+
+                babelHelpers.createClass(WdPage, [{
+                    key: 'initialize',
+                    value: function initialize() {
+                        babelHelpers.get(Object.getPrototypeOf(WdPage.prototype), 'initialize', this).call(this);
+                        var $el = {};
+                        this.$el = $el;
+                        var iscrolls = {};
+                        this.iscrolls = iscrolls;
+                        $el.nav = $('.nav-item[data-router="/wd"]');
+                        $el.page = $('#page_wd');
+                        babelHelpers.get(Object.getPrototypeOf(WdPage.prototype), 'startPage', this).call(this);
+                        iscrolls.content = new iScroll($el.page.get(0));
+                    }
+                }, {
+                    key: 'destroy',
+                    value: function destroy() {
+                        var _this = this;
+
+                        var iscrolls = this.iscrolls;
+                        babelHelpers.get(Object.getPrototypeOf(WdPage.prototype), 'endPage', this).call(this, function () {
+                            $.each(iscrolls, function (key, iscroll) {
+                                iscroll.destroy();
+                            });
+                            _this.$el = null;
+                        });
+                    }
+                }]);
+                return WdPage;
+            })(BasePage);
+
+            _export('default', WdPage);
         }
     };
 });
@@ -19497,66 +19615,39 @@ System.register('js/page/gftj.js', ['libs/jquery/2.1.4/jquery.js', 'libs/Swiper/
         }
     };
 });
-System.register('js/page/pyq.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base.js', 'libs/iScroll/5.1.3/iscroll-lite.js'], function (_export) {
+System.register('js/router/utils.js', ['js/utils/env.js'], function (_export) {
     /**
-     * Created by wushuyi on 2015/9/13.
+     * Created by wushuyi on 2015/9/18.
      */
     'use strict';
 
-    var $, BasePage, iScroll, PyqPage;
+    var env, pageStatus;
+
+    _export('getRouter', getRouter);
+
+    function getRouter() {
+        var path = env.router.getRoute();
+        path.unshift('');
+        return path.join('/');
+    }
+
     return {
-        setters: [function (_libsJquery214JqueryJs) {
-            $ = _libsJquery214JqueryJs['default'];
-        }, function (_jsPageBaseJs) {
-            BasePage = _jsPageBaseJs['default'];
-        }, function (_libsIScroll513IscrollLiteJs) {
-            iScroll = _libsIScroll513IscrollLiteJs['default'];
+        setters: [function (_jsUtilsEnvJs) {
+            env = _jsUtilsEnvJs['default'];
         }],
         execute: function () {
-            PyqPage = (function (_BasePage) {
-                babelHelpers.inherits(PyqPage, _BasePage);
-
-                function PyqPage() {
-                    babelHelpers.classCallCheck(this, PyqPage);
-
-                    if (arguments[0] === false) {
-                        return false;
-                    }
-                    babelHelpers.get(Object.getPrototypeOf(PyqPage.prototype), 'constructor', this).call(this, false);
-                    this.initialize.apply(this, arguments);
+            pageStatus = {
+                set: function set(sataus, router) {
+                    env.page_status = env.page_status || {};
+                    env.page_status[sataus] = router;
+                },
+                get: function get(status) {
+                    env.page_status = env.page_status || {};
+                    return env.page_status[status] || '';
                 }
+            };
 
-                babelHelpers.createClass(PyqPage, [{
-                    key: 'initialize',
-                    value: function initialize() {
-                        babelHelpers.get(Object.getPrototypeOf(PyqPage.prototype), 'initialize', this).call(this);
-                        var $el = {};
-                        this.$el = $el;
-                        var iscrolls = {};
-                        this.iscrolls = iscrolls;
-                        $el.nav = $('.nav-item[data-router="/pyq"]');
-                        $el.page = $('#page_pyq');
-                        babelHelpers.get(Object.getPrototypeOf(PyqPage.prototype), 'startPage', this).call(this);
-                        iscrolls.content = new iScroll($el.page.get(0));
-                    }
-                }, {
-                    key: 'destroy',
-                    value: function destroy() {
-                        var _this = this;
-
-                        var iscrolls = this.iscrolls;
-                        babelHelpers.get(Object.getPrototypeOf(PyqPage.prototype), 'endPage', this).call(this, function () {
-                            $.each(iscrolls, function (key, iscroll) {
-                                iscroll.destroy();
-                            });
-                            _this.$el = null;
-                        });
-                    }
-                }]);
-                return PyqPage;
-            })(BasePage);
-
-            _export('default', PyqPage);
+            _export('pageStatus', pageStatus);
         }
     };
 });
@@ -19623,15 +19714,13 @@ System.register('js/page/fxdt.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base
         }
     };
 });
-System.register('js/page/wd.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base.js', 'libs/iScroll/5.1.3/iscroll-lite.js'], function (_export) {
+System.register('js/page/pyq.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base.js', 'libs/iScroll/5.1.3/iscroll-lite.js'], function (_export) {
     /**
      * Created by wushuyi on 2015/9/13.
      */
-
-    //import Swiper from 'Swiper'
     'use strict';
 
-    var $, BasePage, iScroll, WdPage;
+    var $, BasePage, iScroll, PyqPage;
     return {
         setters: [function (_libsJquery214JqueryJs) {
             $ = _libsJquery214JqueryJs['default'];
@@ -19641,30 +19730,30 @@ System.register('js/page/wd.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base.j
             iScroll = _libsIScroll513IscrollLiteJs['default'];
         }],
         execute: function () {
-            WdPage = (function (_BasePage) {
-                babelHelpers.inherits(WdPage, _BasePage);
+            PyqPage = (function (_BasePage) {
+                babelHelpers.inherits(PyqPage, _BasePage);
 
-                function WdPage() {
-                    babelHelpers.classCallCheck(this, WdPage);
+                function PyqPage() {
+                    babelHelpers.classCallCheck(this, PyqPage);
 
                     if (arguments[0] === false) {
                         return false;
                     }
-                    babelHelpers.get(Object.getPrototypeOf(WdPage.prototype), 'constructor', this).call(this, false);
+                    babelHelpers.get(Object.getPrototypeOf(PyqPage.prototype), 'constructor', this).call(this, false);
                     this.initialize.apply(this, arguments);
                 }
 
-                babelHelpers.createClass(WdPage, [{
+                babelHelpers.createClass(PyqPage, [{
                     key: 'initialize',
                     value: function initialize() {
-                        babelHelpers.get(Object.getPrototypeOf(WdPage.prototype), 'initialize', this).call(this);
+                        babelHelpers.get(Object.getPrototypeOf(PyqPage.prototype), 'initialize', this).call(this);
                         var $el = {};
                         this.$el = $el;
                         var iscrolls = {};
                         this.iscrolls = iscrolls;
-                        $el.nav = $('.nav-item[data-router="/wd"]');
-                        $el.page = $('#page_wd');
-                        babelHelpers.get(Object.getPrototypeOf(WdPage.prototype), 'startPage', this).call(this);
+                        $el.nav = $('.nav-item[data-router="/pyq"]');
+                        $el.page = $('#page_pyq');
+                        babelHelpers.get(Object.getPrototypeOf(PyqPage.prototype), 'startPage', this).call(this);
                         iscrolls.content = new iScroll($el.page.get(0));
                     }
                 }, {
@@ -19673,7 +19762,7 @@ System.register('js/page/wd.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base.j
                         var _this = this;
 
                         var iscrolls = this.iscrolls;
-                        babelHelpers.get(Object.getPrototypeOf(WdPage.prototype), 'endPage', this).call(this, function () {
+                        babelHelpers.get(Object.getPrototypeOf(PyqPage.prototype), 'endPage', this).call(this, function () {
                             $.each(iscrolls, function (key, iscroll) {
                                 iscroll.destroy();
                             });
@@ -19681,10 +19770,10 @@ System.register('js/page/wd.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base.j
                         });
                     }
                 }]);
-                return WdPage;
+                return PyqPage;
             })(BasePage);
 
-            _export('default', WdPage);
+            _export('default', PyqPage);
         }
     };
 });
@@ -19985,13 +20074,15 @@ System.register('js/page/role.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base
 
                 babelHelpers.createClass(RolePage, [{
                     key: 'initialize',
-                    value: function initialize() {
+                    value: function initialize(options) {
                         babelHelpers.get(Object.getPrototypeOf(RolePage.prototype), 'initialize', this).call(this);
                         var $el = {};
                         this.$el = $el;
                         var iscrolls = {};
                         this.iscrolls = iscrolls;
                         $el.page = $('#page_role');
+                        $el.close = $el.page.find('.close');
+                        $el.close.attr('data-router', options.close_router);
                         babelHelpers.get(Object.getPrototypeOf(RolePage.prototype), 'startPage', this).call(this);
                         iscrolls.content = new iScroll($el.page.get(0));
                     }
@@ -20013,6 +20104,70 @@ System.register('js/page/role.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base
             })(BasePage);
 
             _export('default', RolePage);
+        }
+    };
+});
+System.register('js/page/follow.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base.js', 'libs/iScroll/5.1.3/iscroll-lite.js'], function (_export) {
+    /**
+     * Created by wushuyi on 2015/9/18.
+     */
+    'use strict';
+
+    var $, BasePage, iScroll, FollowPage;
+    return {
+        setters: [function (_libsJquery214JqueryJs) {
+            $ = _libsJquery214JqueryJs['default'];
+        }, function (_jsPageBaseJs) {
+            BasePage = _jsPageBaseJs['default'];
+        }, function (_libsIScroll513IscrollLiteJs) {
+            iScroll = _libsIScroll513IscrollLiteJs['default'];
+        }],
+        execute: function () {
+            FollowPage = (function (_BasePage) {
+                babelHelpers.inherits(FollowPage, _BasePage);
+
+                function FollowPage() {
+                    babelHelpers.classCallCheck(this, FollowPage);
+
+                    if (arguments[0] === false) {
+                        return false;
+                    }
+                    babelHelpers.get(Object.getPrototypeOf(FollowPage.prototype), 'constructor', this).call(this, false);
+                    this.initialize.apply(this, arguments);
+                }
+
+                babelHelpers.createClass(FollowPage, [{
+                    key: 'initialize',
+                    value: function initialize(options) {
+                        babelHelpers.get(Object.getPrototypeOf(FollowPage.prototype), 'initialize', this).call(this);
+                        var $el = {};
+                        this.$el = $el;
+                        var iscrolls = {};
+                        this.iscrolls = iscrolls;
+                        $el.page = $('#page_follow');
+                        $el.close = $el.page.find('.close');
+                        $el.close.attr('data-router', options.close_router);
+                        babelHelpers.get(Object.getPrototypeOf(FollowPage.prototype), 'startPage', this).call(this);
+                        iscrolls.content = new iScroll($el.page.get(0));
+                    }
+                }, {
+                    key: 'destroy',
+                    value: function destroy() {
+                        var _this = this;
+
+                        var iscrolls = this.iscrolls;
+                        babelHelpers.get(Object.getPrototypeOf(FollowPage.prototype), 'endPage', this).call(this, function () {
+                            $.each(iscrolls, function (key, iscroll) {
+                                iscroll.destroy();
+                            });
+                            _this.$el = null;
+                        });
+                    }
+                }]);
+                return FollowPage;
+            })(BasePage);
+
+            _export('default', FollowPage);
         }
     };
 });
