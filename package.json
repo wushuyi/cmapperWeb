@@ -3,6 +3,8 @@
   "version": "0.0.1",
   "dependencies": {
     "babel-core": "^5.8.24",
+    "gulp": "^3.9.0",
+    "gulp-run": "^1.6.11",
     "systemjs-builder": "^0.13.5"
   },
   "scripts": {
