@@ -106,11 +106,6 @@ var CurrPosition = (function createCurrPosition() {
 
 
     var $map_ctl = $('<div id="map-ctl"></div>').append($map_xjdd).append($map_dw);
-    //map.addControl({
-    //    position: 'RIGHT_BOTTOM',
-    //    content: $map_ctl.get(0),
-    //    disableDefaultStyles: true
-    //});
     $el.map.on('tap', '#map-xjdd', function (evt) {
         console.log(evt);
         var $self = $(this);
