@@ -23,7 +23,7 @@
     <link rel="stylesheet" href="assets/css/reset.css"/>
     <link rel="stylesheet" href="assets/libs/Swiper/3.1.2/css/swiper.css"/>
     <!-- css 重置 -->
-    <link rel="stylesheet" href="assets/css/style.css"/>
+    <link rel="stylesheet" href="assets/css/style.css?v=1"/>
     <!-- modernizr 用于处理 各浏览器 兼容 因为要 处理css样式兼容 所以 头部加载 -->
     <script src="assets/libs/modernizr/2.8.3/modernizr.min.js"></script>
     <script src="assets/libs/holder/2.8.2/holder.min.js"></script>
@@ -622,39 +622,40 @@
                             </div>
                         </div>
                         <div class="comment-box">
-                                <div class="updata clearfix">
-                                    <textarea  class="input"></textarea>
-                                    <div class="submit">评论</div>
-                                </div>
-                                <ul class="comment-list">
-                                    <li>
-                                        <div class="comment clearfix">
-                                            <div class="avatar"></div>
-                                            <div class="msg">评论这是一条评论它评论评论这是一条评论它评论评论这是一条评论它评论</div>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="comment clearfix self">
-                                            <div class="avatar"></div>
-                                            <div class="msg">评论这是一条评论它评论评论这是一条评论它评论评论这是一条评论它评论</div>
-                                            <div class="del">x</div>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="comment clearfix">
-                                            <div class="avatar"></div>
-                                            <div class="msg">评论这是一条评论它评论评论这是一条评论它评论评论这是一条评论它评论</div>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="comment clearfix self">
-                                            <div class="avatar"></div>
-                                            <div class="msg">评论这是一条评论它评论评论这是一条评论它评论评论这是一条评论它评论</div>
-                                            <div class="del">x</div>
-                                        </div>
-                                    </li>
+                            <div class="updata clearfix">
+                                <textarea class="input"></textarea>
 
-                                </ul>
+                                <div class="submit">评论</div>
+                            </div>
+                            <ul class="comment-list">
+                                <li>
+                                    <div class="comment clearfix">
+                                        <div class="avatar"></div>
+                                        <div class="msg">评论这是一条评论它评论评论这是一条评论它评论评论这是一条评论它评论</div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="comment clearfix self">
+                                        <div class="avatar"></div>
+                                        <div class="msg">评论这是一条评论它评论评论这是一条评论它评论评论这是一条评论它评论</div>
+                                        <div class="del">x</div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="comment clearfix">
+                                        <div class="avatar"></div>
+                                        <div class="msg">评论这是一条评论它评论评论这是一条评论它评论评论这是一条评论它评论</div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="comment clearfix self">
+                                        <div class="avatar"></div>
+                                        <div class="msg">评论这是一条评论它评论评论这是一条评论它评论评论这是一条评论它评论</div>
+                                        <div class="del">x</div>
+                                    </div>
+                                </li>
+
+                            </ul>
                             <div class="prompt">下拉以加载更多</div>
                         </div>
                     </div>
@@ -678,7 +679,7 @@
                             <div class="address-list">
                                 <ul class="horizontal-list">
                                     <li>
-                                        <div class="address-box clearfix">
+                                        <div class="address-box clearfix" data-router="/modal/address/123">
                                             <div class="order"></div>
                                             <div class="address-name">地点名称地点名称地点名称</div>
                                             <div class="bottm-bar">
@@ -945,7 +946,7 @@
                                     </div>
                                     <div class="follow">
                                         关注他
-                                   </div>
+                                    </div>
                                 </div>
                             </li>
                             <li>
@@ -1130,15 +1131,40 @@
                 <div class="title">设定</div>
             </div>
         </div>
+        <div class="modal" id="modal-address">
+            <div class="top-bar">
+                <div class="close">X</div>
+                <div class="eidt_btn">编辑</div>
+                <div class="plus">+</div>
+            </div>
+            <div class="num-status">
+                <ul class="horizontal-list">
+                    <li><span class="label">赞数</span></li>
+                    <li><span class="label">地数</span></li>
+                    <li><span class="label">in数</span></li>
+                </ul>
+            </div>
+            <div class="view-ctl">
+                <span>仅看自己</span>
+                <label class="label-switch">
+                    <input type="checkbox">
+                    <div class="checkbox"></div>
+                </label>
+            </div>
+
+
+        </div>
     </div>
 </div>
-<!--<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCSqDuHCUNDiT_xUMJNx6wI-67vzrXSHhM&ibraries=geometry"></script>-->
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCSqDuHCUNDiT_xUMJNx6wI-67vzrXSHhM&ibraries=geometry"></script>
 <script src="assets/babel_helpers.min.js"></script>
 <script src="assets/libs/systemjs/0.18.4/system.js"></script>
 <script src="assets/outfile.js"></script>
 <script>
-System.import('js/main.js');
+    System.import('js/main.js');
 </script>
+<script src="assets/libs/gmaps.js/0.4.19/gmaps.js"></script>
+<script src="assets/js/component/map.js"></script>
 
 <!--<script src="assets/libs/systemjs/0.18.17/system-polyfills.src.js"></script>-->
 <!--<script src="assets/libs/systemjs/0.18.17/system.src.js"></script>-->

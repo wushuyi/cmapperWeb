@@ -29,11 +29,34 @@ class ModalManage {
             $el.modal.removeClass('active');
         });
 
-        $el.modal.one(transitionEnd, function(){
-            $el.modal.one(transitionEnd, function(){
+        $el.modal.one(transitionEnd, function () {
+            $el.modal.one(transitionEnd, function () {
                 $el.modalBox.hide();
             });
         });
+
+        setTimeout(function () {
+            $el.modal.addClass('active');
+        }, 100);
+    }
+
+    modal_address(options) {
+        let $el = this.$el;
+
+        $el.modal = $('#modal-address');
+        $el.modalBox.show();
+        $el.close = $el.modal.find('.close');
+
+        $el.close.attr('data-router', options.close_router);
+        $el.close.on('tap', function () {
+            $el.modal.removeClass('active');
+        });
+
+        //$el.modal.one(transitionEnd, function () {
+        //    $el.modal.one(transitionEnd, function () {
+        //        $el.modalBox.hide();
+        //    });
+        //});
 
         setTimeout(function () {
             $el.modal.addClass('active');

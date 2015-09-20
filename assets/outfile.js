@@ -15287,6 +15287,214 @@ System.registerDynamic("js/utils/jquery.touch.js", [], false, function(__require
 
 (function() {
 var _removeDefine = System.get("@@amd-helpers").createDefine();
+(function() {
+  'use strict';
+  function EventEmitter() {}
+  var proto = EventEmitter.prototype;
+  var exports = this;
+  var originalGlobalValue = exports.EventEmitter;
+  function indexOfListener(listeners, listener) {
+    var i = listeners.length;
+    while (i--) {
+      if (listeners[i].listener === listener) {
+        return i;
+      }
+    }
+    return -1;
+  }
+  function alias(name) {
+    return function aliasClosure() {
+      return this[name].apply(this, arguments);
+    };
+  }
+  proto.getListeners = function getListeners(evt) {
+    var events = this._getEvents();
+    var response;
+    var key;
+    if (evt instanceof RegExp) {
+      response = {};
+      for (key in events) {
+        if (events.hasOwnProperty(key) && evt.test(key)) {
+          response[key] = events[key];
+        }
+      }
+    } else {
+      response = events[evt] || (events[evt] = []);
+    }
+    return response;
+  };
+  proto.flattenListeners = function flattenListeners(listeners) {
+    var flatListeners = [];
+    var i;
+    for (i = 0; i < listeners.length; i += 1) {
+      flatListeners.push(listeners[i].listener);
+    }
+    return flatListeners;
+  };
+  proto.getListenersAsObject = function getListenersAsObject(evt) {
+    var listeners = this.getListeners(evt);
+    var response;
+    if (listeners instanceof Array) {
+      response = {};
+      response[evt] = listeners;
+    }
+    return response || listeners;
+  };
+  proto.addListener = function addListener(evt, listener) {
+    var listeners = this.getListenersAsObject(evt);
+    var listenerIsWrapped = typeof listener === 'object';
+    var key;
+    for (key in listeners) {
+      if (listeners.hasOwnProperty(key) && indexOfListener(listeners[key], listener) === -1) {
+        listeners[key].push(listenerIsWrapped ? listener : {
+          listener: listener,
+          once: false
+        });
+      }
+    }
+    return this;
+  };
+  proto.on = alias('addListener');
+  proto.addOnceListener = function addOnceListener(evt, listener) {
+    return this.addListener(evt, {
+      listener: listener,
+      once: true
+    });
+  };
+  proto.once = alias('addOnceListener');
+  proto.defineEvent = function defineEvent(evt) {
+    this.getListeners(evt);
+    return this;
+  };
+  proto.defineEvents = function defineEvents(evts) {
+    for (var i = 0; i < evts.length; i += 1) {
+      this.defineEvent(evts[i]);
+    }
+    return this;
+  };
+  proto.removeListener = function removeListener(evt, listener) {
+    var listeners = this.getListenersAsObject(evt);
+    var index;
+    var key;
+    for (key in listeners) {
+      if (listeners.hasOwnProperty(key)) {
+        index = indexOfListener(listeners[key], listener);
+        if (index !== -1) {
+          listeners[key].splice(index, 1);
+        }
+      }
+    }
+    return this;
+  };
+  proto.off = alias('removeListener');
+  proto.addListeners = function addListeners(evt, listeners) {
+    return this.manipulateListeners(false, evt, listeners);
+  };
+  proto.removeListeners = function removeListeners(evt, listeners) {
+    return this.manipulateListeners(true, evt, listeners);
+  };
+  proto.manipulateListeners = function manipulateListeners(remove, evt, listeners) {
+    var i;
+    var value;
+    var single = remove ? this.removeListener : this.addListener;
+    var multiple = remove ? this.removeListeners : this.addListeners;
+    if (typeof evt === 'object' && !(evt instanceof RegExp)) {
+      for (i in evt) {
+        if (evt.hasOwnProperty(i) && (value = evt[i])) {
+          if (typeof value === 'function') {
+            single.call(this, i, value);
+          } else {
+            multiple.call(this, i, value);
+          }
+        }
+      }
+    } else {
+      i = listeners.length;
+      while (i--) {
+        single.call(this, evt, listeners[i]);
+      }
+    }
+    return this;
+  };
+  proto.removeEvent = function removeEvent(evt) {
+    var type = typeof evt;
+    var events = this._getEvents();
+    var key;
+    if (type === 'string') {
+      delete events[evt];
+    } else if (evt instanceof RegExp) {
+      for (key in events) {
+        if (events.hasOwnProperty(key) && evt.test(key)) {
+          delete events[key];
+        }
+      }
+    } else {
+      delete this._events;
+    }
+    return this;
+  };
+  proto.removeAllListeners = alias('removeEvent');
+  proto.emitEvent = function emitEvent(evt, args) {
+    var listeners = this.getListenersAsObject(evt);
+    var listener;
+    var i;
+    var key;
+    var response;
+    for (key in listeners) {
+      if (listeners.hasOwnProperty(key)) {
+        i = listeners[key].length;
+        while (i--) {
+          listener = listeners[key][i];
+          if (listener.once === true) {
+            this.removeListener(evt, listener.listener);
+          }
+          response = listener.listener.apply(this, args || []);
+          if (response === this._getOnceReturnValue()) {
+            this.removeListener(evt, listener.listener);
+          }
+        }
+      }
+    }
+    return this;
+  };
+  proto.trigger = alias('emitEvent');
+  proto.emit = function emit(evt) {
+    var args = Array.prototype.slice.call(arguments, 1);
+    return this.emitEvent(evt, args);
+  };
+  proto.setOnceReturnValue = function setOnceReturnValue(value) {
+    this._onceReturnValue = value;
+    return this;
+  };
+  proto._getOnceReturnValue = function _getOnceReturnValue() {
+    if (this.hasOwnProperty('_onceReturnValue')) {
+      return this._onceReturnValue;
+    } else {
+      return true;
+    }
+  };
+  proto._getEvents = function _getEvents() {
+    return this._events || (this._events = {});
+  };
+  EventEmitter.noConflict = function noConflict() {
+    exports.EventEmitter = originalGlobalValue;
+    return EventEmitter;
+  };
+  if (typeof define === 'function' && define.amd) {
+    define("libs/EventEmitter/4.2.9/EventEmitter.js", [], function() {
+      return EventEmitter;
+    });
+  } else if (typeof module === 'object' && module.exports) {
+    module.exports = EventEmitter;
+  } else {
+    exports.EventEmitter = EventEmitter;
+  }
+}.call(this));
+
+_removeDefine();
+})();
+(function() {
+var _removeDefine = System.get("@@amd-helpers").createDefine();
 (function(window, document, exportName, undefined) {
   'use strict';
   var VENDOR_PREFIXES = ['', 'webkit', 'moz', 'MS', 'ms', 'o'];
@@ -16641,214 +16849,6 @@ var _removeDefine = System.get("@@amd-helpers").createDefine();
     window[exportName] = Hammer;
   }
 })(window, document, 'Hammer');
-
-_removeDefine();
-})();
-(function() {
-var _removeDefine = System.get("@@amd-helpers").createDefine();
-(function() {
-  'use strict';
-  function EventEmitter() {}
-  var proto = EventEmitter.prototype;
-  var exports = this;
-  var originalGlobalValue = exports.EventEmitter;
-  function indexOfListener(listeners, listener) {
-    var i = listeners.length;
-    while (i--) {
-      if (listeners[i].listener === listener) {
-        return i;
-      }
-    }
-    return -1;
-  }
-  function alias(name) {
-    return function aliasClosure() {
-      return this[name].apply(this, arguments);
-    };
-  }
-  proto.getListeners = function getListeners(evt) {
-    var events = this._getEvents();
-    var response;
-    var key;
-    if (evt instanceof RegExp) {
-      response = {};
-      for (key in events) {
-        if (events.hasOwnProperty(key) && evt.test(key)) {
-          response[key] = events[key];
-        }
-      }
-    } else {
-      response = events[evt] || (events[evt] = []);
-    }
-    return response;
-  };
-  proto.flattenListeners = function flattenListeners(listeners) {
-    var flatListeners = [];
-    var i;
-    for (i = 0; i < listeners.length; i += 1) {
-      flatListeners.push(listeners[i].listener);
-    }
-    return flatListeners;
-  };
-  proto.getListenersAsObject = function getListenersAsObject(evt) {
-    var listeners = this.getListeners(evt);
-    var response;
-    if (listeners instanceof Array) {
-      response = {};
-      response[evt] = listeners;
-    }
-    return response || listeners;
-  };
-  proto.addListener = function addListener(evt, listener) {
-    var listeners = this.getListenersAsObject(evt);
-    var listenerIsWrapped = typeof listener === 'object';
-    var key;
-    for (key in listeners) {
-      if (listeners.hasOwnProperty(key) && indexOfListener(listeners[key], listener) === -1) {
-        listeners[key].push(listenerIsWrapped ? listener : {
-          listener: listener,
-          once: false
-        });
-      }
-    }
-    return this;
-  };
-  proto.on = alias('addListener');
-  proto.addOnceListener = function addOnceListener(evt, listener) {
-    return this.addListener(evt, {
-      listener: listener,
-      once: true
-    });
-  };
-  proto.once = alias('addOnceListener');
-  proto.defineEvent = function defineEvent(evt) {
-    this.getListeners(evt);
-    return this;
-  };
-  proto.defineEvents = function defineEvents(evts) {
-    for (var i = 0; i < evts.length; i += 1) {
-      this.defineEvent(evts[i]);
-    }
-    return this;
-  };
-  proto.removeListener = function removeListener(evt, listener) {
-    var listeners = this.getListenersAsObject(evt);
-    var index;
-    var key;
-    for (key in listeners) {
-      if (listeners.hasOwnProperty(key)) {
-        index = indexOfListener(listeners[key], listener);
-        if (index !== -1) {
-          listeners[key].splice(index, 1);
-        }
-      }
-    }
-    return this;
-  };
-  proto.off = alias('removeListener');
-  proto.addListeners = function addListeners(evt, listeners) {
-    return this.manipulateListeners(false, evt, listeners);
-  };
-  proto.removeListeners = function removeListeners(evt, listeners) {
-    return this.manipulateListeners(true, evt, listeners);
-  };
-  proto.manipulateListeners = function manipulateListeners(remove, evt, listeners) {
-    var i;
-    var value;
-    var single = remove ? this.removeListener : this.addListener;
-    var multiple = remove ? this.removeListeners : this.addListeners;
-    if (typeof evt === 'object' && !(evt instanceof RegExp)) {
-      for (i in evt) {
-        if (evt.hasOwnProperty(i) && (value = evt[i])) {
-          if (typeof value === 'function') {
-            single.call(this, i, value);
-          } else {
-            multiple.call(this, i, value);
-          }
-        }
-      }
-    } else {
-      i = listeners.length;
-      while (i--) {
-        single.call(this, evt, listeners[i]);
-      }
-    }
-    return this;
-  };
-  proto.removeEvent = function removeEvent(evt) {
-    var type = typeof evt;
-    var events = this._getEvents();
-    var key;
-    if (type === 'string') {
-      delete events[evt];
-    } else if (evt instanceof RegExp) {
-      for (key in events) {
-        if (events.hasOwnProperty(key) && evt.test(key)) {
-          delete events[key];
-        }
-      }
-    } else {
-      delete this._events;
-    }
-    return this;
-  };
-  proto.removeAllListeners = alias('removeEvent');
-  proto.emitEvent = function emitEvent(evt, args) {
-    var listeners = this.getListenersAsObject(evt);
-    var listener;
-    var i;
-    var key;
-    var response;
-    for (key in listeners) {
-      if (listeners.hasOwnProperty(key)) {
-        i = listeners[key].length;
-        while (i--) {
-          listener = listeners[key][i];
-          if (listener.once === true) {
-            this.removeListener(evt, listener.listener);
-          }
-          response = listener.listener.apply(this, args || []);
-          if (response === this._getOnceReturnValue()) {
-            this.removeListener(evt, listener.listener);
-          }
-        }
-      }
-    }
-    return this;
-  };
-  proto.trigger = alias('emitEvent');
-  proto.emit = function emit(evt) {
-    var args = Array.prototype.slice.call(arguments, 1);
-    return this.emitEvent(evt, args);
-  };
-  proto.setOnceReturnValue = function setOnceReturnValue(value) {
-    this._onceReturnValue = value;
-    return this;
-  };
-  proto._getOnceReturnValue = function _getOnceReturnValue() {
-    if (this.hasOwnProperty('_onceReturnValue')) {
-      return this._onceReturnValue;
-    } else {
-      return true;
-    }
-  };
-  proto._getEvents = function _getEvents() {
-    return this._events || (this._events = {});
-  };
-  EventEmitter.noConflict = function noConflict() {
-    exports.EventEmitter = originalGlobalValue;
-    return EventEmitter;
-  };
-  if (typeof define === 'function' && define.amd) {
-    define("libs/EventEmitter/4.2.9/EventEmitter.js", [], function() {
-      return EventEmitter;
-    });
-  } else if (typeof module === 'object' && module.exports) {
-    module.exports = EventEmitter;
-  } else {
-    exports.EventEmitter = EventEmitter;
-  }
-}.call(this));
 
 _removeDefine();
 })();
@@ -19003,32 +19003,36 @@ var _removeDefine = System.get("@@amd-helpers").createDefine();
 _removeDefine();
 })();
 System.register('js/main.js', ['libs/jquery/2.1.4/jquery.js', 'js/router/index.js', 'js/utils/env.js'], function (_export) {
-  /**
-   * Created by wushuyi on 2015/9/13.
-   */
-  'use strict';
+    /**
+     * Created by wushuyi on 2015/9/13.
+     */
+    'use strict';
 
-  var $, register_all, router, env;
-  return {
-    setters: [function (_libsJquery214JqueryJs) {
-      $ = _libsJquery214JqueryJs['default'];
-    }, function (_jsRouterIndexJs) {
-      register_all = _jsRouterIndexJs['default'];
-      router = _jsRouterIndexJs.router;
-    }, function (_jsUtilsEnvJs) {
-      env = _jsUtilsEnvJs['default'];
-    }],
-    execute: function () {
+    var $, register_all, router, env;
+    return {
+        setters: [function (_libsJquery214JqueryJs) {
+            $ = _libsJquery214JqueryJs['default'];
+        }, function (_jsRouterIndexJs) {
+            register_all = _jsRouterIndexJs['default'];
+            router = _jsRouterIndexJs.router;
+        }, function (_jsUtilsEnvJs) {
+            env = _jsUtilsEnvJs['default'];
+        }],
+        execute: function () {
 
-      $('#map, #nav, .prevent_touch').on('touchstart', function (evt) {
-        evt.preventDefault();
-      });
-      register_all();
-      router.init('/gftj');
+            $(document.body).on('touchmove', function (evt) {
+                evt.preventDefault();
+            });
 
-      window.env = env;
-    }
-  };
+            $('.wrapper').on('touchmove', function (evt) {
+                evt.stopPropagation();
+            });
+            register_all();
+            router.init('/gftj');
+
+            window.env = env;
+        }
+    };
 });
 System.register('js/router/index.js', ['libs/Director/1.2.8/director.js', 'js/router/gftj.js', 'js/router/pyq.js', 'js/router/fxdt.js', 'js/router/wd.js', 'js/router/mapinfo.js', 'js/router/maplist.js', 'js/router/modal.js', 'js/router/role.js', 'js/router/follow.js', 'js/utils/env.js'], function (_export) {
     /**
@@ -19133,6 +19137,64 @@ System.register('js/router/gftj.js', ['js/page/gftj.js', 'js/utils/env.js'], fun
         }
     };
 });
+System.register('js/router/pyq.js', ['js/page/pyq.js', 'js/utils/env.js'], function (_export) {
+    /**
+     * Created by wushuyi on 2015/9/13.
+     */
+    'use strict';
+
+    var GftjPage, env;
+
+    function register(router) {
+        router.on('/pyq', function () {
+            env.pyq_page = new GftjPage();
+        });
+        router.on('after', '/pyq', function () {
+            env.pyq_page.destroy();
+            delete env.pyq_page;
+        });
+    }
+
+    return {
+        setters: [function (_jsPagePyqJs) {
+            GftjPage = _jsPagePyqJs['default'];
+        }, function (_jsUtilsEnvJs) {
+            env = _jsUtilsEnvJs['default'];
+        }],
+        execute: function () {
+            _export('default', register);
+        }
+    };
+});
+System.register('js/router/fxdt.js', ['js/page/fxdt.js', 'js/utils/env.js'], function (_export) {
+    /**
+     * Created by wushuyi on 2015/9/13.
+     */
+    'use strict';
+
+    var FxdtPage, env;
+
+    function register(router) {
+        router.on('/fxdt', function () {
+            env.fxdt_page = new FxdtPage();
+        });
+        router.on('after', '/fxdt', function () {
+            env.fxdt_page.destroy();
+            delete env.fxdt_page;
+        });
+    }
+
+    return {
+        setters: [function (_jsPageFxdtJs) {
+            FxdtPage = _jsPageFxdtJs['default'];
+        }, function (_jsUtilsEnvJs) {
+            env = _jsUtilsEnvJs['default'];
+        }],
+        execute: function () {
+            _export('default', register);
+        }
+    };
+});
 System.register('js/router/wd.js', ['js/page/wd.js', 'js/utils/env.js', 'js/router/utils.js'], function (_export) {
     /**
      * Created by wushuyi on 2015/9/13.
@@ -19171,64 +19233,6 @@ System.register('js/router/wd.js', ['js/page/wd.js', 'js/utils/env.js', 'js/rout
             env = _jsUtilsEnvJs['default'];
         }, function (_jsRouterUtilsJs) {
             getRouter = _jsRouterUtilsJs.getRouter;
-        }],
-        execute: function () {
-            _export('default', register);
-        }
-    };
-});
-System.register('js/router/fxdt.js', ['js/page/fxdt.js', 'js/utils/env.js'], function (_export) {
-    /**
-     * Created by wushuyi on 2015/9/13.
-     */
-    'use strict';
-
-    var FxdtPage, env;
-
-    function register(router) {
-        router.on('/fxdt', function () {
-            env.fxdt_page = new FxdtPage();
-        });
-        router.on('after', '/fxdt', function () {
-            env.fxdt_page.destroy();
-            delete env.fxdt_page;
-        });
-    }
-
-    return {
-        setters: [function (_jsPageFxdtJs) {
-            FxdtPage = _jsPageFxdtJs['default'];
-        }, function (_jsUtilsEnvJs) {
-            env = _jsUtilsEnvJs['default'];
-        }],
-        execute: function () {
-            _export('default', register);
-        }
-    };
-});
-System.register('js/router/pyq.js', ['js/page/pyq.js', 'js/utils/env.js'], function (_export) {
-    /**
-     * Created by wushuyi on 2015/9/13.
-     */
-    'use strict';
-
-    var GftjPage, env;
-
-    function register(router) {
-        router.on('/pyq', function () {
-            env.pyq_page = new GftjPage();
-        });
-        router.on('after', '/pyq', function () {
-            env.pyq_page.destroy();
-            delete env.pyq_page;
-        });
-    }
-
-    return {
-        setters: [function (_jsPagePyqJs) {
-            GftjPage = _jsPagePyqJs['default'];
-        }, function (_jsUtilsEnvJs) {
-            env = _jsUtilsEnvJs['default'];
         }],
         execute: function () {
             _export('default', register);
@@ -19319,10 +19323,24 @@ System.register('js/router/modal.js', ['js/page/modal.js', 'js/utils/env.js'], f
     var ModalManage, env;
 
     function register(router) {
-        var route = '/modal/:page';
-        router.on(route, function (page) {
+        var route = '/modal/set';
+        router.on(route, function () {
             env.modal = new ModalManage({
-                modal: page,
+                modal: 'set',
+                close_router: env.page_status && env.page_status.now || '/wd'
+            });
+            //env.wd_page = new WdPage();
+        });
+        router.on('after', 'route', function () {
+            //env.wd_page.destroy();
+            //delete env.wd_page;
+        });
+
+        route = '/modal/address/:id';
+        router.on(route, function (id) {
+            env.modal = new ModalManage({
+                id: id,
+                modal: 'address',
                 close_router: env.page_status && env.page_status.now || '/wd'
             });
             //env.wd_page = new WdPage();
@@ -19430,15 +19448,13 @@ System.register('js/router/follow.js', ['js/page/follow.js', 'js/utils/env.js', 
         }
     };
 });
-System.register('js/page/wd.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base.js', 'libs/iScroll/5.1.3/iscroll-lite.js'], function (_export) {
+System.register('js/page/fxdt.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base.js', 'libs/iScroll/5.1.3/iscroll-lite.js'], function (_export) {
     /**
      * Created by wushuyi on 2015/9/13.
      */
-
-    //import Swiper from 'Swiper'
     'use strict';
 
-    var $, BasePage, iScroll, WdPage;
+    var $, BasePage, iScroll, FxdtPage;
     return {
         setters: [function (_libsJquery214JqueryJs) {
             $ = _libsJquery214JqueryJs['default'];
@@ -19448,30 +19464,30 @@ System.register('js/page/wd.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base.j
             iScroll = _libsIScroll513IscrollLiteJs['default'];
         }],
         execute: function () {
-            WdPage = (function (_BasePage) {
-                babelHelpers.inherits(WdPage, _BasePage);
+            FxdtPage = (function (_BasePage) {
+                babelHelpers.inherits(FxdtPage, _BasePage);
 
-                function WdPage() {
-                    babelHelpers.classCallCheck(this, WdPage);
+                function FxdtPage() {
+                    babelHelpers.classCallCheck(this, FxdtPage);
 
                     if (arguments[0] === false) {
                         return false;
                     }
-                    babelHelpers.get(Object.getPrototypeOf(WdPage.prototype), 'constructor', this).call(this, false);
+                    babelHelpers.get(Object.getPrototypeOf(FxdtPage.prototype), 'constructor', this).call(this, false);
                     this.initialize.apply(this, arguments);
                 }
 
-                babelHelpers.createClass(WdPage, [{
+                babelHelpers.createClass(FxdtPage, [{
                     key: 'initialize',
                     value: function initialize() {
-                        babelHelpers.get(Object.getPrototypeOf(WdPage.prototype), 'initialize', this).call(this);
+                        babelHelpers.get(Object.getPrototypeOf(FxdtPage.prototype), 'initialize', this).call(this);
                         var $el = {};
                         this.$el = $el;
                         var iscrolls = {};
                         this.iscrolls = iscrolls;
-                        $el.nav = $('.nav-item[data-router="/wd"]');
-                        $el.page = $('#page_wd');
-                        babelHelpers.get(Object.getPrototypeOf(WdPage.prototype), 'startPage', this).call(this);
+                        $el.nav = $('.nav-item[data-router="/fxdt"]');
+                        $el.page = $('#page_fxdt');
+                        babelHelpers.get(Object.getPrototypeOf(FxdtPage.prototype), 'startPage', this).call(this);
                         iscrolls.content = new iScroll($el.page.get(0));
                     }
                 }, {
@@ -19480,7 +19496,7 @@ System.register('js/page/wd.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base.j
                         var _this = this;
 
                         var iscrolls = this.iscrolls;
-                        babelHelpers.get(Object.getPrototypeOf(WdPage.prototype), 'endPage', this).call(this, function () {
+                        babelHelpers.get(Object.getPrototypeOf(FxdtPage.prototype), 'endPage', this).call(this, function () {
                             $.each(iscrolls, function (key, iscroll) {
                                 iscroll.destroy();
                             });
@@ -19488,10 +19504,73 @@ System.register('js/page/wd.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base.j
                         });
                     }
                 }]);
-                return WdPage;
+                return FxdtPage;
             })(BasePage);
 
-            _export('default', WdPage);
+            _export('default', FxdtPage);
+        }
+    };
+});
+System.register('js/page/pyq.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base.js', 'libs/iScroll/5.1.3/iscroll-lite.js'], function (_export) {
+    /**
+     * Created by wushuyi on 2015/9/13.
+     */
+    'use strict';
+
+    var $, BasePage, iScroll, PyqPage;
+    return {
+        setters: [function (_libsJquery214JqueryJs) {
+            $ = _libsJquery214JqueryJs['default'];
+        }, function (_jsPageBaseJs) {
+            BasePage = _jsPageBaseJs['default'];
+        }, function (_libsIScroll513IscrollLiteJs) {
+            iScroll = _libsIScroll513IscrollLiteJs['default'];
+        }],
+        execute: function () {
+            PyqPage = (function (_BasePage) {
+                babelHelpers.inherits(PyqPage, _BasePage);
+
+                function PyqPage() {
+                    babelHelpers.classCallCheck(this, PyqPage);
+
+                    if (arguments[0] === false) {
+                        return false;
+                    }
+                    babelHelpers.get(Object.getPrototypeOf(PyqPage.prototype), 'constructor', this).call(this, false);
+                    this.initialize.apply(this, arguments);
+                }
+
+                babelHelpers.createClass(PyqPage, [{
+                    key: 'initialize',
+                    value: function initialize() {
+                        babelHelpers.get(Object.getPrototypeOf(PyqPage.prototype), 'initialize', this).call(this);
+                        var $el = {};
+                        this.$el = $el;
+                        var iscrolls = {};
+                        this.iscrolls = iscrolls;
+                        $el.nav = $('.nav-item[data-router="/pyq"]');
+                        $el.page = $('#page_pyq');
+                        babelHelpers.get(Object.getPrototypeOf(PyqPage.prototype), 'startPage', this).call(this);
+                        iscrolls.content = new iScroll($el.page.get(0));
+                    }
+                }, {
+                    key: 'destroy',
+                    value: function destroy() {
+                        var _this = this;
+
+                        var iscrolls = this.iscrolls;
+                        babelHelpers.get(Object.getPrototypeOf(PyqPage.prototype), 'endPage', this).call(this, function () {
+                            $.each(iscrolls, function (key, iscroll) {
+                                iscroll.destroy();
+                            });
+                            _this.$el = null;
+                        });
+                    }
+                }]);
+                return PyqPage;
+            })(BasePage);
+
+            _export('default', PyqPage);
         }
     };
 });
@@ -19651,132 +19730,6 @@ System.register('js/router/utils.js', ['js/utils/env.js'], function (_export) {
         }
     };
 });
-System.register('js/page/fxdt.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base.js', 'libs/iScroll/5.1.3/iscroll-lite.js'], function (_export) {
-    /**
-     * Created by wushuyi on 2015/9/13.
-     */
-    'use strict';
-
-    var $, BasePage, iScroll, FxdtPage;
-    return {
-        setters: [function (_libsJquery214JqueryJs) {
-            $ = _libsJquery214JqueryJs['default'];
-        }, function (_jsPageBaseJs) {
-            BasePage = _jsPageBaseJs['default'];
-        }, function (_libsIScroll513IscrollLiteJs) {
-            iScroll = _libsIScroll513IscrollLiteJs['default'];
-        }],
-        execute: function () {
-            FxdtPage = (function (_BasePage) {
-                babelHelpers.inherits(FxdtPage, _BasePage);
-
-                function FxdtPage() {
-                    babelHelpers.classCallCheck(this, FxdtPage);
-
-                    if (arguments[0] === false) {
-                        return false;
-                    }
-                    babelHelpers.get(Object.getPrototypeOf(FxdtPage.prototype), 'constructor', this).call(this, false);
-                    this.initialize.apply(this, arguments);
-                }
-
-                babelHelpers.createClass(FxdtPage, [{
-                    key: 'initialize',
-                    value: function initialize() {
-                        babelHelpers.get(Object.getPrototypeOf(FxdtPage.prototype), 'initialize', this).call(this);
-                        var $el = {};
-                        this.$el = $el;
-                        var iscrolls = {};
-                        this.iscrolls = iscrolls;
-                        $el.nav = $('.nav-item[data-router="/fxdt"]');
-                        $el.page = $('#page_fxdt');
-                        babelHelpers.get(Object.getPrototypeOf(FxdtPage.prototype), 'startPage', this).call(this);
-                        iscrolls.content = new iScroll($el.page.get(0));
-                    }
-                }, {
-                    key: 'destroy',
-                    value: function destroy() {
-                        var _this = this;
-
-                        var iscrolls = this.iscrolls;
-                        babelHelpers.get(Object.getPrototypeOf(FxdtPage.prototype), 'endPage', this).call(this, function () {
-                            $.each(iscrolls, function (key, iscroll) {
-                                iscroll.destroy();
-                            });
-                            _this.$el = null;
-                        });
-                    }
-                }]);
-                return FxdtPage;
-            })(BasePage);
-
-            _export('default', FxdtPage);
-        }
-    };
-});
-System.register('js/page/pyq.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base.js', 'libs/iScroll/5.1.3/iscroll-lite.js'], function (_export) {
-    /**
-     * Created by wushuyi on 2015/9/13.
-     */
-    'use strict';
-
-    var $, BasePage, iScroll, PyqPage;
-    return {
-        setters: [function (_libsJquery214JqueryJs) {
-            $ = _libsJquery214JqueryJs['default'];
-        }, function (_jsPageBaseJs) {
-            BasePage = _jsPageBaseJs['default'];
-        }, function (_libsIScroll513IscrollLiteJs) {
-            iScroll = _libsIScroll513IscrollLiteJs['default'];
-        }],
-        execute: function () {
-            PyqPage = (function (_BasePage) {
-                babelHelpers.inherits(PyqPage, _BasePage);
-
-                function PyqPage() {
-                    babelHelpers.classCallCheck(this, PyqPage);
-
-                    if (arguments[0] === false) {
-                        return false;
-                    }
-                    babelHelpers.get(Object.getPrototypeOf(PyqPage.prototype), 'constructor', this).call(this, false);
-                    this.initialize.apply(this, arguments);
-                }
-
-                babelHelpers.createClass(PyqPage, [{
-                    key: 'initialize',
-                    value: function initialize() {
-                        babelHelpers.get(Object.getPrototypeOf(PyqPage.prototype), 'initialize', this).call(this);
-                        var $el = {};
-                        this.$el = $el;
-                        var iscrolls = {};
-                        this.iscrolls = iscrolls;
-                        $el.nav = $('.nav-item[data-router="/pyq"]');
-                        $el.page = $('#page_pyq');
-                        babelHelpers.get(Object.getPrototypeOf(PyqPage.prototype), 'startPage', this).call(this);
-                        iscrolls.content = new iScroll($el.page.get(0));
-                    }
-                }, {
-                    key: 'destroy',
-                    value: function destroy() {
-                        var _this = this;
-
-                        var iscrolls = this.iscrolls;
-                        babelHelpers.get(Object.getPrototypeOf(PyqPage.prototype), 'endPage', this).call(this, function () {
-                            $.each(iscrolls, function (key, iscroll) {
-                                iscroll.destroy();
-                            });
-                            _this.$el = null;
-                        });
-                    }
-                }]);
-                return PyqPage;
-            })(BasePage);
-
-            _export('default', PyqPage);
-        }
-    };
-});
 System.register('js/page/mapinfo.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base.js', 'libs/iScroll/5.1.3/iscroll-lite.js', 'js/utils/wsy_utils.js'], function (_export) {
     /**
      * Created by wushuyi on 2015/9/14.
@@ -19906,6 +19859,156 @@ System.register('js/page/mapinfo.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/b
         }
     };
 });
+System.register('js/page/modal.js', ['libs/jquery/2.1.4/jquery.js', 'js/utils/wsy_utils.js'], function (_export) {
+    /**
+     * Created by wushuyi on 2015/9/17.
+     */
+    'use strict';
+
+    var $, transitionEnd, ModalManage;
+    return {
+        setters: [function (_libsJquery214JqueryJs) {
+            $ = _libsJquery214JqueryJs['default'];
+        }, function (_jsUtilsWsy_utilsJs) {
+            transitionEnd = _jsUtilsWsy_utilsJs.transitionEnd;
+        }],
+        execute: function () {
+            ModalManage = (function () {
+                function ModalManage() {
+                    babelHelpers.classCallCheck(this, ModalManage);
+
+                    this.initialize.apply(this, arguments);
+                }
+
+                babelHelpers.createClass(ModalManage, [{
+                    key: 'initialize',
+                    value: function initialize(options) {
+                        var $el = {};
+                        this.$el = $el;
+                        $el.modalBox = $('#modal-box');
+                        this['modal_' + options.modal](options);
+                    }
+                }, {
+                    key: 'modal_set',
+                    value: function modal_set(options) {
+                        var $el = this.$el;
+
+                        $el.modal = $('#modal-set');
+                        $el.modalBox.show();
+                        $el.close = $el.modal.find('.close');
+
+                        $el.close.attr('data-router', options.close_router);
+                        $el.close.on('tap', function () {
+                            $el.modal.removeClass('active');
+                        });
+
+                        $el.modal.one(transitionEnd, function () {
+                            $el.modal.one(transitionEnd, function () {
+                                $el.modalBox.hide();
+                            });
+                        });
+
+                        setTimeout(function () {
+                            $el.modal.addClass('active');
+                        }, 100);
+                    }
+                }, {
+                    key: 'modal_address',
+                    value: function modal_address(options) {
+                        var $el = this.$el;
+
+                        $el.modal = $('#modal-address');
+                        $el.modalBox.show();
+                        $el.close = $el.modal.find('.close');
+
+                        $el.close.attr('data-router', options.close_router);
+                        $el.close.on('tap', function () {
+                            $el.modal.removeClass('active');
+                        });
+
+                        //$el.modal.one(transitionEnd, function () {
+                        //    $el.modal.one(transitionEnd, function () {
+                        //        $el.modalBox.hide();
+                        //    });
+                        //});
+
+                        setTimeout(function () {
+                            $el.modal.addClass('active');
+                        }, 100);
+                    }
+                }]);
+                return ModalManage;
+            })();
+
+            _export('default', ModalManage);
+        }
+    };
+});
+System.register('js/page/wd.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base.js', 'libs/iScroll/5.1.3/iscroll-lite.js'], function (_export) {
+    /**
+     * Created by wushuyi on 2015/9/13.
+     */
+
+    //import Swiper from 'Swiper'
+    'use strict';
+
+    var $, BasePage, iScroll, WdPage;
+    return {
+        setters: [function (_libsJquery214JqueryJs) {
+            $ = _libsJquery214JqueryJs['default'];
+        }, function (_jsPageBaseJs) {
+            BasePage = _jsPageBaseJs['default'];
+        }, function (_libsIScroll513IscrollLiteJs) {
+            iScroll = _libsIScroll513IscrollLiteJs['default'];
+        }],
+        execute: function () {
+            WdPage = (function (_BasePage) {
+                babelHelpers.inherits(WdPage, _BasePage);
+
+                function WdPage() {
+                    babelHelpers.classCallCheck(this, WdPage);
+
+                    if (arguments[0] === false) {
+                        return false;
+                    }
+                    babelHelpers.get(Object.getPrototypeOf(WdPage.prototype), 'constructor', this).call(this, false);
+                    this.initialize.apply(this, arguments);
+                }
+
+                babelHelpers.createClass(WdPage, [{
+                    key: 'initialize',
+                    value: function initialize() {
+                        babelHelpers.get(Object.getPrototypeOf(WdPage.prototype), 'initialize', this).call(this);
+                        var $el = {};
+                        this.$el = $el;
+                        var iscrolls = {};
+                        this.iscrolls = iscrolls;
+                        $el.nav = $('.nav-item[data-router="/wd"]');
+                        $el.page = $('#page_wd');
+                        babelHelpers.get(Object.getPrototypeOf(WdPage.prototype), 'startPage', this).call(this);
+                        iscrolls.content = new iScroll($el.page.get(0));
+                    }
+                }, {
+                    key: 'destroy',
+                    value: function destroy() {
+                        var _this = this;
+
+                        var iscrolls = this.iscrolls;
+                        babelHelpers.get(Object.getPrototypeOf(WdPage.prototype), 'endPage', this).call(this, function () {
+                            $.each(iscrolls, function (key, iscroll) {
+                                iscroll.destroy();
+                            });
+                            _this.$el = null;
+                        });
+                    }
+                }]);
+                return WdPage;
+            })(BasePage);
+
+            _export('default', WdPage);
+        }
+    };
+});
 System.register('js/page/maplist.js', ['libs/jquery/2.1.4/jquery.js', 'libs/Swiper/3.1.2/js/swiper.js', 'js/page/base.js', 'libs/iScroll/5.1.3/iscroll-lite.js', 'js/utils/env.js'], function (_export) {
     /**
      * Created by wushuyi on 2015/9/13.
@@ -19977,67 +20080,6 @@ System.register('js/page/maplist.js', ['libs/jquery/2.1.4/jquery.js', 'libs/Swip
             })(BasePage);
 
             _export('default', MapListPage);
-        }
-    };
-});
-System.register('js/page/modal.js', ['libs/jquery/2.1.4/jquery.js', 'js/utils/wsy_utils.js'], function (_export) {
-    /**
-     * Created by wushuyi on 2015/9/17.
-     */
-    'use strict';
-
-    var $, transitionEnd, ModalManage;
-    return {
-        setters: [function (_libsJquery214JqueryJs) {
-            $ = _libsJquery214JqueryJs['default'];
-        }, function (_jsUtilsWsy_utilsJs) {
-            transitionEnd = _jsUtilsWsy_utilsJs.transitionEnd;
-        }],
-        execute: function () {
-            ModalManage = (function () {
-                function ModalManage() {
-                    babelHelpers.classCallCheck(this, ModalManage);
-
-                    this.initialize.apply(this, arguments);
-                }
-
-                babelHelpers.createClass(ModalManage, [{
-                    key: 'initialize',
-                    value: function initialize(options) {
-                        var $el = {};
-                        this.$el = $el;
-                        $el.modalBox = $('#modal-box');
-                        this['modal_' + options.modal](options);
-                    }
-                }, {
-                    key: 'modal_set',
-                    value: function modal_set(options) {
-                        var $el = this.$el;
-
-                        $el.modal = $('#modal-set');
-                        $el.modalBox.show();
-                        $el.close = $el.modal.find('.close');
-
-                        $el.close.attr('data-router', options.close_router);
-                        $el.close.on('tap', function () {
-                            $el.modal.removeClass('active');
-                        });
-
-                        $el.modal.one(transitionEnd, function () {
-                            $el.modal.one(transitionEnd, function () {
-                                $el.modalBox.hide();
-                            });
-                        });
-
-                        setTimeout(function () {
-                            $el.modal.addClass('active');
-                        }, 100);
-                    }
-                }]);
-                return ModalManage;
-            })();
-
-            _export('default', ModalManage);
         }
     };
 });
@@ -20230,33 +20272,33 @@ System.register('js/page/base.js', ['libs/jquery/2.1.4/jquery.js', 'libs/lodash.
                 }, {
                     key: 'initGoolgeMap',
                     value: function initGoolgeMap() {
-                        if (env.gmap) {
-                            return false;
-                        }
-                        var $map = $('#map');
-                        env.mainlayout.on('moveStart', function () {
-                            $map.height('100%');
-                            //google.maps.event.trigger(env.gmap, 'resize');
-                        });
-                        env.mainlayout.on('moveEnd', function (res) {
-                            $map.height(res);
-                        });
-                        if (!window.google) {
-                            return false;
-                        }
-                        env.gmap = new google.maps.Map($map.get(0), {
-                            center: new google.maps.LatLng(27.653981735563498, 117.98527836799622),
-                            zoom: 14,
-                            disableDefaultUI: true
-                        });
-
-                        env.mainlayout.on('moveEnd', function (res) {
-                            google.maps.event.trigger(env.gmap, 'resize');
-                        });
-                        var $map_xjdd = $('<div id="map-xjdd">新建地点</div>');
-                        var $map_dw = $('<div id="map-dw">定位</div>');
-                        var $map_ctl = $('<div id="map-ctl"></div>').append($map_xjdd).append($map_dw);
-                        env.gmap.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push($map_ctl.get(0));
+                        /*        if (env.gmap) {
+                                    return false;
+                                }
+                                let $map = $('#map');
+                                env.mainlayout.on('moveStart', function () {
+                                    $map.height('100%');
+                                    //google.maps.event.trigger(env.gmap, 'resize');
+                                });
+                                env.mainlayout.on('moveEnd', function (res) {
+                                    $map.height(res);
+                                });
+                                if (!window.google) {
+                                    return false;
+                                }
+                                env.gmap = new google.maps.Map($map.get(0), {
+                                    center: new google.maps.LatLng(27.653981735563498, 117.98527836799622),
+                                    zoom: 14,
+                                    disableDefaultUI: true,
+                                });
+                        
+                                env.mainlayout.on('moveEnd', function (res) {
+                                    google.maps.event.trigger(env.gmap, 'resize');
+                                });
+                                let $map_xjdd = $('<div id="map-xjdd">新建地点</div>');
+                                let $map_dw = $('<div id="map-dw">定位</div>');
+                                let $map_ctl = $('<div id="map-ctl"></div>').append($map_xjdd).append($map_dw);
+                                env.gmap.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push($map_ctl.get(0));*/
                     }
                 }, {
                     key: 'initRouterEvent',
@@ -20621,9 +20663,9 @@ System.register('js/component/main_layout.js', ['libs/jquery/2.1.4/jquery.js', '
                         this.$el.main.css({
                             top: res + 'px'
                         });
-                        /* this.$el.map.css({
-                         height: res + 'px'
-                         });*/
+                        this.$el.map.css({
+                            height: res + 'px'
+                        });
                         this.emit('review');
                     }
                 }, {
@@ -20652,7 +20694,6 @@ System.register('js/component/main_layout.js', ['libs/jquery/2.1.4/jquery.js', '
                                     self.emit('moveStart');
                                 },
                                 progress: function progress() {
-                                    //console.log(num++);
                                     self.emit('review');
                                 },
                                 complete: function complete() {
@@ -20661,21 +20702,14 @@ System.register('js/component/main_layout.js', ['libs/jquery/2.1.4/jquery.js', '
                                 }
                             }
                         });
-                        /* this.$el.map.velocity({
-                         properties: {
-                         height: res
-                         },
-                         options: {
-                         mobileHA: false,
-                         progress: function () {
-                         //console.log(num++);
-                         self.emit('review');
-                         },
-                         complete: function () {
-                         self.lock = false;
-                         }
-                         }
-                         });*/
+                        this.$el.map.velocity({
+                            properties: {
+                                height: res
+                            },
+                            options: {
+                                mobileHA: false
+                            }
+                        });
                     }
                 }, {
                     key: 'destroy',

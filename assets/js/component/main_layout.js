@@ -169,9 +169,9 @@ class MainLayout extends EventEmitter {
         this.$el.main.css({
             top: res + 'px'
         });
-        /* this.$el.map.css({
-         height: res + 'px'
-         });*/
+        this.$el.map.css({
+            height: res + 'px'
+        });
         this.emit('review');
     }
 
@@ -199,30 +199,22 @@ class MainLayout extends EventEmitter {
                     self.emit('moveStart');
                 },
                 progress: function () {
-                    //console.log(num++);
                     self.emit('review');
                 },
                 complete: function () {
                     self.lock = false;
-                    self.emit('moveEnd',  self.oldRes);
+                    self.emit('moveEnd', self.oldRes);
                 }
             }
         });
-        /* this.$el.map.velocity({
-         properties: {
-         height: res
-         },
-         options: {
-         mobileHA: false,
-         progress: function () {
-         //console.log(num++);
-         self.emit('review');
-         },
-         complete: function () {
-         self.lock = false;
-         }
-         }
-         });*/
+        this.$el.map.velocity({
+            properties: {
+                height: res
+            },
+            options: {
+                mobileHA: false
+            }
+        });
     }
 
     destroy() {

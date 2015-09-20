@@ -40,7 +40,7 @@ class PageBase {
     }
 
     initGoolgeMap() {
-        if (env.gmap) {
+/*        if (env.gmap) {
             return false;
         }
         let $map = $('#map');
@@ -66,7 +66,7 @@ class PageBase {
         let $map_xjdd = $('<div id="map-xjdd">新建地点</div>');
         let $map_dw = $('<div id="map-dw">定位</div>');
         let $map_ctl = $('<div id="map-ctl"></div>').append($map_xjdd).append($map_dw);
-        env.gmap.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push($map_ctl.get(0));
+        env.gmap.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push($map_ctl.get(0));*/
     }
 
     initRouterEvent() {
