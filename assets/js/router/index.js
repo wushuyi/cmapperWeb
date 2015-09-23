@@ -12,9 +12,18 @@ import {default as register_modal} from './modal.js'
 import {default as register_role} from './role.js'
 import {default as  register_follow} from './follow.js'
 import env from '../utils/env.js'
+import {routeHistory, getRouter} from './utils.js'
 
 export let router = new Director.Router();
+router.configure({
+    before: function () {
+        console.log('before');
+        routeHistory.push(getRouter());
+        window.routeHistory = routeHistory;
+    }
+});
 env.router = router;
+env.first_page = '/gftj';
 function register_all() {
     register_gftj(router);
     register_pyq(router);

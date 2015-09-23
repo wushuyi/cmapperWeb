@@ -5,12 +5,18 @@ import {default as FxdtPage} from '../page/fxdt.js'
 import env from '../utils/env.js'
 
 function register(router) {
-    router.on('/fxdt', function () {
-        env.fxdt_page = new FxdtPage();
+    let route = '/fxdt';
+    let page = 'fxdt_page';
+
+    router.on(route, function (id) {
+        if (env[page]) {
+            return false;
+        }
+        env[page] = new FxdtPage();
     });
-    router.on('after', '/fxdt', function () {
-        env.fxdt_page.destroy();
-        delete env.fxdt_page;
+    router.on('after', route, function () {
+        env[page].destroy();
+        delete env[page];
     });
 }
 

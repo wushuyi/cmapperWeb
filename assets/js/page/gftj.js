@@ -47,7 +47,7 @@ class GftjPage extends BasePage {
         let $el = this.$el;
         let iscrolls = this.iscrolls;
 
-        let reset_horizontal = function($element){
+        let reset_horizontal = function ($element) {
             let $child = $($element.children()[0]);
             let $grand_child = $($child.children()[0]);
 
@@ -74,21 +74,24 @@ class GftjPage extends BasePage {
             scrollY: false,
         });
 
-        env.mainlayout.on('review', function(){
+        this.onReview = function () {
             iscrolls.content.refresh();
-        });
+        };
+        env.mainlayout.on('review', this.onReview);
     }
 
     destroy() {
+        let self = this;
         let iscrolls = this.iscrolls;
 
         super.endPage(()=> {
+            env.mainlayout.off('review', self.onReview);
             $.each(iscrolls, function (key, iscroll) {
                 iscroll.destroy();
             });
 
-            this.my_swiper.destroy();
-            this.$el = null;
+            self.my_swiper.destroy();
+            self.$el = null;
         });
     }
 

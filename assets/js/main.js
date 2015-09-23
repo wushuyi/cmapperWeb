@@ -5,12 +5,8 @@ import $ from 'jquery'
 import {default as register_all, router} from './router/index.js'
 import env from './utils/env.js'
 
-$(document.body).on('touchmove', (evt) => {
+$('#nav, .prevent_touch').on('touchstart', (evt) => {
     evt.preventDefault();
-});
-
-$('.wrapper').on('touchmove', (evt) => {
-    evt.stopPropagation();
 });
 register_all();
 router.init('/gftj');

@@ -5,32 +5,35 @@ import {default as ModalManage} from '../page/modal.js'
 import env from '../utils/env.js'
 
 function register(router) {
-    let route = '/modal/set';
-    router.on(route, function () {
-        env.modal = new ModalManage({
-            modal: 'set',
-            close_router: env.page_status && env.page_status.now || '/wd'
+    {
+        let route = '/modal/set';
+        let page = 'set_modal';
+        router.on(route, function () {
+            env[page] = new ModalManage({
+                modal: 'set',
+            });
         });
-        //env.wd_page = new WdPage();
-    });
-    router.on('after', 'route', function () {
-        //env.wd_page.destroy();
-        //delete env.wd_page;
-    });
+        router.on('after', route, function () {
+            env[page].destory();
+            delete env[page];
+        });
+    }
 
-    route = '/modal/address/:id';
-    router.on(route, function (id) {
-        env.modal = new ModalManage({
-            id: id,
-            modal: 'address',
-            close_router: env.page_status && env.page_status.now || '/wd'
+    {
+        let route = '/modal/address/:id';
+        let page = 'address_modal';
+        router.on(route, function (id) {
+            env[page] = new ModalManage({
+                id: id,
+                modal: 'address',
+            });
         });
-        //env.wd_page = new WdPage();
-    });
-    router.on('after', 'route', function () {
-        //env.wd_page.destroy();
-        //delete env.wd_page;
-    });
+        router.on('after', route, function () {
+            env[page].destory();
+            delete env[page];
+        });
+    }
+
 }
 
 export default register;

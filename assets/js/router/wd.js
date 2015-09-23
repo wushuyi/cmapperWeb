@@ -7,24 +7,26 @@ import {getRouter} from './utils.js'
 
 function register(router) {
     let route = '/wd';
-    router.on('before', route, function () {
-        env.page_status = env.page_status || {};
-        env.page_status.now = getRouter();
-    });
+    let page = 'wd_page';
+
     router.on(route, function () {
-        if(env.wd_page){
+        if (env[page]) {
             return false;
         }
-        env.wd_page = new WdPage();
+        env[page] = new WdPage();
     });
     router.on('after', route, function () {
-        env.page_status = env.page_status || {};
-        env.page_status.prve = route;
-        if(env.router.getRoute(0) === 'modal'){
+        let nowRoute = getRouter();
+        if (nowRoute.indexOf('/modal') !== -1) {
+            setTimeout(function () {
+                env[page].destroy();
+                delete env[page];
+            }, 500);
             return false;
         }
-        env.wd_page.destroy();
-        delete env.wd_page;
+
+        env[page].destroy();
+        delete env[page];
     });
 }
 

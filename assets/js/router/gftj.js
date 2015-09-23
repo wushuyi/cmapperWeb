@@ -3,21 +3,21 @@
  */
 import {default as GftjPage} from '../page/gftj.js'
 import env from '../utils/env.js'
+import {routeHistory, getRouter} from './utils.js'
 
 function register(router) {
     let route = '/gftj';
-    router.on('before', route, function () {
-        env.page_status = env.page_status || {};
-        env.page_status.now = route;
-    });
-    router.on(route, function () {
-        env.gftj_page = new GftjPage();
+    let page = 'gftj_page';
+
+    router.on(route, function (id) {
+        if (env[page]) {
+            return false;
+        }
+        env[page] = new GftjPage();
     });
     router.on('after', route, function () {
-        env.page_status = env.page_status || {};
-        env.page_status.prve = route;
-        env.gftj_page.destroy();
-        delete env.gftj_page;
+        env[page].destroy();
+        delete env[page];
     });
 }
 

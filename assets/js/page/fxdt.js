@@ -4,6 +4,7 @@
 import $ from 'jquery'
 import {default as BasePage} from './base.js'
 import iScroll from 'iScroll';
+import {default as env} from '../utils/env.js'
 
 
 class FxdtPage extends BasePage {
@@ -25,15 +26,22 @@ class FxdtPage extends BasePage {
         $el.page = $('#page_fxdt');
         super.startPage();
         iscrolls.content = new iScroll($el.page.get(0));
+        this.onReview = function () {
+            iscrolls.content.refresh();
+        };
+        env.mainlayout.on('review', this.onReview);
     }
 
     destroy() {
+        let self = this;
         let iscrolls = this.iscrolls;
+
         super.endPage(() => {
+            env.mainlayout.off('review', self.onReview);
             $.each(iscrolls, function (key, iscroll) {
                 iscroll.destroy();
             });
-            this.$el = null;
+            self.$el = null;
         });
     }
 

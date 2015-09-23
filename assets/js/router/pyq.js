@@ -1,16 +1,22 @@
 /**
  * Created by wushuyi on 2015/9/13.
  */
-import {default as GftjPage} from '../page/pyq.js'
+import {default as PyqPage} from '../page/pyq.js'
 import env from '../utils/env.js'
 
 function register(router) {
-    router.on('/pyq', function () {
-        env.pyq_page = new GftjPage();
+    let route = '/pyq';
+    let page = 'pyq_page';
+
+    router.on(route, function () {
+        if (env[page]) {
+            return false;
+        }
+        env[page] = new PyqPage();
     });
-    router.on('after', '/pyq', function () {
-        env.pyq_page.destroy();
-        delete env.pyq_page;
+    router.on('after', route, function () {
+        env[page].destroy();
+        delete env[page];
     });
 }
 

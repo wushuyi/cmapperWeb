@@ -6,6 +6,7 @@ import Swiper from 'Swiper'
 import {default as BasePage} from './base.js'
 import iScroll from 'iScroll';
 import env from '../utils/env.js'
+import {routeHistory} from '../router/utils.js'
 
 
 class MapListPage extends BasePage {
@@ -27,9 +28,14 @@ class MapListPage extends BasePage {
         $el.close = $el.page.find('.tab-close');
         $el.tabArchives = $el.page.find('.tab-archives');
         super.startPage();
-        $el.close.attr('data-router', options.close_route);
-        $el.close.on('tap', function(){
-            delete env.mapinfo_close_route;
+        $el.close.one('tap.maplist', function () {
+            let list = routeHistory.get('all');
+            let route;
+            do {
+                route = list.pop();
+                console.log('pop:', route)
+            } while (route && route.indexOf('/mapinfo') !== -1);
+            env.router.setRoute(route || env.first_page);
         });
         $el.tabArchives.attr('data-router', '/mapinfo/archives/' + options.id);
 

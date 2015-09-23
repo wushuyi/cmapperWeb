@@ -4,6 +4,8 @@
 import $ from 'jquery'
 import {default as BasePage} from './base.js'
 import iScroll from 'iScroll';
+import {routeHistory} from '../router/utils.js'
+import {default as env} from '../utils/env.js'
 
 
 class FollowPage extends BasePage {
@@ -23,14 +25,21 @@ class FollowPage extends BasePage {
         this.iscrolls = iscrolls;
         $el.page = $('#page_follow');
         $el.close = $el.page.find('.close');
-        $el.close.attr('data-router', options.close_router);
+        $el.close.one('tap.followpage', function () {
+            routeHistory.goback();
+        });
         super.startPage();
         iscrolls.content = new iScroll($el.page.get(0));
     }
 
     destroy() {
+        let self = this;
+        let $el = this.$el;
         let iscrolls = this.iscrolls;
         super.endPage(() => {
+            $.each($el, function (key, el) {
+                el.off('.followpage');
+            });
             $.each(iscrolls, function (key, iscroll) {
                 iscroll.destroy();
             });

@@ -3,6 +3,8 @@
  */
 import $ from 'jquery'
 import {transitionEnd} from '../utils/wsy_utils.js'
+import {routeHistory} from '../router/utils.js'
+import {default as env} from '../utils/env.js'
 
 class ModalManage {
 
@@ -24,15 +26,9 @@ class ModalManage {
         $el.modalBox.show();
         $el.close = $el.modal.find('.close');
 
-        $el.close.attr('data-router', options.close_router);
-        $el.close.on('tap', function () {
+        $el.close.on('tap.modalmanage', function () {
             $el.modal.removeClass('active');
-        });
-
-        $el.modal.one(transitionEnd, function () {
-            $el.modal.one(transitionEnd, function () {
-                $el.modalBox.hide();
-            });
+            routeHistory.goback();
         });
 
         setTimeout(function () {
@@ -47,20 +43,24 @@ class ModalManage {
         $el.modalBox.show();
         $el.close = $el.modal.find('.close');
 
-        $el.close.attr('data-router', options.close_router);
-        $el.close.on('tap', function () {
+        $el.close.one('tap.modalmanage', function () {
             $el.modal.removeClass('active');
+            routeHistory.goback();
         });
-
-        //$el.modal.one(transitionEnd, function () {
-        //    $el.modal.one(transitionEnd, function () {
-        //        $el.modalBox.hide();
-        //    });
-        //});
 
         setTimeout(function () {
             $el.modal.addClass('active');
         }, 100);
+    }
+
+    destory() {
+        let $el = this.$el;
+        $.each($el, function (key, el) {
+            el.off('.modalmanage');
+        });
+        setTimeout(function () {
+            $el.modalBox.hide();
+        }, 400);
     }
 }
 

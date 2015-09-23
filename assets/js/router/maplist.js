@@ -3,22 +3,31 @@
  */
 import {default as MapListPage} from '../page/maplist.js'
 import env from '../utils/env.js'
+import {getRouter} from './utils.js'
 
 function register(router) {
     let route = 'mapinfo/list/:id';
-    router.on(route, function () {
-        env.page_status = env.page_status || {};
-        env.page_status.now = route;
-    });
+    let page = 'mapinfo_list_page';
+
     router.on(route, function (id) {
-        env.maplist_page = new MapListPage({
+        if (env[page]) {
+            return false;
+        }
+        env[page] = new MapListPage({
             id: id,
-            close_route: env.mapinfo_close_route
         });
     });
     router.on('after', route, function () {
-        env.maplist_page.destroy();
-        delete env.maplist_page;
+        let nowRoute = getRouter();
+        if (nowRoute.indexOf('/modal') !== -1) {
+            setTimeout(function () {
+                env[page].destroy();
+                delete env[page];
+            }, 500);
+            return false;
+        }
+        env[page].destroy();
+        delete env[page];
     });
 }
 

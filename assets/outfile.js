@@ -10822,6 +10822,162 @@ if (typeof(module) !== 'undefined') {
 
 _removeDefine();
 })();
+System.registerDynamic("js/utils/jquery.touch.js", [], false, function(__require, __exports, __module) {
+  var _retrieveGlobal = System.get("@@global-helpers").prepareGlobal(__module.id, null, null);
+  (function() {
+    (function($) {
+      "use strict";
+      var touch = {},
+          touchTimeout,
+          tapTimeout,
+          swipeTimeout,
+          longTapTimeout,
+          longTapDelay = 750,
+          gesture;
+      function swipeDirection(x1, x2, y1, y2) {
+        return Math.abs(x1 - x2) >= Math.abs(y1 - y2) ? (x1 - x2 > 0 ? 'Left' : 'Right') : (y1 - y2 > 0 ? 'Up' : 'Down');
+      }
+      function longTap() {
+        longTapTimeout = null;
+        if (touch.last) {
+          touch.el.trigger('longTap');
+          touch = {};
+        }
+      }
+      function cancelLongTap() {
+        if (longTapTimeout) {
+          clearTimeout(longTapTimeout);
+        }
+        longTapTimeout = null;
+      }
+      function cancelAll() {
+        if (touchTimeout) {
+          clearTimeout(touchTimeout);
+        }
+        if (tapTimeout) {
+          clearTimeout(tapTimeout);
+        }
+        if (swipeTimeout) {
+          clearTimeout(swipeTimeout);
+        }
+        if (longTapTimeout) {
+          clearTimeout(longTapTimeout);
+        }
+        touchTimeout = tapTimeout = swipeTimeout = longTapTimeout = null;
+        touch = {};
+      }
+      function isPrimaryTouch(event) {
+        return (event.pointerType === 'touch' || event.pointerType === event.MSPOINTER_TYPE_TOUCH) && event.isPrimary;
+      }
+      function isPointerEventType(e, type) {
+        return (e.type === 'pointer' + type || e.type.toLowerCase() === 'mspointer' + type);
+      }
+      $(document).ready(function() {
+        var now,
+            delta,
+            deltaX = 0,
+            deltaY = 0,
+            firstTouch,
+            _isPointerType;
+        if ('MSGesture' in window) {
+          gesture = new MSGesture();
+          gesture.target = document.body;
+        }
+        $(document).on('MSGestureEnd', function(e) {
+          e = e.originalEvent;
+          var swipeDirectionFromVelocity = e.velocityX > 1 ? 'Right' : e.velocityX < -1 ? 'Left' : e.velocityY > 1 ? 'Down' : e.velocityY < -1 ? 'Up' : null;
+          if (swipeDirectionFromVelocity) {
+            touch.el.trigger('swipe');
+            touch.el.trigger('swipe' + swipeDirectionFromVelocity);
+          }
+        }).on('touchstart MSPointerDown pointerdown', function(e) {
+          e = e.originalEvent;
+          if ((_isPointerType = isPointerEventType(e, 'down')) && !isPrimaryTouch(e)) {
+            return;
+          }
+          firstTouch = _isPointerType ? e : e.touches[0];
+          if (e.touches && e.touches.length === 1 && touch.x2) {
+            touch.x2 = undefined;
+            touch.y2 = undefined;
+          }
+          now = Date.now();
+          delta = now - (touch.last || now);
+          touch.el = $('tagName' in firstTouch.target ? firstTouch.target : firstTouch.target.parentNode);
+          if (touchTimeout) {
+            clearTimeout(touchTimeout);
+          }
+          touch.x1 = firstTouch.pageX;
+          touch.y1 = firstTouch.pageY;
+          if (delta > 0 && delta <= 250) {
+            touch.isDoubleTap = true;
+          }
+          touch.last = now;
+          longTapTimeout = setTimeout(longTap, longTapDelay);
+          if (gesture && _isPointerType) {
+            gesture.addPointer(e.pointerId);
+          }
+        }).on('touchmove MSPointerMove pointermove', function(e) {
+          e = e.originalEvent;
+          if ((_isPointerType = isPointerEventType(e, 'move')) && !isPrimaryTouch(e)) {
+            return;
+          }
+          firstTouch = _isPointerType ? e : e.touches[0];
+          cancelLongTap();
+          touch.x2 = firstTouch.pageX;
+          touch.y2 = firstTouch.pageY;
+          deltaX += Math.abs(touch.x1 - touch.x2);
+          deltaY += Math.abs(touch.y1 - touch.y2);
+        }).on('touchend MSPointerUp pointerup', function(e) {
+          e = e.originalEvent;
+          if ((_isPointerType = isPointerEventType(e, 'up')) && !isPrimaryTouch(e)) {
+            return;
+          }
+          cancelLongTap();
+          if ((touch.x2 && Math.abs(touch.x1 - touch.x2) > 30) || (touch.y2 && Math.abs(touch.y1 - touch.y2) > 30)) {
+            swipeTimeout = setTimeout(function() {
+              touch.el.trigger('swipe');
+              touch.el.trigger('swipe' + (swipeDirection(touch.x1, touch.x2, touch.y1, touch.y2)));
+              touch = {};
+            }, 0);
+          } else if ('last' in touch) {
+            if (deltaX < 30 && deltaY < 30) {
+              tapTimeout = setTimeout(function() {
+                var event = $.Event('tap');
+                event.cancelTouch = cancelAll;
+                touch.el.trigger(event);
+                if (touch.isDoubleTap) {
+                  if (touch.el) {
+                    touch.el.trigger('doubleTap');
+                  }
+                  touch = {};
+                } else {
+                  touchTimeout = setTimeout(function() {
+                    touchTimeout = null;
+                    if (touch.el) {
+                      touch.el.trigger('singleTap');
+                    }
+                    touch = {};
+                  }, 250);
+                }
+              }, 0);
+            } else {
+              touch = {};
+            }
+          }
+          deltaX = deltaY = 0;
+        }).on('touchcancel MSPointerCancel pointercancel', cancelAll);
+        $(window).on('scroll', cancelAll);
+      });
+      $.each(['swipe', 'swipeLeft', 'swipeRight', 'swipeUp', 'swipeDown', 'doubleTap', 'tap', 'singleTap', 'longTap'], function(index, item) {
+        $.fn[item] = function(callback) {
+          return this.on(item, callback);
+        };
+      });
+    })(jQuery);
+  })();
+  return _retrieveGlobal();
+});
+
 (function() {
 var _removeDefine = System.get("@@amd-helpers").createDefine();
 ;
@@ -15129,370 +15285,6 @@ var _removeDefine = System.get("@@amd-helpers").createDefine();
 
 _removeDefine();
 })();
-System.registerDynamic("js/utils/jquery.touch.js", [], false, function(__require, __exports, __module) {
-  var _retrieveGlobal = System.get("@@global-helpers").prepareGlobal(__module.id, null, null);
-  (function() {
-    (function($) {
-      "use strict";
-      var touch = {},
-          touchTimeout,
-          tapTimeout,
-          swipeTimeout,
-          longTapTimeout,
-          longTapDelay = 750,
-          gesture;
-      function swipeDirection(x1, x2, y1, y2) {
-        return Math.abs(x1 - x2) >= Math.abs(y1 - y2) ? (x1 - x2 > 0 ? 'Left' : 'Right') : (y1 - y2 > 0 ? 'Up' : 'Down');
-      }
-      function longTap() {
-        longTapTimeout = null;
-        if (touch.last) {
-          touch.el.trigger('longTap');
-          touch = {};
-        }
-      }
-      function cancelLongTap() {
-        if (longTapTimeout) {
-          clearTimeout(longTapTimeout);
-        }
-        longTapTimeout = null;
-      }
-      function cancelAll() {
-        if (touchTimeout) {
-          clearTimeout(touchTimeout);
-        }
-        if (tapTimeout) {
-          clearTimeout(tapTimeout);
-        }
-        if (swipeTimeout) {
-          clearTimeout(swipeTimeout);
-        }
-        if (longTapTimeout) {
-          clearTimeout(longTapTimeout);
-        }
-        touchTimeout = tapTimeout = swipeTimeout = longTapTimeout = null;
-        touch = {};
-      }
-      function isPrimaryTouch(event) {
-        return (event.pointerType === 'touch' || event.pointerType === event.MSPOINTER_TYPE_TOUCH) && event.isPrimary;
-      }
-      function isPointerEventType(e, type) {
-        return (e.type === 'pointer' + type || e.type.toLowerCase() === 'mspointer' + type);
-      }
-      $(document).ready(function() {
-        var now,
-            delta,
-            deltaX = 0,
-            deltaY = 0,
-            firstTouch,
-            _isPointerType;
-        if ('MSGesture' in window) {
-          gesture = new MSGesture();
-          gesture.target = document.body;
-        }
-        $(document).on('MSGestureEnd', function(e) {
-          e = e.originalEvent;
-          var swipeDirectionFromVelocity = e.velocityX > 1 ? 'Right' : e.velocityX < -1 ? 'Left' : e.velocityY > 1 ? 'Down' : e.velocityY < -1 ? 'Up' : null;
-          if (swipeDirectionFromVelocity) {
-            touch.el.trigger('swipe');
-            touch.el.trigger('swipe' + swipeDirectionFromVelocity);
-          }
-        }).on('touchstart MSPointerDown pointerdown', function(e) {
-          e = e.originalEvent;
-          if ((_isPointerType = isPointerEventType(e, 'down')) && !isPrimaryTouch(e)) {
-            return;
-          }
-          firstTouch = _isPointerType ? e : e.touches[0];
-          if (e.touches && e.touches.length === 1 && touch.x2) {
-            touch.x2 = undefined;
-            touch.y2 = undefined;
-          }
-          now = Date.now();
-          delta = now - (touch.last || now);
-          touch.el = $('tagName' in firstTouch.target ? firstTouch.target : firstTouch.target.parentNode);
-          if (touchTimeout) {
-            clearTimeout(touchTimeout);
-          }
-          touch.x1 = firstTouch.pageX;
-          touch.y1 = firstTouch.pageY;
-          if (delta > 0 && delta <= 250) {
-            touch.isDoubleTap = true;
-          }
-          touch.last = now;
-          longTapTimeout = setTimeout(longTap, longTapDelay);
-          if (gesture && _isPointerType) {
-            gesture.addPointer(e.pointerId);
-          }
-        }).on('touchmove MSPointerMove pointermove', function(e) {
-          e = e.originalEvent;
-          if ((_isPointerType = isPointerEventType(e, 'move')) && !isPrimaryTouch(e)) {
-            return;
-          }
-          firstTouch = _isPointerType ? e : e.touches[0];
-          cancelLongTap();
-          touch.x2 = firstTouch.pageX;
-          touch.y2 = firstTouch.pageY;
-          deltaX += Math.abs(touch.x1 - touch.x2);
-          deltaY += Math.abs(touch.y1 - touch.y2);
-        }).on('touchend MSPointerUp pointerup', function(e) {
-          e = e.originalEvent;
-          if ((_isPointerType = isPointerEventType(e, 'up')) && !isPrimaryTouch(e)) {
-            return;
-          }
-          cancelLongTap();
-          if ((touch.x2 && Math.abs(touch.x1 - touch.x2) > 30) || (touch.y2 && Math.abs(touch.y1 - touch.y2) > 30)) {
-            swipeTimeout = setTimeout(function() {
-              touch.el.trigger('swipe');
-              touch.el.trigger('swipe' + (swipeDirection(touch.x1, touch.x2, touch.y1, touch.y2)));
-              touch = {};
-            }, 0);
-          } else if ('last' in touch) {
-            if (deltaX < 30 && deltaY < 30) {
-              tapTimeout = setTimeout(function() {
-                var event = $.Event('tap');
-                event.cancelTouch = cancelAll;
-                touch.el.trigger(event);
-                if (touch.isDoubleTap) {
-                  if (touch.el) {
-                    touch.el.trigger('doubleTap');
-                  }
-                  touch = {};
-                } else {
-                  touchTimeout = setTimeout(function() {
-                    touchTimeout = null;
-                    if (touch.el) {
-                      touch.el.trigger('singleTap');
-                    }
-                    touch = {};
-                  }, 250);
-                }
-              }, 0);
-            } else {
-              touch = {};
-            }
-          }
-          deltaX = deltaY = 0;
-        }).on('touchcancel MSPointerCancel pointercancel', cancelAll);
-        $(window).on('scroll', cancelAll);
-      });
-      $.each(['swipe', 'swipeLeft', 'swipeRight', 'swipeUp', 'swipeDown', 'doubleTap', 'tap', 'singleTap', 'longTap'], function(index, item) {
-        $.fn[item] = function(callback) {
-          return this.on(item, callback);
-        };
-      });
-    })(jQuery);
-  })();
-  return _retrieveGlobal();
-});
-
-(function() {
-var _removeDefine = System.get("@@amd-helpers").createDefine();
-(function() {
-  'use strict';
-  function EventEmitter() {}
-  var proto = EventEmitter.prototype;
-  var exports = this;
-  var originalGlobalValue = exports.EventEmitter;
-  function indexOfListener(listeners, listener) {
-    var i = listeners.length;
-    while (i--) {
-      if (listeners[i].listener === listener) {
-        return i;
-      }
-    }
-    return -1;
-  }
-  function alias(name) {
-    return function aliasClosure() {
-      return this[name].apply(this, arguments);
-    };
-  }
-  proto.getListeners = function getListeners(evt) {
-    var events = this._getEvents();
-    var response;
-    var key;
-    if (evt instanceof RegExp) {
-      response = {};
-      for (key in events) {
-        if (events.hasOwnProperty(key) && evt.test(key)) {
-          response[key] = events[key];
-        }
-      }
-    } else {
-      response = events[evt] || (events[evt] = []);
-    }
-    return response;
-  };
-  proto.flattenListeners = function flattenListeners(listeners) {
-    var flatListeners = [];
-    var i;
-    for (i = 0; i < listeners.length; i += 1) {
-      flatListeners.push(listeners[i].listener);
-    }
-    return flatListeners;
-  };
-  proto.getListenersAsObject = function getListenersAsObject(evt) {
-    var listeners = this.getListeners(evt);
-    var response;
-    if (listeners instanceof Array) {
-      response = {};
-      response[evt] = listeners;
-    }
-    return response || listeners;
-  };
-  proto.addListener = function addListener(evt, listener) {
-    var listeners = this.getListenersAsObject(evt);
-    var listenerIsWrapped = typeof listener === 'object';
-    var key;
-    for (key in listeners) {
-      if (listeners.hasOwnProperty(key) && indexOfListener(listeners[key], listener) === -1) {
-        listeners[key].push(listenerIsWrapped ? listener : {
-          listener: listener,
-          once: false
-        });
-      }
-    }
-    return this;
-  };
-  proto.on = alias('addListener');
-  proto.addOnceListener = function addOnceListener(evt, listener) {
-    return this.addListener(evt, {
-      listener: listener,
-      once: true
-    });
-  };
-  proto.once = alias('addOnceListener');
-  proto.defineEvent = function defineEvent(evt) {
-    this.getListeners(evt);
-    return this;
-  };
-  proto.defineEvents = function defineEvents(evts) {
-    for (var i = 0; i < evts.length; i += 1) {
-      this.defineEvent(evts[i]);
-    }
-    return this;
-  };
-  proto.removeListener = function removeListener(evt, listener) {
-    var listeners = this.getListenersAsObject(evt);
-    var index;
-    var key;
-    for (key in listeners) {
-      if (listeners.hasOwnProperty(key)) {
-        index = indexOfListener(listeners[key], listener);
-        if (index !== -1) {
-          listeners[key].splice(index, 1);
-        }
-      }
-    }
-    return this;
-  };
-  proto.off = alias('removeListener');
-  proto.addListeners = function addListeners(evt, listeners) {
-    return this.manipulateListeners(false, evt, listeners);
-  };
-  proto.removeListeners = function removeListeners(evt, listeners) {
-    return this.manipulateListeners(true, evt, listeners);
-  };
-  proto.manipulateListeners = function manipulateListeners(remove, evt, listeners) {
-    var i;
-    var value;
-    var single = remove ? this.removeListener : this.addListener;
-    var multiple = remove ? this.removeListeners : this.addListeners;
-    if (typeof evt === 'object' && !(evt instanceof RegExp)) {
-      for (i in evt) {
-        if (evt.hasOwnProperty(i) && (value = evt[i])) {
-          if (typeof value === 'function') {
-            single.call(this, i, value);
-          } else {
-            multiple.call(this, i, value);
-          }
-        }
-      }
-    } else {
-      i = listeners.length;
-      while (i--) {
-        single.call(this, evt, listeners[i]);
-      }
-    }
-    return this;
-  };
-  proto.removeEvent = function removeEvent(evt) {
-    var type = typeof evt;
-    var events = this._getEvents();
-    var key;
-    if (type === 'string') {
-      delete events[evt];
-    } else if (evt instanceof RegExp) {
-      for (key in events) {
-        if (events.hasOwnProperty(key) && evt.test(key)) {
-          delete events[key];
-        }
-      }
-    } else {
-      delete this._events;
-    }
-    return this;
-  };
-  proto.removeAllListeners = alias('removeEvent');
-  proto.emitEvent = function emitEvent(evt, args) {
-    var listeners = this.getListenersAsObject(evt);
-    var listener;
-    var i;
-    var key;
-    var response;
-    for (key in listeners) {
-      if (listeners.hasOwnProperty(key)) {
-        i = listeners[key].length;
-        while (i--) {
-          listener = listeners[key][i];
-          if (listener.once === true) {
-            this.removeListener(evt, listener.listener);
-          }
-          response = listener.listener.apply(this, args || []);
-          if (response === this._getOnceReturnValue()) {
-            this.removeListener(evt, listener.listener);
-          }
-        }
-      }
-    }
-    return this;
-  };
-  proto.trigger = alias('emitEvent');
-  proto.emit = function emit(evt) {
-    var args = Array.prototype.slice.call(arguments, 1);
-    return this.emitEvent(evt, args);
-  };
-  proto.setOnceReturnValue = function setOnceReturnValue(value) {
-    this._onceReturnValue = value;
-    return this;
-  };
-  proto._getOnceReturnValue = function _getOnceReturnValue() {
-    if (this.hasOwnProperty('_onceReturnValue')) {
-      return this._onceReturnValue;
-    } else {
-      return true;
-    }
-  };
-  proto._getEvents = function _getEvents() {
-    return this._events || (this._events = {});
-  };
-  EventEmitter.noConflict = function noConflict() {
-    exports.EventEmitter = originalGlobalValue;
-    return EventEmitter;
-  };
-  if (typeof define === 'function' && define.amd) {
-    define("libs/EventEmitter/4.2.9/EventEmitter.js", [], function() {
-      return EventEmitter;
-    });
-  } else if (typeof module === 'object' && module.exports) {
-    module.exports = EventEmitter;
-  } else {
-    exports.EventEmitter = EventEmitter;
-  }
-}.call(this));
-
-_removeDefine();
-})();
 (function() {
 var _removeDefine = System.get("@@amd-helpers").createDefine();
 (function(window, document, exportName, undefined) {
@@ -16849,6 +16641,214 @@ var _removeDefine = System.get("@@amd-helpers").createDefine();
     window[exportName] = Hammer;
   }
 })(window, document, 'Hammer');
+
+_removeDefine();
+})();
+(function() {
+var _removeDefine = System.get("@@amd-helpers").createDefine();
+(function() {
+  'use strict';
+  function EventEmitter() {}
+  var proto = EventEmitter.prototype;
+  var exports = this;
+  var originalGlobalValue = exports.EventEmitter;
+  function indexOfListener(listeners, listener) {
+    var i = listeners.length;
+    while (i--) {
+      if (listeners[i].listener === listener) {
+        return i;
+      }
+    }
+    return -1;
+  }
+  function alias(name) {
+    return function aliasClosure() {
+      return this[name].apply(this, arguments);
+    };
+  }
+  proto.getListeners = function getListeners(evt) {
+    var events = this._getEvents();
+    var response;
+    var key;
+    if (evt instanceof RegExp) {
+      response = {};
+      for (key in events) {
+        if (events.hasOwnProperty(key) && evt.test(key)) {
+          response[key] = events[key];
+        }
+      }
+    } else {
+      response = events[evt] || (events[evt] = []);
+    }
+    return response;
+  };
+  proto.flattenListeners = function flattenListeners(listeners) {
+    var flatListeners = [];
+    var i;
+    for (i = 0; i < listeners.length; i += 1) {
+      flatListeners.push(listeners[i].listener);
+    }
+    return flatListeners;
+  };
+  proto.getListenersAsObject = function getListenersAsObject(evt) {
+    var listeners = this.getListeners(evt);
+    var response;
+    if (listeners instanceof Array) {
+      response = {};
+      response[evt] = listeners;
+    }
+    return response || listeners;
+  };
+  proto.addListener = function addListener(evt, listener) {
+    var listeners = this.getListenersAsObject(evt);
+    var listenerIsWrapped = typeof listener === 'object';
+    var key;
+    for (key in listeners) {
+      if (listeners.hasOwnProperty(key) && indexOfListener(listeners[key], listener) === -1) {
+        listeners[key].push(listenerIsWrapped ? listener : {
+          listener: listener,
+          once: false
+        });
+      }
+    }
+    return this;
+  };
+  proto.on = alias('addListener');
+  proto.addOnceListener = function addOnceListener(evt, listener) {
+    return this.addListener(evt, {
+      listener: listener,
+      once: true
+    });
+  };
+  proto.once = alias('addOnceListener');
+  proto.defineEvent = function defineEvent(evt) {
+    this.getListeners(evt);
+    return this;
+  };
+  proto.defineEvents = function defineEvents(evts) {
+    for (var i = 0; i < evts.length; i += 1) {
+      this.defineEvent(evts[i]);
+    }
+    return this;
+  };
+  proto.removeListener = function removeListener(evt, listener) {
+    var listeners = this.getListenersAsObject(evt);
+    var index;
+    var key;
+    for (key in listeners) {
+      if (listeners.hasOwnProperty(key)) {
+        index = indexOfListener(listeners[key], listener);
+        if (index !== -1) {
+          listeners[key].splice(index, 1);
+        }
+      }
+    }
+    return this;
+  };
+  proto.off = alias('removeListener');
+  proto.addListeners = function addListeners(evt, listeners) {
+    return this.manipulateListeners(false, evt, listeners);
+  };
+  proto.removeListeners = function removeListeners(evt, listeners) {
+    return this.manipulateListeners(true, evt, listeners);
+  };
+  proto.manipulateListeners = function manipulateListeners(remove, evt, listeners) {
+    var i;
+    var value;
+    var single = remove ? this.removeListener : this.addListener;
+    var multiple = remove ? this.removeListeners : this.addListeners;
+    if (typeof evt === 'object' && !(evt instanceof RegExp)) {
+      for (i in evt) {
+        if (evt.hasOwnProperty(i) && (value = evt[i])) {
+          if (typeof value === 'function') {
+            single.call(this, i, value);
+          } else {
+            multiple.call(this, i, value);
+          }
+        }
+      }
+    } else {
+      i = listeners.length;
+      while (i--) {
+        single.call(this, evt, listeners[i]);
+      }
+    }
+    return this;
+  };
+  proto.removeEvent = function removeEvent(evt) {
+    var type = typeof evt;
+    var events = this._getEvents();
+    var key;
+    if (type === 'string') {
+      delete events[evt];
+    } else if (evt instanceof RegExp) {
+      for (key in events) {
+        if (events.hasOwnProperty(key) && evt.test(key)) {
+          delete events[key];
+        }
+      }
+    } else {
+      delete this._events;
+    }
+    return this;
+  };
+  proto.removeAllListeners = alias('removeEvent');
+  proto.emitEvent = function emitEvent(evt, args) {
+    var listeners = this.getListenersAsObject(evt);
+    var listener;
+    var i;
+    var key;
+    var response;
+    for (key in listeners) {
+      if (listeners.hasOwnProperty(key)) {
+        i = listeners[key].length;
+        while (i--) {
+          listener = listeners[key][i];
+          if (listener.once === true) {
+            this.removeListener(evt, listener.listener);
+          }
+          response = listener.listener.apply(this, args || []);
+          if (response === this._getOnceReturnValue()) {
+            this.removeListener(evt, listener.listener);
+          }
+        }
+      }
+    }
+    return this;
+  };
+  proto.trigger = alias('emitEvent');
+  proto.emit = function emit(evt) {
+    var args = Array.prototype.slice.call(arguments, 1);
+    return this.emitEvent(evt, args);
+  };
+  proto.setOnceReturnValue = function setOnceReturnValue(value) {
+    this._onceReturnValue = value;
+    return this;
+  };
+  proto._getOnceReturnValue = function _getOnceReturnValue() {
+    if (this.hasOwnProperty('_onceReturnValue')) {
+      return this._onceReturnValue;
+    } else {
+      return true;
+    }
+  };
+  proto._getEvents = function _getEvents() {
+    return this._events || (this._events = {});
+  };
+  EventEmitter.noConflict = function noConflict() {
+    exports.EventEmitter = originalGlobalValue;
+    return EventEmitter;
+  };
+  if (typeof define === 'function' && define.amd) {
+    define("libs/EventEmitter/4.2.9/EventEmitter.js", [], function() {
+      return EventEmitter;
+    });
+  } else if (typeof module === 'object' && module.exports) {
+    module.exports = EventEmitter;
+  } else {
+    exports.EventEmitter = EventEmitter;
+  }
+}.call(this));
 
 _removeDefine();
 })();
@@ -19003,44 +19003,53 @@ var _removeDefine = System.get("@@amd-helpers").createDefine();
 _removeDefine();
 })();
 System.register('js/main.js', ['libs/jquery/2.1.4/jquery.js', 'js/router/index.js', 'js/utils/env.js'], function (_export) {
-    /**
-     * Created by wushuyi on 2015/9/13.
-     */
-    'use strict';
+  /**
+   * Created by wushuyi on 2015/9/13.
+   */
+  'use strict';
 
-    var $, register_all, router, env;
-    return {
-        setters: [function (_libsJquery214JqueryJs) {
-            $ = _libsJquery214JqueryJs['default'];
-        }, function (_jsRouterIndexJs) {
-            register_all = _jsRouterIndexJs['default'];
-            router = _jsRouterIndexJs.router;
-        }, function (_jsUtilsEnvJs) {
-            env = _jsUtilsEnvJs['default'];
-        }],
-        execute: function () {
+  var $, register_all, router, env;
+  return {
+    setters: [function (_libsJquery214JqueryJs) {
+      $ = _libsJquery214JqueryJs['default'];
+    }, function (_jsRouterIndexJs) {
+      register_all = _jsRouterIndexJs['default'];
+      router = _jsRouterIndexJs.router;
+    }, function (_jsUtilsEnvJs) {
+      env = _jsUtilsEnvJs['default'];
+    }],
+    execute: function () {
 
-            $(document.body).on('touchmove', function (evt) {
-                evt.preventDefault();
-            });
+      $('#nav, .prevent_touch').on('touchstart', function (evt) {
+        evt.preventDefault();
+      });
+      register_all();
+      router.init('/gftj');
 
-            $('.wrapper').on('touchmove', function (evt) {
-                evt.stopPropagation();
-            });
-            register_all();
-            router.init('/gftj');
-
-            window.env = env;
-        }
-    };
+      window.env = env;
+    }
+  };
 });
-System.register('js/router/index.js', ['libs/Director/1.2.8/director.js', 'js/router/gftj.js', 'js/router/pyq.js', 'js/router/fxdt.js', 'js/router/wd.js', 'js/router/mapinfo.js', 'js/router/maplist.js', 'js/router/modal.js', 'js/router/role.js', 'js/router/follow.js', 'js/utils/env.js'], function (_export) {
+System.register("js/utils/env.js", [], function (_export) {
+  /**
+   * Created by wushuyi on 2015/9/13.
+   */
+  "use strict";
+
+  return {
+    setters: [],
+    execute: function () {
+      _export("default", {});
+    }
+  };
+});
+System.register('js/router/index.js', ['libs/Director/1.2.8/director.js', 'js/router/gftj.js', 'js/router/pyq.js', 'js/router/fxdt.js', 'js/router/wd.js', 'js/router/mapinfo.js', 'js/router/maplist.js', 'js/router/modal.js', 'js/router/role.js', 'js/router/follow.js', 'js/utils/env.js', 'js/router/utils.js'], function (_export) {
     /**
      * Created by wushuyi on 2015/9/13.
      */
     'use strict';
 
-    var Director, register_gftj, register_pyq, register_fxdt, register_wd, register_mapinfo, register_maplist, register_modal, register_role, register_follow, env, router;
+    var Director, register_gftj, register_pyq, register_fxdt, register_wd, register_mapinfo, register_maplist, register_modal, register_role, register_follow, env, routeHistory, getRouter, router;
 
     function register_all() {
         register_gftj(router);
@@ -19077,92 +19086,25 @@ System.register('js/router/index.js', ['libs/Director/1.2.8/director.js', 'js/ro
             register_follow = _jsRouterFollowJs['default'];
         }, function (_jsUtilsEnvJs) {
             env = _jsUtilsEnvJs['default'];
+        }, function (_jsRouterUtilsJs) {
+            routeHistory = _jsRouterUtilsJs.routeHistory;
+            getRouter = _jsRouterUtilsJs.getRouter;
         }],
         execute: function () {
             router = new Director.Router();
 
             _export('router', router);
 
+            router.configure({
+                before: function before() {
+                    console.log('before');
+                    routeHistory.push(getRouter());
+                    window.routeHistory = routeHistory;
+                }
+            });
             env.router = router;
+            env.first_page = '/gftj';
             _export('default', register_all);
-        }
-    };
-});
-System.register("js/utils/env.js", [], function (_export) {
-  /**
-   * Created by wushuyi on 2015/9/13.
-   */
-  "use strict";
-
-  return {
-    setters: [],
-    execute: function () {
-      _export("default", {});
-    }
-  };
-});
-System.register('js/router/gftj.js', ['js/page/gftj.js', 'js/utils/env.js'], function (_export) {
-    /**
-     * Created by wushuyi on 2015/9/13.
-     */
-    'use strict';
-
-    var GftjPage, env;
-
-    function register(router) {
-        var route = '/gftj';
-        router.on('before', route, function () {
-            env.page_status = env.page_status || {};
-            env.page_status.now = route;
-        });
-        router.on(route, function () {
-            env.gftj_page = new GftjPage();
-        });
-        router.on('after', route, function () {
-            env.page_status = env.page_status || {};
-            env.page_status.prve = route;
-            env.gftj_page.destroy();
-            delete env.gftj_page;
-        });
-    }
-
-    return {
-        setters: [function (_jsPageGftjJs) {
-            GftjPage = _jsPageGftjJs['default'];
-        }, function (_jsUtilsEnvJs) {
-            env = _jsUtilsEnvJs['default'];
-        }],
-        execute: function () {
-            _export('default', register);
-        }
-    };
-});
-System.register('js/router/pyq.js', ['js/page/pyq.js', 'js/utils/env.js'], function (_export) {
-    /**
-     * Created by wushuyi on 2015/9/13.
-     */
-    'use strict';
-
-    var GftjPage, env;
-
-    function register(router) {
-        router.on('/pyq', function () {
-            env.pyq_page = new GftjPage();
-        });
-        router.on('after', '/pyq', function () {
-            env.pyq_page.destroy();
-            delete env.pyq_page;
-        });
-    }
-
-    return {
-        setters: [function (_jsPagePyqJs) {
-            GftjPage = _jsPagePyqJs['default'];
-        }, function (_jsUtilsEnvJs) {
-            env = _jsUtilsEnvJs['default'];
-        }],
-        execute: function () {
-            _export('default', register);
         }
     };
 });
@@ -19175,18 +19117,97 @@ System.register('js/router/fxdt.js', ['js/page/fxdt.js', 'js/utils/env.js'], fun
     var FxdtPage, env;
 
     function register(router) {
-        router.on('/fxdt', function () {
-            env.fxdt_page = new FxdtPage();
+        var route = '/fxdt';
+        var page = 'fxdt_page';
+
+        router.on(route, function (id) {
+            if (env[page]) {
+                return false;
+            }
+            env[page] = new FxdtPage();
         });
-        router.on('after', '/fxdt', function () {
-            env.fxdt_page.destroy();
-            delete env.fxdt_page;
+        router.on('after', route, function () {
+            env[page].destroy();
+            delete env[page];
         });
     }
 
     return {
         setters: [function (_jsPageFxdtJs) {
             FxdtPage = _jsPageFxdtJs['default'];
+        }, function (_jsUtilsEnvJs) {
+            env = _jsUtilsEnvJs['default'];
+        }],
+        execute: function () {
+            _export('default', register);
+        }
+    };
+});
+System.register('js/router/gftj.js', ['js/page/gftj.js', 'js/utils/env.js', 'js/router/utils.js'], function (_export) {
+    /**
+     * Created by wushuyi on 2015/9/13.
+     */
+    'use strict';
+
+    var GftjPage, env, routeHistory, getRouter;
+
+    function register(router) {
+        var route = '/gftj';
+        var page = 'gftj_page';
+
+        router.on(route, function (id) {
+            if (env[page]) {
+                return false;
+            }
+            env[page] = new GftjPage();
+        });
+        router.on('after', route, function () {
+            env[page].destroy();
+            delete env[page];
+        });
+    }
+
+    return {
+        setters: [function (_jsPageGftjJs) {
+            GftjPage = _jsPageGftjJs['default'];
+        }, function (_jsUtilsEnvJs) {
+            env = _jsUtilsEnvJs['default'];
+        }, function (_jsRouterUtilsJs) {
+            routeHistory = _jsRouterUtilsJs.routeHistory;
+            getRouter = _jsRouterUtilsJs.getRouter;
+        }],
+        execute: function () {
+            _export('default', register);
+        }
+    };
+});
+System.register('js/router/pyq.js', ['js/page/pyq.js', 'js/utils/env.js'], function (_export) {
+    /**
+     * Created by wushuyi on 2015/9/13.
+     */
+    'use strict';
+
+    var PyqPage, env;
+
+    function register(router) {
+        var route = '/pyq';
+        var page = 'pyq_page';
+
+        router.on(route, function () {
+            if (env[page]) {
+                return false;
+            }
+            env[page] = new PyqPage();
+        });
+        router.on('after', route, function () {
+            env[page].destroy();
+            delete env[page];
+        });
+    }
+
+    return {
+        setters: [function (_jsPagePyqJs) {
+            PyqPage = _jsPagePyqJs['default'];
         }, function (_jsUtilsEnvJs) {
             env = _jsUtilsEnvJs['default'];
         }],
@@ -19205,24 +19226,26 @@ System.register('js/router/wd.js', ['js/page/wd.js', 'js/utils/env.js', 'js/rout
 
     function register(router) {
         var route = '/wd';
-        router.on('before', route, function () {
-            env.page_status = env.page_status || {};
-            env.page_status.now = getRouter();
-        });
+        var page = 'wd_page';
+
         router.on(route, function () {
-            if (env.wd_page) {
+            if (env[page]) {
                 return false;
             }
-            env.wd_page = new WdPage();
+            env[page] = new WdPage();
         });
         router.on('after', route, function () {
-            env.page_status = env.page_status || {};
-            env.page_status.prve = route;
-            if (env.router.getRoute(0) === 'modal') {
+            var nowRoute = getRouter();
+            if (nowRoute.indexOf('/modal') !== -1) {
+                setTimeout(function () {
+                    env[page].destroy();
+                    delete env[page];
+                }, 500);
                 return false;
             }
-            env.wd_page.destroy();
-            delete env.wd_page;
+
+            env[page].destroy();
+            delete env[page];
         });
     }
 
@@ -19249,15 +19272,9 @@ System.register('js/router/mapinfo.js', ['js/page/mapinfo.js', 'js/utils/env.js'
 
     function register(router) {
         var route = '/mapinfo/archives/:id';
-        router.on(route, function () {
-            env.page_status = env.page_status || {};
-            env.page_status.now = route;
-        });
         router.on(route, function (id) {
-            env.mapinfo_close_route = env.page_status.prve;
             env.mapinfo_page = new MapInfoPage({
-                id: id,
-                close_route: env.mapinfo_close_route
+                id: id
             });
         });
         router.on('after', route, function () {
@@ -19277,29 +19294,37 @@ System.register('js/router/mapinfo.js', ['js/page/mapinfo.js', 'js/utils/env.js'
         }
     };
 });
-System.register('js/router/maplist.js', ['js/page/maplist.js', 'js/utils/env.js'], function (_export) {
+System.register('js/router/maplist.js', ['js/page/maplist.js', 'js/utils/env.js', 'js/router/utils.js'], function (_export) {
     /**
      * Created by wushuyi on 2015/9/14.
      */
     'use strict';
 
-    var MapListPage, env;
+    var MapListPage, env, getRouter;
 
     function register(router) {
         var route = 'mapinfo/list/:id';
-        router.on(route, function () {
-            env.page_status = env.page_status || {};
-            env.page_status.now = route;
-        });
+        var page = 'mapinfo_list_page';
+
         router.on(route, function (id) {
-            env.maplist_page = new MapListPage({
-                id: id,
-                close_route: env.mapinfo_close_route
+            if (env[page]) {
+                return false;
+            }
+            env[page] = new MapListPage({
+                id: id
             });
         });
         router.on('after', route, function () {
-            env.maplist_page.destroy();
-            delete env.maplist_page;
+            var nowRoute = getRouter();
+            if (nowRoute.indexOf('/modal') !== -1) {
+                setTimeout(function () {
+                    env[page].destroy();
+                    delete env[page];
+                }, 500);
+                return false;
+            }
+            env[page].destroy();
+            delete env[page];
         });
     }
 
@@ -19308,6 +19333,8 @@ System.register('js/router/maplist.js', ['js/page/maplist.js', 'js/utils/env.js'
             MapListPage = _jsPageMaplistJs['default'];
         }, function (_jsUtilsEnvJs) {
             env = _jsUtilsEnvJs['default'];
+        }, function (_jsRouterUtilsJs) {
+            getRouter = _jsRouterUtilsJs.getRouter;
         }],
         execute: function () {
             _export('default', register);
@@ -19323,32 +19350,38 @@ System.register('js/router/modal.js', ['js/page/modal.js', 'js/utils/env.js'], f
     var ModalManage, env;
 
     function register(router) {
-        var route = '/modal/set';
-        router.on(route, function () {
-            env.modal = new ModalManage({
-                modal: 'set',
-                close_router: env.page_status && env.page_status.now || '/wd'
-            });
-            //env.wd_page = new WdPage();
-        });
-        router.on('after', 'route', function () {
-            //env.wd_page.destroy();
-            //delete env.wd_page;
-        });
+        {
+            (function () {
+                var route = '/modal/set';
+                var page = 'set_modal';
+                router.on(route, function () {
+                    env[page] = new ModalManage({
+                        modal: 'set'
+                    });
+                });
+                router.on('after', route, function () {
+                    env[page].destory();
+                    delete env[page];
+                });
+            })();
+        }
 
-        route = '/modal/address/:id';
-        router.on(route, function (id) {
-            env.modal = new ModalManage({
-                id: id,
-                modal: 'address',
-                close_router: env.page_status && env.page_status.now || '/wd'
-            });
-            //env.wd_page = new WdPage();
-        });
-        router.on('after', 'route', function () {
-            //env.wd_page.destroy();
-            //delete env.wd_page;
-        });
+        {
+            (function () {
+                var route = '/modal/address/:id';
+                var page = 'address_modal';
+                router.on(route, function (id) {
+                    env[page] = new ModalManage({
+                        id: id,
+                        modal: 'address'
+                    });
+                });
+                router.on('after', route, function () {
+                    env[page].destory();
+                    delete env[page];
+                });
+            })();
+        }
     }
 
     return {
@@ -19362,32 +19395,29 @@ System.register('js/router/modal.js', ['js/page/modal.js', 'js/utils/env.js'], f
         }
     };
 });
-System.register('js/router/role.js', ['js/page/role.js', 'js/utils/env.js', 'js/router/utils.js'], function (_export) {
+System.register('js/router/role.js', ['js/page/role.js', 'js/utils/env.js'], function (_export) {
     /**
      * Created by wushuyi on 2015/9/18.
      */
     'use strict';
 
-    var RolePage, env, pageStatus, getRouter;
+    var RolePage, env;
 
     function register(router) {
         var route = '/role/:id';
-        router.on('before', route, function () {
-            pageStatus.set('now', getRouter());
-        });
+        var page = 'role_page';
+
         router.on(route, function (id) {
-            if (env.wd_role) {
+            if (env[page]) {
                 return false;
             }
-            env.wd_role = new RolePage({
-                id: id,
-                close_router: pageStatus.get('prve')
+            env[page] = new RolePage({
+                id: id
             });
         });
         router.on('after', route, function () {
-            pageStatus.set('prve', pageStatus.get('now'));
-            env.wd_role.destroy();
-            delete env.wd_role;
+            env[page].destroy();
+            delete env[page];
         });
     }
 
@@ -19396,9 +19426,6 @@ System.register('js/router/role.js', ['js/page/role.js', 'js/utils/env.js', 'js/
             RolePage = _jsPageRoleJs['default'];
         }, function (_jsUtilsEnvJs) {
             env = _jsUtilsEnvJs['default'];
-        }, function (_jsRouterUtilsJs) {
-            pageStatus = _jsRouterUtilsJs.pageStatus;
-            getRouter = _jsRouterUtilsJs.getRouter;
         }],
         execute: function () {
             _export('default', register);
@@ -19411,26 +19438,23 @@ System.register('js/router/follow.js', ['js/page/follow.js', 'js/utils/env.js', 
      */
     'use strict';
 
-    var FollowPage, env, pageStatus, getRouter;
+    var FollowPage, env, routeHistory;
 
     function register(router) {
         var route = '/follow/:type/:id';
-        router.on('before', route, function () {
-            pageStatus.set('now', getRouter());
-        });
+        var page = 'follow_page';
+
         router.on(route, function (id) {
-            if (env.follow_page) {
+            if (env[page]) {
                 return false;
             }
-            env.follow_page = new FollowPage({
-                id: id,
-                close_router: pageStatus.get('prve')
+            env[page] = new FollowPage({
+                id: id
             });
         });
         router.on('after', route, function () {
-            pageStatus.set('prve', pageStatus.get('now'));
-            env.follow_page.destroy();
-            delete env.follow_page;
+            env[page].destroy();
+            delete env[page];
         });
     }
 
@@ -19440,84 +19464,81 @@ System.register('js/router/follow.js', ['js/page/follow.js', 'js/utils/env.js', 
         }, function (_jsUtilsEnvJs) {
             env = _jsUtilsEnvJs['default'];
         }, function (_jsRouterUtilsJs) {
-            pageStatus = _jsRouterUtilsJs.pageStatus;
-            getRouter = _jsRouterUtilsJs.getRouter;
+            routeHistory = _jsRouterUtilsJs.routeHistory;
         }],
         execute: function () {
             _export('default', register);
         }
     };
 });
-System.register('js/page/fxdt.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base.js', 'libs/iScroll/5.1.3/iscroll-lite.js'], function (_export) {
+System.register('js/router/utils.js', ['js/utils/env.js'], function (_export) {
     /**
-     * Created by wushuyi on 2015/9/13.
+     * Created by wushuyi on 2015/9/18.
      */
     'use strict';
 
-    var $, BasePage, iScroll, FxdtPage;
+    var env, historyList, routeHistory;
+
+    _export('getRouter', getRouter);
+
+    function getRouter() {
+        var path = env.router.getRoute();
+        path.unshift('');
+        return path.join('/');
+    }
+
     return {
-        setters: [function (_libsJquery214JqueryJs) {
-            $ = _libsJquery214JqueryJs['default'];
-        }, function (_jsPageBaseJs) {
-            BasePage = _jsPageBaseJs['default'];
-        }, function (_libsIScroll513IscrollLiteJs) {
-            iScroll = _libsIScroll513IscrollLiteJs['default'];
+        setters: [function (_jsUtilsEnvJs) {
+            env = _jsUtilsEnvJs['default'];
         }],
         execute: function () {
-            FxdtPage = (function (_BasePage) {
-                babelHelpers.inherits(FxdtPage, _BasePage);
-
-                function FxdtPage() {
-                    babelHelpers.classCallCheck(this, FxdtPage);
-
-                    if (arguments[0] === false) {
+            historyList = [];
+            routeHistory = {
+                push: function push(route) {
+                    if (env.goback) {
+                        env.goback = false;
                         return false;
                     }
-                    babelHelpers.get(Object.getPrototypeOf(FxdtPage.prototype), 'constructor', this).call(this, false);
-                    this.initialize.apply(this, arguments);
+                    if (historyList.length > 100) {
+                        historyList.shift();
+                    }
+                    historyList.push(route);
+                },
+                goback: function goback(num) {
+                    env.goback = true;
+                    if (!num) {
+                        num = 1;
+                    }
+                    for (var i = 0; i < num; i++) {
+                        historyList.pop();
+                    }
+                    var route = historyList[historyList.length - 1] || '/gftj';
+                    env.router.setRoute(route);
+                },
+                get: function get(status) {
+                    if (status === 'now') {
+                        return historyList[historyList.length - 1];
+                    }
+                    if (status === 'prve') {
+                        return historyList[historyList.length - 2];
+                    }
+                    if (status === 'all') {
+                        return historyList;
+                    }
                 }
+            };
 
-                babelHelpers.createClass(FxdtPage, [{
-                    key: 'initialize',
-                    value: function initialize() {
-                        babelHelpers.get(Object.getPrototypeOf(FxdtPage.prototype), 'initialize', this).call(this);
-                        var $el = {};
-                        this.$el = $el;
-                        var iscrolls = {};
-                        this.iscrolls = iscrolls;
-                        $el.nav = $('.nav-item[data-router="/fxdt"]');
-                        $el.page = $('#page_fxdt');
-                        babelHelpers.get(Object.getPrototypeOf(FxdtPage.prototype), 'startPage', this).call(this);
-                        iscrolls.content = new iScroll($el.page.get(0));
-                    }
-                }, {
-                    key: 'destroy',
-                    value: function destroy() {
-                        var _this = this;
-
-                        var iscrolls = this.iscrolls;
-                        babelHelpers.get(Object.getPrototypeOf(FxdtPage.prototype), 'endPage', this).call(this, function () {
-                            $.each(iscrolls, function (key, iscroll) {
-                                iscroll.destroy();
-                            });
-                            _this.$el = null;
-                        });
-                    }
-                }]);
-                return FxdtPage;
-            })(BasePage);
-
-            _export('default', FxdtPage);
+            _export('routeHistory', routeHistory);
         }
     };
 });
-System.register('js/page/pyq.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base.js', 'libs/iScroll/5.1.3/iscroll-lite.js'], function (_export) {
+System.register('js/page/pyq.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base.js', 'libs/iScroll/5.1.3/iscroll-lite.js', 'js/utils/env.js'], function (_export) {
     /**
      * Created by wushuyi on 2015/9/13.
      */
     'use strict';
 
-    var $, BasePage, iScroll, PyqPage;
+    var $, BasePage, iScroll, env, PyqPage;
     return {
         setters: [function (_libsJquery214JqueryJs) {
             $ = _libsJquery214JqueryJs['default'];
@@ -19525,6 +19546,8 @@ System.register('js/page/pyq.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base.
             BasePage = _jsPageBaseJs['default'];
         }, function (_libsIScroll513IscrollLiteJs) {
             iScroll = _libsIScroll513IscrollLiteJs['default'];
+        }, function (_jsUtilsEnvJs) {
+            env = _jsUtilsEnvJs['default'];
         }],
         execute: function () {
             PyqPage = (function (_BasePage) {
@@ -19552,14 +19575,22 @@ System.register('js/page/pyq.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base.
                         $el.page = $('#page_pyq');
                         babelHelpers.get(Object.getPrototypeOf(PyqPage.prototype), 'startPage', this).call(this);
                         iscrolls.content = new iScroll($el.page.get(0));
+
+                        this.onReview = function () {
+                            iscrolls.content.refresh();
+                        };
+                        env.mainlayout.on('review', this.onReview);
                     }
                 }, {
                     key: 'destroy',
                     value: function destroy() {
                         var _this = this;
 
+                        var self = this;
                         var iscrolls = this.iscrolls;
+
                         babelHelpers.get(Object.getPrototypeOf(PyqPage.prototype), 'endPage', this).call(this, function () {
+                            env.mainlayout.off('review', self.onReview);
                             $.each(iscrolls, function (key, iscroll) {
                                 iscroll.destroy();
                             });
@@ -19571,6 +19602,76 @@ System.register('js/page/pyq.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base.
             })(BasePage);
 
             _export('default', PyqPage);
+        }
+    };
+});
+System.register('js/page/fxdt.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base.js', 'libs/iScroll/5.1.3/iscroll-lite.js', 'js/utils/env.js'], function (_export) {
+    /**
+     * Created by wushuyi on 2015/9/13.
+     */
+    'use strict';
+
+    var $, BasePage, iScroll, env, FxdtPage;
+    return {
+        setters: [function (_libsJquery214JqueryJs) {
+            $ = _libsJquery214JqueryJs['default'];
+        }, function (_jsPageBaseJs) {
+            BasePage = _jsPageBaseJs['default'];
+        }, function (_libsIScroll513IscrollLiteJs) {
+            iScroll = _libsIScroll513IscrollLiteJs['default'];
+        }, function (_jsUtilsEnvJs) {
+            env = _jsUtilsEnvJs['default'];
+        }],
+        execute: function () {
+            FxdtPage = (function (_BasePage) {
+                babelHelpers.inherits(FxdtPage, _BasePage);
+
+                function FxdtPage() {
+                    babelHelpers.classCallCheck(this, FxdtPage);
+
+                    if (arguments[0] === false) {
+                        return false;
+                    }
+                    babelHelpers.get(Object.getPrototypeOf(FxdtPage.prototype), 'constructor', this).call(this, false);
+                    this.initialize.apply(this, arguments);
+                }
+
+                babelHelpers.createClass(FxdtPage, [{
+                    key: 'initialize',
+                    value: function initialize() {
+                        babelHelpers.get(Object.getPrototypeOf(FxdtPage.prototype), 'initialize', this).call(this);
+                        var $el = {};
+                        this.$el = $el;
+                        var iscrolls = {};
+                        this.iscrolls = iscrolls;
+                        $el.nav = $('.nav-item[data-router="/fxdt"]');
+                        $el.page = $('#page_fxdt');
+                        babelHelpers.get(Object.getPrototypeOf(FxdtPage.prototype), 'startPage', this).call(this);
+                        iscrolls.content = new iScroll($el.page.get(0));
+                        this.onReview = function () {
+                            iscrolls.content.refresh();
+                        };
+                        env.mainlayout.on('review', this.onReview);
+                    }
+                }, {
+                    key: 'destroy',
+                    value: function destroy() {
+                        var self = this;
+                        var iscrolls = this.iscrolls;
+
+                        babelHelpers.get(Object.getPrototypeOf(FxdtPage.prototype), 'endPage', this).call(this, function () {
+                            env.mainlayout.off('review', self.onReview);
+                            $.each(iscrolls, function (key, iscroll) {
+                                iscroll.destroy();
+                            });
+                            self.$el = null;
+                        });
+                    }
+                }]);
+                return FxdtPage;
+            })(BasePage);
+
+            _export('default', FxdtPage);
         }
     };
 });
@@ -19666,24 +19767,25 @@ System.register('js/page/gftj.js', ['libs/jquery/2.1.4/jquery.js', 'libs/Swiper/
                             scrollY: false
                         });
 
-                        env.mainlayout.on('review', function () {
+                        this.onReview = function () {
                             iscrolls.content.refresh();
-                        });
+                        };
+                        env.mainlayout.on('review', this.onReview);
                     }
                 }, {
                     key: 'destroy',
                     value: function destroy() {
-                        var _this = this;
-
+                        var self = this;
                         var iscrolls = this.iscrolls;
 
                         babelHelpers.get(Object.getPrototypeOf(GftjPage.prototype), 'endPage', this).call(this, function () {
+                            env.mainlayout.off('review', self.onReview);
                             $.each(iscrolls, function (key, iscroll) {
                                 iscroll.destroy();
                             });
 
-                            _this.my_swiper.destroy();
-                            _this.$el = null;
+                            self.my_swiper.destroy();
+                            self.$el = null;
                         });
                     }
                 }]);
@@ -19694,49 +19796,85 @@ System.register('js/page/gftj.js', ['libs/jquery/2.1.4/jquery.js', 'libs/Swiper/
         }
     };
 });
-System.register('js/router/utils.js', ['js/utils/env.js'], function (_export) {
+System.register('js/page/wd.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base.js', 'libs/iScroll/5.1.3/iscroll-lite.js', 'js/utils/env.js'], function (_export) {
     /**
-     * Created by wushuyi on 2015/9/18.
+     * Created by wushuyi on 2015/9/13.
      */
     'use strict';
 
-    var env, pageStatus;
-
-    _export('getRouter', getRouter);
-
-    function getRouter() {
-        var path = env.router.getRoute();
-        path.unshift('');
-        return path.join('/');
-    }
-
+    //import Swiper from 'Swiper'
+    var $, BasePage, iScroll, env, WdPage;
     return {
-        setters: [function (_jsUtilsEnvJs) {
+        setters: [function (_libsJquery214JqueryJs) {
+            $ = _libsJquery214JqueryJs['default'];
+        }, function (_jsPageBaseJs) {
+            BasePage = _jsPageBaseJs['default'];
+        }, function (_libsIScroll513IscrollLiteJs) {
+            iScroll = _libsIScroll513IscrollLiteJs['default'];
+        }, function (_jsUtilsEnvJs) {
             env = _jsUtilsEnvJs['default'];
         }],
         execute: function () {
-            pageStatus = {
-                set: function set(sataus, router) {
-                    env.page_status = env.page_status || {};
-                    env.page_status[sataus] = router;
-                },
-                get: function get(status) {
-                    env.page_status = env.page_status || {};
-                    return env.page_status[status] || '';
-                }
-            };
+            WdPage = (function (_BasePage) {
+                babelHelpers.inherits(WdPage, _BasePage);
 
-            _export('pageStatus', pageStatus);
+                function WdPage() {
+                    babelHelpers.classCallCheck(this, WdPage);
+
+                    if (arguments[0] === false) {
+                        return false;
+                    }
+                    babelHelpers.get(Object.getPrototypeOf(WdPage.prototype), 'constructor', this).call(this, false);
+                    this.initialize.apply(this, arguments);
+                }
+
+                babelHelpers.createClass(WdPage, [{
+                    key: 'initialize',
+                    value: function initialize() {
+                        babelHelpers.get(Object.getPrototypeOf(WdPage.prototype), 'initialize', this).call(this);
+                        var $el = {};
+                        this.$el = $el;
+                        var iscrolls = {};
+                        this.iscrolls = iscrolls;
+                        $el.nav = $('.nav-item[data-router="/wd"]');
+                        $el.page = $('#page_wd');
+                        babelHelpers.get(Object.getPrototypeOf(WdPage.prototype), 'startPage', this).call(this);
+                        iscrolls.content = new iScroll($el.page.get(0));
+
+                        this.onReview = function () {
+                            iscrolls.content.refresh();
+                        };
+                        env.mainlayout.on('review', this.onReview);
+                    }
+                }, {
+                    key: 'destroy',
+                    value: function destroy() {
+                        var self = this;
+                        var iscrolls = this.iscrolls;
+                        var $el = this.$el;
+                        babelHelpers.get(Object.getPrototypeOf(WdPage.prototype), 'endPage', this).call(this, function () {
+                            env.mainlayout.off('review', self.onReview);
+                            $.each(iscrolls, function (key, iscroll) {
+                                iscroll.destroy();
+                            });
+                            self.$el = null;
+                        });
+                    }
+                }]);
+                return WdPage;
+            })(BasePage);
+
+            _export('default', WdPage);
         }
     };
 });
-System.register('js/page/mapinfo.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base.js', 'libs/iScroll/5.1.3/iscroll-lite.js', 'js/utils/wsy_utils.js'], function (_export) {
+System.register('js/page/mapinfo.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base.js', 'libs/iScroll/5.1.3/iscroll-lite.js', 'js/utils/wsy_utils.js', 'js/router/utils.js', 'js/utils/env.js'], function (_export) {
     /**
      * Created by wushuyi on 2015/9/14.
      */
     'use strict';
 
-    var $, BasePage, iScroll, proxy, MapInfoPage;
+    var $, BasePage, iScroll, proxy, routeHistory, env, MapInfoPage;
     return {
         setters: [function (_libsJquery214JqueryJs) {
             $ = _libsJquery214JqueryJs['default'];
@@ -19746,6 +19884,10 @@ System.register('js/page/mapinfo.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/b
             iScroll = _libsIScroll513IscrollLiteJs['default'];
         }, function (_jsUtilsWsy_utilsJs) {
             proxy = _jsUtilsWsy_utilsJs.proxy;
+        }, function (_jsRouterUtilsJs) {
+            routeHistory = _jsRouterUtilsJs.routeHistory;
+        }, function (_jsUtilsEnvJs) {
+            env = _jsUtilsEnvJs['default'];
         }],
         execute: function () {
             MapInfoPage = (function (_BasePage) {
@@ -19779,9 +19921,14 @@ System.register('js/page/mapinfo.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/b
                         babelHelpers.get(Object.getPrototypeOf(MapInfoPage.prototype), 'startPage', this).call(this);
                         iscrolls.content = new iScroll($el.page.get(0));
 
-                        $el.close.attr('data-router', options.close_route);
-                        $el.close.on('tap', function () {
-                            delete env.mapinfo_close_route;
+                        $el.close.one('tap.mapinfo', function () {
+                            var list = routeHistory.get('all');
+                            var route = undefined;
+                            do {
+                                route = list.pop();
+                                console.log('pop:', route);
+                            } while (route && route.indexOf('/mapinfo') !== -1);
+                            env.router.setRoute(route || env.first_page);
                         });
                         $el.tabList.attr('data-router', '/mapinfo/list/' + options.id);
                         var pullFunc = proxy(function () {
@@ -19792,14 +19939,14 @@ System.register('js/page/mapinfo.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/b
                                 this.pullUpAction();
                             }
                         }, this);
-                        iscrolls.content.on('scrollStart', function () {
-                            $el.page.one('touchend', pullFunc);
+                        iscrolls.content.on('scrollStart.mapinfo', function () {
+                            $el.page.one('touchend.mapinfo', pullFunc);
                         });
 
                         var $updata = $el.commentBox.find('.updata');
                         var $submit = $el.commentBox.find('.submit');
                         var $input = $el.commentBox.find('.input');
-                        $el.hotNumBox.find('.comment-num').one('tap', function () {
+                        $el.hotNumBox.one('tap.mapinfo', '.comment-num', function () {
                             $updata.velocity({
                                 height: 112
                             }, {
@@ -19808,7 +19955,7 @@ System.register('js/page/mapinfo.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/b
                                 }
                             });
                         });
-                        $submit.on('tap', function () {
+                        $submit.on('tap.mapinfo', function () {
                             $input.val('');
                         });
                     }
@@ -19841,14 +19988,18 @@ System.register('js/page/mapinfo.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/b
                 }, {
                     key: 'destroy',
                     value: function destroy() {
-                        var _this = this;
-
                         var iscrolls = this.iscrolls;
+                        var self = this;
+                        var $el = this.$el;
                         babelHelpers.get(Object.getPrototypeOf(MapInfoPage.prototype), 'endPage', this).call(this, function () {
+                            iscrolls.content.off('.mapinfo');
+                            $.each($el, function (index, el) {
+                                el.off('.mapinfo');
+                            });
                             $.each(iscrolls, function (key, iscroll) {
                                 iscroll.destroy();
                             });
-                            _this.$el = null;
+                            self.$el = null;
                         });
                     }
                 }]);
@@ -19859,163 +20010,13 @@ System.register('js/page/mapinfo.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/b
         }
     };
 });
-System.register('js/page/modal.js', ['libs/jquery/2.1.4/jquery.js', 'js/utils/wsy_utils.js'], function (_export) {
-    /**
-     * Created by wushuyi on 2015/9/17.
-     */
-    'use strict';
-
-    var $, transitionEnd, ModalManage;
-    return {
-        setters: [function (_libsJquery214JqueryJs) {
-            $ = _libsJquery214JqueryJs['default'];
-        }, function (_jsUtilsWsy_utilsJs) {
-            transitionEnd = _jsUtilsWsy_utilsJs.transitionEnd;
-        }],
-        execute: function () {
-            ModalManage = (function () {
-                function ModalManage() {
-                    babelHelpers.classCallCheck(this, ModalManage);
-
-                    this.initialize.apply(this, arguments);
-                }
-
-                babelHelpers.createClass(ModalManage, [{
-                    key: 'initialize',
-                    value: function initialize(options) {
-                        var $el = {};
-                        this.$el = $el;
-                        $el.modalBox = $('#modal-box');
-                        this['modal_' + options.modal](options);
-                    }
-                }, {
-                    key: 'modal_set',
-                    value: function modal_set(options) {
-                        var $el = this.$el;
-
-                        $el.modal = $('#modal-set');
-                        $el.modalBox.show();
-                        $el.close = $el.modal.find('.close');
-
-                        $el.close.attr('data-router', options.close_router);
-                        $el.close.on('tap', function () {
-                            $el.modal.removeClass('active');
-                        });
-
-                        $el.modal.one(transitionEnd, function () {
-                            $el.modal.one(transitionEnd, function () {
-                                $el.modalBox.hide();
-                            });
-                        });
-
-                        setTimeout(function () {
-                            $el.modal.addClass('active');
-                        }, 100);
-                    }
-                }, {
-                    key: 'modal_address',
-                    value: function modal_address(options) {
-                        var $el = this.$el;
-
-                        $el.modal = $('#modal-address');
-                        $el.modalBox.show();
-                        $el.close = $el.modal.find('.close');
-
-                        $el.close.attr('data-router', options.close_router);
-                        $el.close.on('tap', function () {
-                            $el.modal.removeClass('active');
-                        });
-
-                        //$el.modal.one(transitionEnd, function () {
-                        //    $el.modal.one(transitionEnd, function () {
-                        //        $el.modalBox.hide();
-                        //    });
-                        //});
-
-                        setTimeout(function () {
-                            $el.modal.addClass('active');
-                        }, 100);
-                    }
-                }]);
-                return ModalManage;
-            })();
-
-            _export('default', ModalManage);
-        }
-    };
-});
-System.register('js/page/wd.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base.js', 'libs/iScroll/5.1.3/iscroll-lite.js'], function (_export) {
-    /**
-     * Created by wushuyi on 2015/9/13.
-     */
-
-    //import Swiper from 'Swiper'
-    'use strict';
-
-    var $, BasePage, iScroll, WdPage;
-    return {
-        setters: [function (_libsJquery214JqueryJs) {
-            $ = _libsJquery214JqueryJs['default'];
-        }, function (_jsPageBaseJs) {
-            BasePage = _jsPageBaseJs['default'];
-        }, function (_libsIScroll513IscrollLiteJs) {
-            iScroll = _libsIScroll513IscrollLiteJs['default'];
-        }],
-        execute: function () {
-            WdPage = (function (_BasePage) {
-                babelHelpers.inherits(WdPage, _BasePage);
-
-                function WdPage() {
-                    babelHelpers.classCallCheck(this, WdPage);
-
-                    if (arguments[0] === false) {
-                        return false;
-                    }
-                    babelHelpers.get(Object.getPrototypeOf(WdPage.prototype), 'constructor', this).call(this, false);
-                    this.initialize.apply(this, arguments);
-                }
-
-                babelHelpers.createClass(WdPage, [{
-                    key: 'initialize',
-                    value: function initialize() {
-                        babelHelpers.get(Object.getPrototypeOf(WdPage.prototype), 'initialize', this).call(this);
-                        var $el = {};
-                        this.$el = $el;
-                        var iscrolls = {};
-                        this.iscrolls = iscrolls;
-                        $el.nav = $('.nav-item[data-router="/wd"]');
-                        $el.page = $('#page_wd');
-                        babelHelpers.get(Object.getPrototypeOf(WdPage.prototype), 'startPage', this).call(this);
-                        iscrolls.content = new iScroll($el.page.get(0));
-                    }
-                }, {
-                    key: 'destroy',
-                    value: function destroy() {
-                        var _this = this;
-
-                        var iscrolls = this.iscrolls;
-                        babelHelpers.get(Object.getPrototypeOf(WdPage.prototype), 'endPage', this).call(this, function () {
-                            $.each(iscrolls, function (key, iscroll) {
-                                iscroll.destroy();
-                            });
-                            _this.$el = null;
-                        });
-                    }
-                }]);
-                return WdPage;
-            })(BasePage);
-
-            _export('default', WdPage);
-        }
-    };
-});
-System.register('js/page/maplist.js', ['libs/jquery/2.1.4/jquery.js', 'libs/Swiper/3.1.2/js/swiper.js', 'js/page/base.js', 'libs/iScroll/5.1.3/iscroll-lite.js', 'js/utils/env.js'], function (_export) {
+System.register('js/page/maplist.js', ['libs/jquery/2.1.4/jquery.js', 'libs/Swiper/3.1.2/js/swiper.js', 'js/page/base.js', 'libs/iScroll/5.1.3/iscroll-lite.js', 'js/utils/env.js', 'js/router/utils.js'], function (_export) {
     /**
      * Created by wushuyi on 2015/9/13.
      */
     'use strict';
 
-    var $, Swiper, BasePage, iScroll, env, MapListPage;
+    var $, Swiper, BasePage, iScroll, env, routeHistory, MapListPage;
     return {
         setters: [function (_libsJquery214JqueryJs) {
             $ = _libsJquery214JqueryJs['default'];
@@ -20027,6 +20028,8 @@ System.register('js/page/maplist.js', ['libs/jquery/2.1.4/jquery.js', 'libs/Swip
             iScroll = _libsIScroll513IscrollLiteJs['default'];
         }, function (_jsUtilsEnvJs) {
             env = _jsUtilsEnvJs['default'];
+        }, function (_jsRouterUtilsJs) {
+            routeHistory = _jsRouterUtilsJs.routeHistory;
         }],
         execute: function () {
             MapListPage = (function (_BasePage) {
@@ -20054,9 +20057,14 @@ System.register('js/page/maplist.js', ['libs/jquery/2.1.4/jquery.js', 'libs/Swip
                         $el.close = $el.page.find('.tab-close');
                         $el.tabArchives = $el.page.find('.tab-archives');
                         babelHelpers.get(Object.getPrototypeOf(MapListPage.prototype), 'startPage', this).call(this);
-                        $el.close.attr('data-router', options.close_route);
-                        $el.close.on('tap', function () {
-                            delete env.mapinfo_close_route;
+                        $el.close.one('tap.maplist', function () {
+                            var list = routeHistory.get('all');
+                            var route = undefined;
+                            do {
+                                route = list.pop();
+                                console.log('pop:', route);
+                            } while (route && route.indexOf('/mapinfo') !== -1);
+                            env.router.setRoute(route || env.first_page);
                         });
                         $el.tabArchives.attr('data-router', '/mapinfo/archives/' + options.id);
 
@@ -20083,7 +20091,95 @@ System.register('js/page/maplist.js', ['libs/jquery/2.1.4/jquery.js', 'libs/Swip
         }
     };
 });
-System.register('js/page/role.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base.js', 'libs/iScroll/5.1.3/iscroll-lite.js'], function (_export) {
+System.register('js/page/modal.js', ['libs/jquery/2.1.4/jquery.js', 'js/utils/wsy_utils.js', 'js/router/utils.js', 'js/utils/env.js'], function (_export) {
+    /**
+     * Created by wushuyi on 2015/9/17.
+     */
+    'use strict';
+
+    var $, transitionEnd, routeHistory, env, ModalManage;
+    return {
+        setters: [function (_libsJquery214JqueryJs) {
+            $ = _libsJquery214JqueryJs['default'];
+        }, function (_jsUtilsWsy_utilsJs) {
+            transitionEnd = _jsUtilsWsy_utilsJs.transitionEnd;
+        }, function (_jsRouterUtilsJs) {
+            routeHistory = _jsRouterUtilsJs.routeHistory;
+        }, function (_jsUtilsEnvJs) {
+            env = _jsUtilsEnvJs['default'];
+        }],
+        execute: function () {
+            ModalManage = (function () {
+                function ModalManage() {
+                    babelHelpers.classCallCheck(this, ModalManage);
+
+                    this.initialize.apply(this, arguments);
+                }
+
+                babelHelpers.createClass(ModalManage, [{
+                    key: 'initialize',
+                    value: function initialize(options) {
+                        var $el = {};
+                        this.$el = $el;
+                        $el.modalBox = $('#modal-box');
+                        this['modal_' + options.modal](options);
+                    }
+                }, {
+                    key: 'modal_set',
+                    value: function modal_set(options) {
+                        var $el = this.$el;
+
+                        $el.modal = $('#modal-set');
+                        $el.modalBox.show();
+                        $el.close = $el.modal.find('.close');
+
+                        $el.close.on('tap.modalmanage', function () {
+                            $el.modal.removeClass('active');
+                            routeHistory.goback();
+                        });
+
+                        setTimeout(function () {
+                            $el.modal.addClass('active');
+                        }, 100);
+                    }
+                }, {
+                    key: 'modal_address',
+                    value: function modal_address(options) {
+                        var $el = this.$el;
+
+                        $el.modal = $('#modal-address');
+                        $el.modalBox.show();
+                        $el.close = $el.modal.find('.close');
+
+                        $el.close.one('tap.modalmanage', function () {
+                            $el.modal.removeClass('active');
+                            routeHistory.goback();
+                        });
+
+                        setTimeout(function () {
+                            $el.modal.addClass('active');
+                        }, 100);
+                    }
+                }, {
+                    key: 'destory',
+                    value: function destory() {
+                        var $el = this.$el;
+                        $.each($el, function (key, el) {
+                            el.off('.modalmanage');
+                        });
+                        setTimeout(function () {
+                            $el.modalBox.hide();
+                        }, 400);
+                    }
+                }]);
+                return ModalManage;
+            })();
+
+            _export('default', ModalManage);
+        }
+    };
+});
+System.register('js/page/role.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base.js', 'libs/iScroll/5.1.3/iscroll-lite.js', 'js/router/utils.js', 'js/utils/env.js'], function (_export) {
     /**
      * Created by wushuyi on 2015/9/18.
      */
@@ -20091,7 +20187,7 @@ System.register('js/page/role.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base
     //import Swiper from 'Swiper'
     'use strict';
 
-    var $, BasePage, iScroll, RolePage;
+    var $, BasePage, iScroll, routeHistory, env, RolePage;
     return {
         setters: [function (_libsJquery214JqueryJs) {
             $ = _libsJquery214JqueryJs['default'];
@@ -20099,6 +20195,10 @@ System.register('js/page/role.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base
             BasePage = _jsPageBaseJs['default'];
         }, function (_libsIScroll513IscrollLiteJs) {
             iScroll = _libsIScroll513IscrollLiteJs['default'];
+        }, function (_jsRouterUtilsJs) {
+            routeHistory = _jsRouterUtilsJs.routeHistory;
+        }, function (_jsUtilsEnvJs) {
+            env = _jsUtilsEnvJs['default'];
         }],
         execute: function () {
             RolePage = (function (_BasePage) {
@@ -20124,21 +20224,27 @@ System.register('js/page/role.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base
                         this.iscrolls = iscrolls;
                         $el.page = $('#page_role');
                         $el.close = $el.page.find('.close');
-                        $el.close.attr('data-router', options.close_router);
+                        //$el.close.attr('data-router', options.close_router);
+                        $el.close.one('tap.rolepage', function () {
+                            routeHistory.goback();
+                        });
                         babelHelpers.get(Object.getPrototypeOf(RolePage.prototype), 'startPage', this).call(this);
                         iscrolls.content = new iScroll($el.page.get(0));
                     }
                 }, {
                     key: 'destroy',
                     value: function destroy() {
-                        var _this = this;
-
                         var iscrolls = this.iscrolls;
+                        var self = this;
+                        var $el = this.$el;
                         babelHelpers.get(Object.getPrototypeOf(RolePage.prototype), 'endPage', this).call(this, function () {
+                            $.each($el, function (key, el) {
+                                el.off('.rolepage');
+                            });
                             $.each(iscrolls, function (key, iscroll) {
                                 iscroll.destroy();
                             });
-                            _this.$el = null;
+                            self.$el = null;
                         });
                     }
                 }]);
@@ -20149,13 +20255,13 @@ System.register('js/page/role.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base
         }
     };
 });
-System.register('js/page/follow.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base.js', 'libs/iScroll/5.1.3/iscroll-lite.js'], function (_export) {
+System.register('js/page/follow.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base.js', 'libs/iScroll/5.1.3/iscroll-lite.js', 'js/router/utils.js', 'js/utils/env.js'], function (_export) {
     /**
      * Created by wushuyi on 2015/9/18.
      */
     'use strict';
 
-    var $, BasePage, iScroll, FollowPage;
+    var $, BasePage, iScroll, routeHistory, env, FollowPage;
     return {
         setters: [function (_libsJquery214JqueryJs) {
             $ = _libsJquery214JqueryJs['default'];
@@ -20163,6 +20269,10 @@ System.register('js/page/follow.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/ba
             BasePage = _jsPageBaseJs['default'];
         }, function (_libsIScroll513IscrollLiteJs) {
             iScroll = _libsIScroll513IscrollLiteJs['default'];
+        }, function (_jsRouterUtilsJs) {
+            routeHistory = _jsRouterUtilsJs.routeHistory;
+        }, function (_jsUtilsEnvJs) {
+            env = _jsUtilsEnvJs['default'];
         }],
         execute: function () {
             FollowPage = (function (_BasePage) {
@@ -20188,7 +20298,9 @@ System.register('js/page/follow.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/ba
                         this.iscrolls = iscrolls;
                         $el.page = $('#page_follow');
                         $el.close = $el.page.find('.close');
-                        $el.close.attr('data-router', options.close_router);
+                        $el.close.one('tap.followpage', function () {
+                            routeHistory.goback();
+                        });
                         babelHelpers.get(Object.getPrototypeOf(FollowPage.prototype), 'startPage', this).call(this);
                         iscrolls.content = new iScroll($el.page.get(0));
                     }
@@ -20197,8 +20309,13 @@ System.register('js/page/follow.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/ba
                     value: function destroy() {
                         var _this = this;
 
+                        var self = this;
+                        var $el = this.$el;
                         var iscrolls = this.iscrolls;
                         babelHelpers.get(Object.getPrototypeOf(FollowPage.prototype), 'endPage', this).call(this, function () {
+                            $.each($el, function (key, el) {
+                                el.off('.followpage');
+                            });
                             $.each(iscrolls, function (key, iscroll) {
                                 iscroll.destroy();
                             });
@@ -20210,6 +20327,93 @@ System.register('js/page/follow.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/ba
             })(BasePage);
 
             _export('default', FollowPage);
+        }
+    };
+});
+System.register("js/utils/wsy_utils.js", [], function (_export) {
+    /**
+     * Created by wushuyi on 2015/9/10.
+     */
+    "use strict";
+
+    var transitionEnd, animationEnd;
+
+    _export("extend", extend);
+
+    _export("promote", promote);
+
+    _export("proxy", proxy);
+
+    function extend(subclass, superclass) {
+        function o() {
+            this.constructor = subclass;
+        }
+
+        o.prototype = superclass.prototype;
+        return subclass.prototype = new o();
+    }
+
+    function promote(subclass, prefix) {
+        var subP = subclass.prototype,
+            supP = Object.getPrototypeOf && Object.getPrototypeOf(subP) || subP.__proto__;
+        if (supP) {
+            subP[(prefix += "_") + "constructor"] = supP.constructor; // constructor is not always innumerable
+            for (var n in supP) {
+                if (subP.hasOwnProperty(n) && typeof supP[n] == "function") {
+                    subP[prefix + n] = supP[n];
+                }
+            }
+        }
+        return subclass;
+    }
+
+    function proxy(method, scope) {
+        var aArgs = Array.prototype.slice.call(arguments, 2);
+        return function () {
+            return method.apply(scope, Array.prototype.slice.call(arguments, 0).concat(aArgs));
+        };
+    }
+
+    return {
+        setters: [],
+        execute: function () {
+            transitionEnd = (function () {
+                var div = document.createElement('div');
+                var transitions = {
+                    transition: 'transitionend',
+                    WebkitTransition: 'webkitTransitionEnd',
+                    MozTransition: 'mozTransitionEnd',
+                    OTransition: 'oTransitionEnd',
+                    msTransition: 'MSTransitionEnd'
+                };
+
+                for (var t in transitions) {
+                    if (div.style[t] !== undefined) {
+                        return transitions[t];
+                    }
+                }
+            })();
+
+            _export("transitionEnd", transitionEnd);
+
+            animationEnd = (function () {
+                var div = document.createElement('div');
+                var transitions = {
+                    animation: 'animationend',
+                    WebkitAnimation: 'webkitAnimationEnd',
+                    MozAnimation: 'mozAnimationEnd',
+                    OAnimation: 'oAnimationEnd',
+                    msAnimation: 'MSAnimationEnd'
+                };
+
+                for (var t in transitions) {
+                    if (div.style[t] !== undefined) {
+                        return transitions[t];
+                    }
+                }
+            })();
+
+            _export("animationEnd", animationEnd);
         }
     };
 });
@@ -20336,11 +20540,13 @@ System.register('js/page/base.js', ['libs/jquery/2.1.4/jquery.js', 'libs/lodash.
                         };
                         if (env.page) {
                             //env.mainlayout.viewMoveAnima(env.mainlayout._data.default_height);
-                            $el.page.one(animationEnd, function () {
-                                $el.page.removeClass('page-from-right-to-center');
-                                callback();
-                            });
-                            $el.page.addClass('page-content page-from-right-to-center');
+                            //$el.page.one(animationEnd, function () {
+                            //    $el.page.removeClass('page-from-right-to-center');
+                            //    callback();
+                            //});
+                            //$el.page.addClass('page-content page-from-right-to-center');
+
+                            callback();
                         } else {
                             callback();
                         }
@@ -20356,23 +20562,25 @@ System.register('js/page/base.js', ['libs/jquery/2.1.4/jquery.js', 'libs/lodash.
 
                         $el.page.removeClass('page-content');
                         if (env.page) {
-                            (function () {
-                                var fireback = _.once(function () {
-                                    $el.page.removeClass('page-from-center-to-left');
-                                    $el.page.addClass('cached');
-                                    if (cb) {
-                                        cb();
-                                    }
-                                });
-                                // 修护回退没执行bug
-                                setTimeout(function () {
-                                    fireback();
-                                }, 500);
-                                $el.page.one(animationEnd, function () {
-                                    fireback();
-                                });
-                                $el.page.addClass('page-from-center-to-left');
-                            })();
+                            //let fireback = _.once(()=> {
+                            //    $el.page.removeClass('page-from-center-to-left');
+                            //    $el.page.addClass('cached');
+                            //    if (cb) {
+                            //        cb();
+                            //    }
+                            //});
+                            // 修护回退没执行bug
+                            //setTimeout(() => {
+                            //    fireback();
+                            //}, 500);
+                            //$el.page.one(animationEnd, function () {
+                            //    fireback()
+                            //});
+                            //$el.page.addClass('page-from-center-to-left');
+                            $el.page.addClass('cached');
+                            if (cb) {
+                                cb();
+                            }
                         }
                     }
                 }]);
@@ -20380,93 +20588,6 @@ System.register('js/page/base.js', ['libs/jquery/2.1.4/jquery.js', 'libs/lodash.
             })();
 
             _export('default', PageBase);
-        }
-    };
-});
-System.register("js/utils/wsy_utils.js", [], function (_export) {
-    /**
-     * Created by wushuyi on 2015/9/10.
-     */
-    "use strict";
-
-    var transitionEnd, animationEnd;
-
-    _export("extend", extend);
-
-    _export("promote", promote);
-
-    _export("proxy", proxy);
-
-    function extend(subclass, superclass) {
-        function o() {
-            this.constructor = subclass;
-        }
-
-        o.prototype = superclass.prototype;
-        return subclass.prototype = new o();
-    }
-
-    function promote(subclass, prefix) {
-        var subP = subclass.prototype,
-            supP = Object.getPrototypeOf && Object.getPrototypeOf(subP) || subP.__proto__;
-        if (supP) {
-            subP[(prefix += "_") + "constructor"] = supP.constructor; // constructor is not always innumerable
-            for (var n in supP) {
-                if (subP.hasOwnProperty(n) && typeof supP[n] == "function") {
-                    subP[prefix + n] = supP[n];
-                }
-            }
-        }
-        return subclass;
-    }
-
-    function proxy(method, scope) {
-        var aArgs = Array.prototype.slice.call(arguments, 2);
-        return function () {
-            return method.apply(scope, Array.prototype.slice.call(arguments, 0).concat(aArgs));
-        };
-    }
-
-    return {
-        setters: [],
-        execute: function () {
-            transitionEnd = (function () {
-                var div = document.createElement('div');
-                var transitions = {
-                    transition: 'transitionend',
-                    WebkitTransition: 'webkitTransitionEnd',
-                    MozTransition: 'mozTransitionEnd',
-                    OTransition: 'oTransitionEnd',
-                    msTransition: 'MSTransitionEnd'
-                };
-
-                for (var t in transitions) {
-                    if (div.style[t] !== undefined) {
-                        return transitions[t];
-                    }
-                }
-            })();
-
-            _export("transitionEnd", transitionEnd);
-
-            animationEnd = (function () {
-                var div = document.createElement('div');
-                var transitions = {
-                    animation: 'animationend',
-                    WebkitAnimation: 'webkitAnimationEnd',
-                    MozAnimation: 'mozAnimationEnd',
-                    OAnimation: 'oAnimationEnd',
-                    msAnimation: 'MSAnimationEnd'
-                };
-
-                for (var t in transitions) {
-                    if (div.style[t] !== undefined) {
-                        return transitions[t];
-                    }
-                }
-            })();
-
-            _export("animationEnd", animationEnd);
         }
     };
 });

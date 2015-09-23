@@ -5,6 +5,8 @@ import $ from 'jquery'
 import {default as BasePage} from './base.js'
 import iScroll from 'iScroll';
 import {proxy} from '../utils/wsy_utils.js'
+import {routeHistory} from '../router/utils.js'
+import {default as env} from '../utils/env.js'
 
 
 class MapInfoPage extends BasePage {
@@ -32,9 +34,14 @@ class MapInfoPage extends BasePage {
         super.startPage();
         iscrolls.content = new iScroll($el.page.get(0));
 
-        $el.close.attr('data-router', options.close_route);
-        $el.close.on('tap', function(){
-            delete env.mapinfo_close_route;
+        $el.close.one('tap.mapinfo', function () {
+            let list = routeHistory.get('all');
+            let route;
+            do {
+                route = list.pop();
+                console.log('pop:', route)
+            } while (route && route.indexOf('/mapinfo') !== -1);
+            env.router.setRoute(route || env.first_page);
         });
         $el.tabList.attr('data-router', '/mapinfo/list/' + options.id);
         var pullFunc = proxy(function () {
@@ -45,23 +52,23 @@ class MapInfoPage extends BasePage {
                 this.pullUpAction();
             }
         }, this);
-        iscrolls.content.on('scrollStart', function () {
-            $el.page.one('touchend', pullFunc);
+        iscrolls.content.on('scrollStart.mapinfo', function () {
+            $el.page.one('touchend.mapinfo', pullFunc);
         });
 
         var $updata = $el.commentBox.find('.updata');
         var $submit = $el.commentBox.find('.submit');
         var $input = $el.commentBox.find('.input');
-        $el.hotNumBox.find('.comment-num').one('tap', function () {
+        $el.hotNumBox.one('tap.mapinfo', '.comment-num', function () {
             $updata.velocity({
                 height: 112
-            },{
-                complete:function(){
+            }, {
+                complete: function () {
                     iscrolls.content.refresh();
                 }
             })
         });
-        $submit.on('tap', function () {
+        $submit.on('tap.mapinfo', function () {
             $input.val('');
         });
 
@@ -99,11 +106,17 @@ class MapInfoPage extends BasePage {
 
     destroy() {
         let iscrolls = this.iscrolls;
+        let self = this;
+        let $el = this.$el;
         super.endPage(() => {
+            iscrolls.content.off('.mapinfo');
+            $.each($el, function (index, el) {
+                el.off('.mapinfo');
+            });
             $.each(iscrolls, function (key, iscroll) {
                 iscroll.destroy();
             });
-            this.$el = null;
+            self.$el = null;
         });
     }
 

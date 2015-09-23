@@ -102,11 +102,13 @@ class PageBase {
         };
         if (env.page) {
             //env.mainlayout.viewMoveAnima(env.mainlayout._data.default_height);
-            $el.page.one(animationEnd, function () {
-                $el.page.removeClass('page-from-right-to-center');
-                callback();
-            });
-            $el.page.addClass('page-content page-from-right-to-center');
+            //$el.page.one(animationEnd, function () {
+            //    $el.page.removeClass('page-from-right-to-center');
+            //    callback();
+            //});
+            //$el.page.addClass('page-content page-from-right-to-center');
+
+            callback();
         } else {
             callback();
         }
@@ -121,21 +123,25 @@ class PageBase {
 
         $el.page.removeClass('page-content');
         if (env.page) {
-            let fireback = _.once(()=> {
-                $el.page.removeClass('page-from-center-to-left');
-                $el.page.addClass('cached');
-                if (cb) {
-                    cb();
-                }
-            });
+            //let fireback = _.once(()=> {
+            //    $el.page.removeClass('page-from-center-to-left');
+            //    $el.page.addClass('cached');
+            //    if (cb) {
+            //        cb();
+            //    }
+            //});
             // 修护回退没执行bug
-            setTimeout(() => {
-                fireback();
-            }, 500);
-            $el.page.one(animationEnd, function () {
-                fireback()
-            });
-            $el.page.addClass('page-from-center-to-left');
+            //setTimeout(() => {
+            //    fireback();
+            //}, 500);
+            //$el.page.one(animationEnd, function () {
+            //    fireback()
+            //});
+            //$el.page.addClass('page-from-center-to-left');
+            $el.page.addClass('cached');
+            if (cb) {
+                cb();
+            }
         }
     }
 }

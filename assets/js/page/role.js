@@ -5,7 +5,8 @@ import $ from 'jquery'
 //import Swiper from 'Swiper'
 import {default as BasePage} from './base.js'
 import iScroll from 'iScroll';
-
+import {routeHistory} from '../router/utils.js'
+import {default as env} from '../utils/env.js'
 
 class RolePage extends BasePage {
     constructor(...arg) {
@@ -24,18 +25,26 @@ class RolePage extends BasePage {
         this.iscrolls = iscrolls;
         $el.page = $('#page_role');
         $el.close = $el.page.find('.close');
-        $el.close.attr('data-router', options.close_router);
+        //$el.close.attr('data-router', options.close_router);
+        $el.close.one('tap.rolepage', function () {
+            routeHistory.goback();
+        });
         super.startPage();
         iscrolls.content = new iScroll($el.page.get(0));
     }
 
     destroy() {
         let iscrolls = this.iscrolls;
+        let self = this;
+        let $el = this.$el;
         super.endPage(() => {
+            $.each($el, function (key, el) {
+                el.off('.rolepage');
+            });
             $.each(iscrolls, function (key, iscroll) {
                 iscroll.destroy();
             });
-            this.$el = null;
+            self.$el = null;
         });
     }
 

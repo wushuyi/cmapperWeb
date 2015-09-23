@@ -101,18 +101,40 @@
   }
 
   .nav-list .nav-item {
-    width: 84px;
-    height: 84px;
+    width: 80px;
+    height: 80px;
     border-radius: 42px;
-    background: #D8D8D8;
     font-size: 14px;
     text-align: center;
     line-height: 84px;
   }
 
-  .nav-list .nav-item.active {
-    transform: scale(1.2);
-    -webkit-transform: scale(1.2);
+  .nav-list .nav-item.a{
+    background: url("../images/icons/favorite-link.svg") no-repeat;
+  }
+  .nav-list .nav-item.a.active{
+    background: url("../images/icons/favorite-active.svg") no-repeat;
+  }
+
+  .nav-list .nav-item.b{
+    background: url("../images/icons/friends-link.svg") no-repeat;
+  }
+  .nav-list .nav-item.b.active{
+    background: url("../images/icons/friends-active.svg") no-repeat;
+  }
+
+  .nav-list .nav-item.c{
+    background: url("../images/icons/radar-link.svg") no-repeat;
+  }
+  .nav-list .nav-item.c.active{
+    background: url("../images/icons/radar-active.svg") no-repeat;
+  }
+
+  .nav-list .nav-item.d{
+    background: url("../images/icons/user-link.svg") no-repeat;
+  }
+  .nav-list .nav-item.d.active{
+    background: url("../images/icons/user-active.svg") no-repeat;
   }
 
   .height-control {

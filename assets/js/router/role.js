@@ -3,26 +3,22 @@
  */
 import {default as RolePage} from '../page/role.js'
 import env from '../utils/env.js'
-import {pageStatus, getRouter} from './utils.js'
 
 function register(router) {
     let route = '/role/:id';
-    router.on('before', route, function () {
-        pageStatus.set('now', getRouter());
-    });
+    let page = 'role_page';
+
     router.on(route, function (id) {
-        if (env.wd_role) {
+        if (env[page]) {
             return false;
         }
-        env.wd_role = new RolePage({
+        env[page] = new RolePage({
             id: id,
-            close_router: pageStatus.get('prve')
         });
     });
     router.on('after', route, function () {
-        pageStatus.set('prve', pageStatus.get('now'));
-        env.wd_role.destroy();
-        delete env.wd_role;
+        env[page].destroy();
+        delete env[page];
     });
 }
 
