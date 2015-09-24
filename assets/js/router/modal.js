@@ -34,6 +34,50 @@ function register(router) {
         });
     }
 
+    {
+        let route = '/modal/select-map/:id';
+        let page = 'select_map_modal';
+        router.on(route, function (id) {
+            env[page] = new ModalManage({
+                id: id,
+                modal: 'selectMap',
+            });
+        });
+        router.on('after', route, function () {
+            env[page].destory();
+            delete env[page];
+        });
+    }
+
+    {
+        let route = '/modal/add-addr-info/:id';
+        let page = 'add_addr_info_modal';
+        router.on(route, function (id) {
+            env[page] = new ModalManage({
+                id: id,
+                modal: 'addAddrInfo',
+            });
+        });
+        router.on('after', route, function () {
+            env[page].destory();
+            delete env[page];
+        });
+    }
+
+    {
+        let route = '/modal/create-map';
+        let page = 'create_map_modal';
+        router.on(route, function () {
+            env[page] = new ModalManage({
+                modal: 'createMap',
+            });
+        });
+        router.on('after', route, function () {
+            env[page].destory();
+            delete env[page];
+        });
+    }
+
 }
 
 export default register;

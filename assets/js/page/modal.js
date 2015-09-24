@@ -2,9 +2,11 @@
  * Created by wushuyi on 2015/9/17.
  */
 import $ from 'jquery'
+import iScroll from 'iScroll'
 import {transitionEnd} from '../utils/wsy_utils.js'
 import {routeHistory} from '../router/utils.js'
 import {default as env} from '../utils/env.js'
+
 
 class ModalManage {
 
@@ -14,6 +16,7 @@ class ModalManage {
 
     initialize(options) {
         let $el = {};
+        this.iscrolls = {};
         this.$el = $el;
         $el.modalBox = $('#modal-box');
         this['modal_' + options.modal](options);
@@ -24,6 +27,7 @@ class ModalManage {
 
         $el.modal = $('#modal-set');
         $el.modalBox.show();
+        $el.modal.show();
         $el.close = $el.modal.find('.close');
 
         $el.close.on('tap.modalmanage', function () {
@@ -41,6 +45,7 @@ class ModalManage {
 
         $el.modal = $('#modal-address');
         $el.modalBox.show();
+        $el.modal.show();
         $el.close = $el.modal.find('.close');
 
         $el.close.one('tap.modalmanage', function () {
@@ -53,13 +58,83 @@ class ModalManage {
         }, 100);
     }
 
-    destory() {
+    modal_selectMap() {
         let $el = this.$el;
+        let iscrolls = this.iscrolls;
+
+        $el.modal = $('#modal-select-map');
+
+        $el.close = $el.modal.find('.close');
+        $el.scroll = $el.modal.find('.scroll');
+        $el.modalBox.show();
+        $el.modal.show();
+        $el.close.one('tap.modalmanage', function () {
+            $el.modal.removeClass('active');
+            routeHistory.goback();
+        });
+        setTimeout(function () {
+            $el.modal.addClass('active');
+        }, 100);
+
+        iscrolls.content = new iScroll($el.scroll.get(0));
+    }
+
+    modal_addAddrInfo() {
+        let $el = this.$el;
+        let iscrolls = this.iscrolls;
+
+        $el.modal = $('#modal-add-addr-info');
+        $el.close = $el.modal.find('.close');
+        $el.scroll = $el.modal.find('.scroll');
+        $el.modalBox.show();
+        $el.modal.show();
+        $el.close.one('tap.modalmanage', function () {
+            $el.modal.removeClass('active');
+            routeHistory.goback();
+        });
+
+        setTimeout(function () {
+            $el.modal.addClass('active');
+        }, 100);
+
+        iscrolls.content = new iScroll($el.scroll.get(0));
+    }
+
+    modal_createMap() {
+        let $el = this.$el;
+        let iscrolls = this.iscrolls;
+
+        $el.modal = $('#modal-create-map');
+        $el.close = $el.modal.find('.close');
+        $el.scroll = $el.modal.find('.scroll');
+        $el.modalBox.show();
+        $el.modal.show();
+        $el.close.one('tap.modalmanage', function () {
+            $el.modal.removeClass('active');
+            routeHistory.goback();
+        });
+
+        setTimeout(function () {
+            $el.modal.addClass('active');
+        }, 100);
+        iscrolls.content = new iScroll($el.scroll.get(0));
+    }
+
+    destory() {
+        let self = this;
+        let $el = this.$el;
+        let iscrolls = this.iscrolls;
         $.each($el, function (key, el) {
             el.off('.modalmanage');
         });
+        $.each(iscrolls, function (key, iscroll) {
+            console.log(iscroll);
+            iscroll.destroy();
+        });
         setTimeout(function () {
             $el.modalBox.hide();
+            $el.modal.hide();
+            self.$el = null;
         }, 400);
     }
 }

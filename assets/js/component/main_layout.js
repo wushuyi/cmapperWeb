@@ -217,6 +217,13 @@ class MainLayout extends EventEmitter {
         });
     }
 
+    viewMoveDefault() {
+        let _data = this._data;
+        if (this.oldRes !== _data.default_height) {
+            this.viewMoveAnima(_data.default_height)
+        }
+    }
+
     destroy() {
         this.hammer.destroy();
         this.$el.height_control.off('.mainlayout');

@@ -39,7 +39,7 @@ class MapInfoPage extends BasePage {
             let route;
             do {
                 route = list.pop();
-                console.log('pop:', route)
+                //console.log('pop:', route)
             } while (route && route.indexOf('/mapinfo') !== -1);
             env.router.setRoute(route || env.first_page);
         });
@@ -52,7 +52,7 @@ class MapInfoPage extends BasePage {
                 this.pullUpAction();
             }
         }, this);
-        iscrolls.content.on('scrollStart.mapinfo', function () {
+        iscrolls.content.on('scrollStart', function () {
             $el.page.one('touchend.mapinfo', pullFunc);
         });
 
@@ -109,7 +109,7 @@ class MapInfoPage extends BasePage {
         let self = this;
         let $el = this.$el;
         super.endPage(() => {
-            iscrolls.content.off('.mapinfo');
+            iscrolls.content.off('scrollStart');
             $.each($el, function (index, el) {
                 el.off('.mapinfo');
             });

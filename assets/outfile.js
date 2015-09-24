@@ -19097,7 +19097,7 @@ System.register('js/router/index.js', ['libs/Director/1.2.8/director.js', 'js/ro
 
             router.configure({
                 before: function before() {
-                    console.log('before');
+                    env.mainlayout && env.mainlayout.viewMoveDefault();
                     routeHistory.push(getRouter());
                     window.routeHistory = routeHistory;
                 }
@@ -19105,41 +19105,6 @@ System.register('js/router/index.js', ['libs/Director/1.2.8/director.js', 'js/ro
             env.router = router;
             env.first_page = '/gftj';
             _export('default', register_all);
-        }
-    };
-});
-System.register('js/router/fxdt.js', ['js/page/fxdt.js', 'js/utils/env.js'], function (_export) {
-    /**
-     * Created by wushuyi on 2015/9/13.
-     */
-    'use strict';
-
-    var FxdtPage, env;
-
-    function register(router) {
-        var route = '/fxdt';
-        var page = 'fxdt_page';
-
-        router.on(route, function (id) {
-            if (env[page]) {
-                return false;
-            }
-            env[page] = new FxdtPage();
-        });
-        router.on('after', route, function () {
-            env[page].destroy();
-            delete env[page];
-        });
-    }
-
-    return {
-        setters: [function (_jsPageFxdtJs) {
-            FxdtPage = _jsPageFxdtJs['default'];
-        }, function (_jsUtilsEnvJs) {
-            env = _jsUtilsEnvJs['default'];
-        }],
-        execute: function () {
-            _export('default', register);
         }
     };
 });
@@ -19181,6 +19146,41 @@ System.register('js/router/gftj.js', ['js/page/gftj.js', 'js/utils/env.js', 'js/
         }
     };
 });
+System.register('js/router/fxdt.js', ['js/page/fxdt.js', 'js/utils/env.js'], function (_export) {
+    /**
+     * Created by wushuyi on 2015/9/13.
+     */
+    'use strict';
+
+    var FxdtPage, env;
+
+    function register(router) {
+        var route = '/fxdt';
+        var page = 'fxdt_page';
+
+        router.on(route, function (id) {
+            if (env[page]) {
+                return false;
+            }
+            env[page] = new FxdtPage();
+        });
+        router.on('after', route, function () {
+            env[page].destroy();
+            delete env[page];
+        });
+    }
+
+    return {
+        setters: [function (_jsPageFxdtJs) {
+            FxdtPage = _jsPageFxdtJs['default'];
+        }, function (_jsUtilsEnvJs) {
+            env = _jsUtilsEnvJs['default'];
+        }],
+        execute: function () {
+            _export('default', register);
+        }
+    };
+});
 System.register('js/router/pyq.js', ['js/page/pyq.js', 'js/utils/env.js'], function (_export) {
     /**
      * Created by wushuyi on 2015/9/13.
@@ -19208,6 +19208,38 @@ System.register('js/router/pyq.js', ['js/page/pyq.js', 'js/utils/env.js'], funct
     return {
         setters: [function (_jsPagePyqJs) {
             PyqPage = _jsPagePyqJs['default'];
+        }, function (_jsUtilsEnvJs) {
+            env = _jsUtilsEnvJs['default'];
+        }],
+        execute: function () {
+            _export('default', register);
+        }
+    };
+});
+System.register('js/router/mapinfo.js', ['js/page/mapinfo.js', 'js/utils/env.js'], function (_export) {
+    /**
+     * Created by wushuyi on 2015/9/14.
+     */
+    'use strict';
+
+    var MapInfoPage, env;
+
+    function register(router) {
+        var route = '/mapinfo/archives/:id';
+        router.on(route, function (id) {
+            env.mapinfo_page = new MapInfoPage({
+                id: id
+            });
+        });
+        router.on('after', route, function () {
+            env.mapinfo_page.destroy();
+            delete env.mapinfo_page;
+        });
+    }
+
+    return {
+        setters: [function (_jsPageMapinfoJs) {
+            MapInfoPage = _jsPageMapinfoJs['default'];
         }, function (_jsUtilsEnvJs) {
             env = _jsUtilsEnvJs['default'];
         }],
@@ -19262,38 +19294,6 @@ System.register('js/router/wd.js', ['js/page/wd.js', 'js/utils/env.js', 'js/rout
         }
     };
 });
-System.register('js/router/mapinfo.js', ['js/page/mapinfo.js', 'js/utils/env.js'], function (_export) {
-    /**
-     * Created by wushuyi on 2015/9/14.
-     */
-    'use strict';
-
-    var MapInfoPage, env;
-
-    function register(router) {
-        var route = '/mapinfo/archives/:id';
-        router.on(route, function (id) {
-            env.mapinfo_page = new MapInfoPage({
-                id: id
-            });
-        });
-        router.on('after', route, function () {
-            env.mapinfo_page.destroy();
-            delete env.mapinfo_page;
-        });
-    }
-
-    return {
-        setters: [function (_jsPageMapinfoJs) {
-            MapInfoPage = _jsPageMapinfoJs['default'];
-        }, function (_jsUtilsEnvJs) {
-            env = _jsUtilsEnvJs['default'];
-        }],
-        execute: function () {
-            _export('default', register);
-        }
-    };
-});
 System.register('js/router/maplist.js', ['js/page/maplist.js', 'js/utils/env.js', 'js/router/utils.js'], function (_export) {
     /**
      * Created by wushuyi on 2015/9/14.
@@ -19341,6 +19341,43 @@ System.register('js/router/maplist.js', ['js/page/maplist.js', 'js/utils/env.js'
         }
     };
 });
+System.register('js/router/role.js', ['js/page/role.js', 'js/utils/env.js'], function (_export) {
+    /**
+     * Created by wushuyi on 2015/9/18.
+     */
+    'use strict';
+
+    var RolePage, env;
+
+    function register(router) {
+        var route = '/role/:id';
+        var page = 'role_page';
+
+        router.on(route, function (id) {
+            if (env[page]) {
+                return false;
+            }
+            env[page] = new RolePage({
+                id: id
+            });
+        });
+        router.on('after', route, function () {
+            env[page].destroy();
+            delete env[page];
+        });
+    }
+
+    return {
+        setters: [function (_jsPageRoleJs) {
+            RolePage = _jsPageRoleJs['default'];
+        }, function (_jsUtilsEnvJs) {
+            env = _jsUtilsEnvJs['default'];
+        }],
+        execute: function () {
+            _export('default', register);
+        }
+    };
+});
 System.register('js/router/modal.js', ['js/page/modal.js', 'js/utils/env.js'], function (_export) {
     /**
      * Created by wushuyi on 2015/9/17.
@@ -19382,48 +19419,61 @@ System.register('js/router/modal.js', ['js/page/modal.js', 'js/utils/env.js'], f
                 });
             })();
         }
+
+        {
+            (function () {
+                var route = '/modal/select-map/:id';
+                var page = 'select_map_modal';
+                router.on(route, function (id) {
+                    env[page] = new ModalManage({
+                        id: id,
+                        modal: 'selectMap'
+                    });
+                });
+                router.on('after', route, function () {
+                    env[page].destory();
+                    delete env[page];
+                });
+            })();
+        }
+
+        {
+            (function () {
+                var route = '/modal/add-addr-info/:id';
+                var page = 'add_addr_info_modal';
+                router.on(route, function (id) {
+                    env[page] = new ModalManage({
+                        id: id,
+                        modal: 'addAddrInfo'
+                    });
+                });
+                router.on('after', route, function () {
+                    env[page].destory();
+                    delete env[page];
+                });
+            })();
+        }
+
+        {
+            (function () {
+                var route = '/modal/create-map';
+                var page = 'create_map_modal';
+                router.on(route, function () {
+                    env[page] = new ModalManage({
+                        modal: 'createMap'
+                    });
+                });
+                router.on('after', route, function () {
+                    env[page].destory();
+                    delete env[page];
+                });
+            })();
+        }
     }
 
     return {
         setters: [function (_jsPageModalJs) {
             ModalManage = _jsPageModalJs['default'];
-        }, function (_jsUtilsEnvJs) {
-            env = _jsUtilsEnvJs['default'];
-        }],
-        execute: function () {
-            _export('default', register);
-        }
-    };
-});
-System.register('js/router/role.js', ['js/page/role.js', 'js/utils/env.js'], function (_export) {
-    /**
-     * Created by wushuyi on 2015/9/18.
-     */
-    'use strict';
-
-    var RolePage, env;
-
-    function register(router) {
-        var route = '/role/:id';
-        var page = 'role_page';
-
-        router.on(route, function (id) {
-            if (env[page]) {
-                return false;
-            }
-            env[page] = new RolePage({
-                id: id
-            });
-        });
-        router.on('after', route, function () {
-            env[page].destroy();
-            delete env[page];
-        });
-    }
-
-    return {
-        setters: [function (_jsPageRoleJs) {
-            RolePage = _jsPageRoleJs['default'];
         }, function (_jsUtilsEnvJs) {
             env = _jsUtilsEnvJs['default'];
         }],
@@ -19529,149 +19579,6 @@ System.register('js/router/utils.js', ['js/utils/env.js'], function (_export) {
             };
 
             _export('routeHistory', routeHistory);
-        }
-    };
-});
-System.register('js/page/pyq.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base.js', 'libs/iScroll/5.1.3/iscroll-lite.js', 'js/utils/env.js'], function (_export) {
-    /**
-     * Created by wushuyi on 2015/9/13.
-     */
-    'use strict';
-
-    var $, BasePage, iScroll, env, PyqPage;
-    return {
-        setters: [function (_libsJquery214JqueryJs) {
-            $ = _libsJquery214JqueryJs['default'];
-        }, function (_jsPageBaseJs) {
-            BasePage = _jsPageBaseJs['default'];
-        }, function (_libsIScroll513IscrollLiteJs) {
-            iScroll = _libsIScroll513IscrollLiteJs['default'];
-        }, function (_jsUtilsEnvJs) {
-            env = _jsUtilsEnvJs['default'];
-        }],
-        execute: function () {
-            PyqPage = (function (_BasePage) {
-                babelHelpers.inherits(PyqPage, _BasePage);
-
-                function PyqPage() {
-                    babelHelpers.classCallCheck(this, PyqPage);
-
-                    if (arguments[0] === false) {
-                        return false;
-                    }
-                    babelHelpers.get(Object.getPrototypeOf(PyqPage.prototype), 'constructor', this).call(this, false);
-                    this.initialize.apply(this, arguments);
-                }
-
-                babelHelpers.createClass(PyqPage, [{
-                    key: 'initialize',
-                    value: function initialize() {
-                        babelHelpers.get(Object.getPrototypeOf(PyqPage.prototype), 'initialize', this).call(this);
-                        var $el = {};
-                        this.$el = $el;
-                        var iscrolls = {};
-                        this.iscrolls = iscrolls;
-                        $el.nav = $('.nav-item[data-router="/pyq"]');
-                        $el.page = $('#page_pyq');
-                        babelHelpers.get(Object.getPrototypeOf(PyqPage.prototype), 'startPage', this).call(this);
-                        iscrolls.content = new iScroll($el.page.get(0));
-
-                        this.onReview = function () {
-                            iscrolls.content.refresh();
-                        };
-                        env.mainlayout.on('review', this.onReview);
-                    }
-                }, {
-                    key: 'destroy',
-                    value: function destroy() {
-                        var _this = this;
-
-                        var self = this;
-                        var iscrolls = this.iscrolls;
-
-                        babelHelpers.get(Object.getPrototypeOf(PyqPage.prototype), 'endPage', this).call(this, function () {
-                            env.mainlayout.off('review', self.onReview);
-                            $.each(iscrolls, function (key, iscroll) {
-                                iscroll.destroy();
-                            });
-                            _this.$el = null;
-                        });
-                    }
-                }]);
-                return PyqPage;
-            })(BasePage);
-
-            _export('default', PyqPage);
-        }
-    };
-});
-System.register('js/page/fxdt.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base.js', 'libs/iScroll/5.1.3/iscroll-lite.js', 'js/utils/env.js'], function (_export) {
-    /**
-     * Created by wushuyi on 2015/9/13.
-     */
-    'use strict';
-
-    var $, BasePage, iScroll, env, FxdtPage;
-    return {
-        setters: [function (_libsJquery214JqueryJs) {
-            $ = _libsJquery214JqueryJs['default'];
-        }, function (_jsPageBaseJs) {
-            BasePage = _jsPageBaseJs['default'];
-        }, function (_libsIScroll513IscrollLiteJs) {
-            iScroll = _libsIScroll513IscrollLiteJs['default'];
-        }, function (_jsUtilsEnvJs) {
-            env = _jsUtilsEnvJs['default'];
-        }],
-        execute: function () {
-            FxdtPage = (function (_BasePage) {
-                babelHelpers.inherits(FxdtPage, _BasePage);
-
-                function FxdtPage() {
-                    babelHelpers.classCallCheck(this, FxdtPage);
-
-                    if (arguments[0] === false) {
-                        return false;
-                    }
-                    babelHelpers.get(Object.getPrototypeOf(FxdtPage.prototype), 'constructor', this).call(this, false);
-                    this.initialize.apply(this, arguments);
-                }
-
-                babelHelpers.createClass(FxdtPage, [{
-                    key: 'initialize',
-                    value: function initialize() {
-                        babelHelpers.get(Object.getPrototypeOf(FxdtPage.prototype), 'initialize', this).call(this);
-                        var $el = {};
-                        this.$el = $el;
-                        var iscrolls = {};
-                        this.iscrolls = iscrolls;
-                        $el.nav = $('.nav-item[data-router="/fxdt"]');
-                        $el.page = $('#page_fxdt');
-                        babelHelpers.get(Object.getPrototypeOf(FxdtPage.prototype), 'startPage', this).call(this);
-                        iscrolls.content = new iScroll($el.page.get(0));
-                        this.onReview = function () {
-                            iscrolls.content.refresh();
-                        };
-                        env.mainlayout.on('review', this.onReview);
-                    }
-                }, {
-                    key: 'destroy',
-                    value: function destroy() {
-                        var self = this;
-                        var iscrolls = this.iscrolls;
-
-                        babelHelpers.get(Object.getPrototypeOf(FxdtPage.prototype), 'endPage', this).call(this, function () {
-                            env.mainlayout.off('review', self.onReview);
-                            $.each(iscrolls, function (key, iscroll) {
-                                iscroll.destroy();
-                            });
-                            self.$el = null;
-                        });
-                    }
-                }]);
-                return FxdtPage;
-            })(BasePage);
-
-            _export('default', FxdtPage);
         }
     };
 });
@@ -19796,6 +19703,292 @@ System.register('js/page/gftj.js', ['libs/jquery/2.1.4/jquery.js', 'libs/Swiper/
         }
     };
 });
+System.register('js/page/fxdt.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base.js', 'libs/iScroll/5.1.3/iscroll-lite.js', 'js/utils/env.js'], function (_export) {
+    /**
+     * Created by wushuyi on 2015/9/13.
+     */
+    'use strict';
+
+    var $, BasePage, iScroll, env, FxdtPage;
+    return {
+        setters: [function (_libsJquery214JqueryJs) {
+            $ = _libsJquery214JqueryJs['default'];
+        }, function (_jsPageBaseJs) {
+            BasePage = _jsPageBaseJs['default'];
+        }, function (_libsIScroll513IscrollLiteJs) {
+            iScroll = _libsIScroll513IscrollLiteJs['default'];
+        }, function (_jsUtilsEnvJs) {
+            env = _jsUtilsEnvJs['default'];
+        }],
+        execute: function () {
+            FxdtPage = (function (_BasePage) {
+                babelHelpers.inherits(FxdtPage, _BasePage);
+
+                function FxdtPage() {
+                    babelHelpers.classCallCheck(this, FxdtPage);
+
+                    if (arguments[0] === false) {
+                        return false;
+                    }
+                    babelHelpers.get(Object.getPrototypeOf(FxdtPage.prototype), 'constructor', this).call(this, false);
+                    this.initialize.apply(this, arguments);
+                }
+
+                babelHelpers.createClass(FxdtPage, [{
+                    key: 'initialize',
+                    value: function initialize() {
+                        babelHelpers.get(Object.getPrototypeOf(FxdtPage.prototype), 'initialize', this).call(this);
+                        var $el = {};
+                        this.$el = $el;
+                        var iscrolls = {};
+                        this.iscrolls = iscrolls;
+                        $el.nav = $('.nav-item[data-router="/fxdt"]');
+                        $el.page = $('#page_fxdt');
+                        babelHelpers.get(Object.getPrototypeOf(FxdtPage.prototype), 'startPage', this).call(this);
+                        iscrolls.content = new iScroll($el.page.get(0));
+                        this.onReview = function () {
+                            iscrolls.content.refresh();
+                        };
+                        env.mainlayout.on('review', this.onReview);
+                    }
+                }, {
+                    key: 'destroy',
+                    value: function destroy() {
+                        var self = this;
+                        var iscrolls = this.iscrolls;
+
+                        babelHelpers.get(Object.getPrototypeOf(FxdtPage.prototype), 'endPage', this).call(this, function () {
+                            env.mainlayout.off('review', self.onReview);
+                            $.each(iscrolls, function (key, iscroll) {
+                                iscroll.destroy();
+                            });
+                            self.$el = null;
+                        });
+                    }
+                }]);
+                return FxdtPage;
+            })(BasePage);
+
+            _export('default', FxdtPage);
+        }
+    };
+});
+System.register('js/page/pyq.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base.js', 'libs/iScroll/5.1.3/iscroll-lite.js', 'js/utils/env.js'], function (_export) {
+    /**
+     * Created by wushuyi on 2015/9/13.
+     */
+    'use strict';
+
+    var $, BasePage, iScroll, env, PyqPage;
+    return {
+        setters: [function (_libsJquery214JqueryJs) {
+            $ = _libsJquery214JqueryJs['default'];
+        }, function (_jsPageBaseJs) {
+            BasePage = _jsPageBaseJs['default'];
+        }, function (_libsIScroll513IscrollLiteJs) {
+            iScroll = _libsIScroll513IscrollLiteJs['default'];
+        }, function (_jsUtilsEnvJs) {
+            env = _jsUtilsEnvJs['default'];
+        }],
+        execute: function () {
+            PyqPage = (function (_BasePage) {
+                babelHelpers.inherits(PyqPage, _BasePage);
+
+                function PyqPage() {
+                    babelHelpers.classCallCheck(this, PyqPage);
+
+                    if (arguments[0] === false) {
+                        return false;
+                    }
+                    babelHelpers.get(Object.getPrototypeOf(PyqPage.prototype), 'constructor', this).call(this, false);
+                    this.initialize.apply(this, arguments);
+                }
+
+                babelHelpers.createClass(PyqPage, [{
+                    key: 'initialize',
+                    value: function initialize() {
+                        babelHelpers.get(Object.getPrototypeOf(PyqPage.prototype), 'initialize', this).call(this);
+                        var $el = {};
+                        this.$el = $el;
+                        var iscrolls = {};
+                        this.iscrolls = iscrolls;
+                        $el.nav = $('.nav-item[data-router="/pyq"]');
+                        $el.page = $('#page_pyq');
+                        babelHelpers.get(Object.getPrototypeOf(PyqPage.prototype), 'startPage', this).call(this);
+                        iscrolls.content = new iScroll($el.page.get(0));
+
+                        this.onReview = function () {
+                            iscrolls.content.refresh();
+                        };
+                        env.mainlayout.on('review', this.onReview);
+                    }
+                }, {
+                    key: 'destroy',
+                    value: function destroy() {
+                        var _this = this;
+
+                        var self = this;
+                        var iscrolls = this.iscrolls;
+
+                        babelHelpers.get(Object.getPrototypeOf(PyqPage.prototype), 'endPage', this).call(this, function () {
+                            env.mainlayout.off('review', self.onReview);
+                            $.each(iscrolls, function (key, iscroll) {
+                                iscroll.destroy();
+                            });
+                            _this.$el = null;
+                        });
+                    }
+                }]);
+                return PyqPage;
+            })(BasePage);
+
+            _export('default', PyqPage);
+        }
+    };
+});
+System.register('js/page/mapinfo.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base.js', 'libs/iScroll/5.1.3/iscroll-lite.js', 'js/utils/wsy_utils.js', 'js/router/utils.js', 'js/utils/env.js'], function (_export) {
+    /**
+     * Created by wushuyi on 2015/9/14.
+     */
+    'use strict';
+
+    var $, BasePage, iScroll, proxy, routeHistory, env, MapInfoPage;
+    return {
+        setters: [function (_libsJquery214JqueryJs) {
+            $ = _libsJquery214JqueryJs['default'];
+        }, function (_jsPageBaseJs) {
+            BasePage = _jsPageBaseJs['default'];
+        }, function (_libsIScroll513IscrollLiteJs) {
+            iScroll = _libsIScroll513IscrollLiteJs['default'];
+        }, function (_jsUtilsWsy_utilsJs) {
+            proxy = _jsUtilsWsy_utilsJs.proxy;
+        }, function (_jsRouterUtilsJs) {
+            routeHistory = _jsRouterUtilsJs.routeHistory;
+        }, function (_jsUtilsEnvJs) {
+            env = _jsUtilsEnvJs['default'];
+        }],
+        execute: function () {
+            MapInfoPage = (function (_BasePage) {
+                babelHelpers.inherits(MapInfoPage, _BasePage);
+
+                function MapInfoPage() {
+                    babelHelpers.classCallCheck(this, MapInfoPage);
+
+                    if (arguments[0] === false) {
+                        return false;
+                    }
+                    babelHelpers.get(Object.getPrototypeOf(MapInfoPage.prototype), 'constructor', this).call(this, false);
+                    this.initialize.apply(this, arguments);
+                }
+
+                babelHelpers.createClass(MapInfoPage, [{
+                    key: 'initialize',
+                    value: function initialize(options) {
+                        babelHelpers.get(Object.getPrototypeOf(MapInfoPage.prototype), 'initialize', this).call(this);
+                        var $el = {};
+                        this.$el = $el;
+                        var iscrolls = {};
+                        this.iscrolls = iscrolls;
+                        $el.page = $('#page_mapinfo');
+                        $el.close = $el.page.find('.tab-close');
+                        $el.tabList = $el.page.find('.tab-list');
+                        $el.commentList = $el.page.find('.comment-list');
+                        $el.prompt = $el.commentList.next('.prompt');
+                        $el.hotNumBox = $('.hot-num-box');
+                        $el.commentBox = $('.comment-box');
+                        babelHelpers.get(Object.getPrototypeOf(MapInfoPage.prototype), 'startPage', this).call(this);
+                        iscrolls.content = new iScroll($el.page.get(0));
+
+                        $el.close.one('tap.mapinfo', function () {
+                            var list = routeHistory.get('all');
+                            var route = undefined;
+                            do {
+                                route = list.pop();
+                                //console.log('pop:', route)
+                            } while (route && route.indexOf('/mapinfo') !== -1);
+                            env.router.setRoute(route || env.first_page);
+                        });
+                        $el.tabList.attr('data-router', '/mapinfo/list/' + options.id);
+                        var pullFunc = proxy(function () {
+                            if (this.pullUpActionLock) {
+                                return true;
+                            }
+                            if (iscrolls.content.maxScrollY - iscrolls.content.y > 100) {
+                                this.pullUpAction();
+                            }
+                        }, this);
+                        console.log(iscrolls);
+                        iscrolls.content.on('scrollStart', function () {
+                            $el.page.one('touchend.mapinfo', pullFunc);
+                        });
+
+                        var $updata = $el.commentBox.find('.updata');
+                        var $submit = $el.commentBox.find('.submit');
+                        var $input = $el.commentBox.find('.input');
+                        $el.hotNumBox.one('tap.mapinfo', '.comment-num', function () {
+                            $updata.velocity({
+                                height: 112
+                            }, {
+                                complete: function complete() {
+                                    iscrolls.content.refresh();
+                                }
+                            });
+                        });
+                        $submit.on('tap.mapinfo', function () {
+                            $input.val('');
+                        });
+                    }
+                }, {
+                    key: 'pullUpAction',
+                    value: function pullUpAction() {
+                        var temp = '<li>' + '<div class="comment clearfix">' + '<div class="avatar"></div>' + '<div class="msg">new 评论这是一条评论它评论评论这是一条评论它评论评论这是一条评论它评论</div>' + '</div>' + '</li>';
+                        var reshtml = '';
+                        for (var i = 10; i > 0; i--) {
+                            reshtml = reshtml + temp;
+                        }
+                        this.pullUpActionLock = true;
+                        var $el = this.$el;
+                        var iscrolls = this.iscrolls;
+                        var scrollTo = $el.commentList.find('.comment:last').get(0);
+
+                        $el.loading = $('<li class="loading">loging...</li>');
+                        $el.prompt.hide();
+                        $el.commentList.append($el.loading);
+                        iscrolls.content.refresh();
+                        setTimeout(proxy(function () {
+                            $el.loading.hide().remove();
+                            $el.commentList.append(reshtml);
+                            $el.prompt.show();
+                            iscrolls.content.refresh();
+                            this.pullUpActionLock = false;
+                            iscrolls.content.scrollToElement(scrollTo, 1000);
+                        }, this), 3000);
+                    }
+                }, {
+                    key: 'destroy',
+                    value: function destroy() {
+                        var iscrolls = this.iscrolls;
+                        var self = this;
+                        var $el = this.$el;
+                        babelHelpers.get(Object.getPrototypeOf(MapInfoPage.prototype), 'endPage', this).call(this, function () {
+                            iscrolls.content.off('scrollStart');
+                            $.each($el, function (index, el) {
+                                el.off('.mapinfo');
+                            });
+                            $.each(iscrolls, function (key, iscroll) {
+                                iscroll.destroy();
+                            });
+                            self.$el = null;
+                        });
+                    }
+                }]);
+                return MapInfoPage;
+            })(BasePage);
+
+            _export('default', MapInfoPage);
+        }
+    };
+});
 System.register('js/page/wd.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base.js', 'libs/iScroll/5.1.3/iscroll-lite.js', 'js/utils/env.js'], function (_export) {
     /**
      * Created by wushuyi on 2015/9/13.
@@ -19865,148 +20058,6 @@ System.register('js/page/wd.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base.j
             })(BasePage);
 
             _export('default', WdPage);
-        }
-    };
-});
-System.register('js/page/mapinfo.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base.js', 'libs/iScroll/5.1.3/iscroll-lite.js', 'js/utils/wsy_utils.js', 'js/router/utils.js', 'js/utils/env.js'], function (_export) {
-    /**
-     * Created by wushuyi on 2015/9/14.
-     */
-    'use strict';
-
-    var $, BasePage, iScroll, proxy, routeHistory, env, MapInfoPage;
-    return {
-        setters: [function (_libsJquery214JqueryJs) {
-            $ = _libsJquery214JqueryJs['default'];
-        }, function (_jsPageBaseJs) {
-            BasePage = _jsPageBaseJs['default'];
-        }, function (_libsIScroll513IscrollLiteJs) {
-            iScroll = _libsIScroll513IscrollLiteJs['default'];
-        }, function (_jsUtilsWsy_utilsJs) {
-            proxy = _jsUtilsWsy_utilsJs.proxy;
-        }, function (_jsRouterUtilsJs) {
-            routeHistory = _jsRouterUtilsJs.routeHistory;
-        }, function (_jsUtilsEnvJs) {
-            env = _jsUtilsEnvJs['default'];
-        }],
-        execute: function () {
-            MapInfoPage = (function (_BasePage) {
-                babelHelpers.inherits(MapInfoPage, _BasePage);
-
-                function MapInfoPage() {
-                    babelHelpers.classCallCheck(this, MapInfoPage);
-
-                    if (arguments[0] === false) {
-                        return false;
-                    }
-                    babelHelpers.get(Object.getPrototypeOf(MapInfoPage.prototype), 'constructor', this).call(this, false);
-                    this.initialize.apply(this, arguments);
-                }
-
-                babelHelpers.createClass(MapInfoPage, [{
-                    key: 'initialize',
-                    value: function initialize(options) {
-                        babelHelpers.get(Object.getPrototypeOf(MapInfoPage.prototype), 'initialize', this).call(this);
-                        var $el = {};
-                        this.$el = $el;
-                        var iscrolls = {};
-                        this.iscrolls = iscrolls;
-                        $el.page = $('#page_mapinfo');
-                        $el.close = $el.page.find('.tab-close');
-                        $el.tabList = $el.page.find('.tab-list');
-                        $el.commentList = $el.page.find('.comment-list');
-                        $el.prompt = $el.commentList.next('.prompt');
-                        $el.hotNumBox = $('.hot-num-box');
-                        $el.commentBox = $('.comment-box');
-                        babelHelpers.get(Object.getPrototypeOf(MapInfoPage.prototype), 'startPage', this).call(this);
-                        iscrolls.content = new iScroll($el.page.get(0));
-
-                        $el.close.one('tap.mapinfo', function () {
-                            var list = routeHistory.get('all');
-                            var route = undefined;
-                            do {
-                                route = list.pop();
-                                console.log('pop:', route);
-                            } while (route && route.indexOf('/mapinfo') !== -1);
-                            env.router.setRoute(route || env.first_page);
-                        });
-                        $el.tabList.attr('data-router', '/mapinfo/list/' + options.id);
-                        var pullFunc = proxy(function () {
-                            if (this.pullUpActionLock) {
-                                return true;
-                            }
-                            if (iscrolls.content.maxScrollY - iscrolls.content.y > 100) {
-                                this.pullUpAction();
-                            }
-                        }, this);
-                        iscrolls.content.on('scrollStart.mapinfo', function () {
-                            $el.page.one('touchend.mapinfo', pullFunc);
-                        });
-
-                        var $updata = $el.commentBox.find('.updata');
-                        var $submit = $el.commentBox.find('.submit');
-                        var $input = $el.commentBox.find('.input');
-                        $el.hotNumBox.one('tap.mapinfo', '.comment-num', function () {
-                            $updata.velocity({
-                                height: 112
-                            }, {
-                                complete: function complete() {
-                                    iscrolls.content.refresh();
-                                }
-                            });
-                        });
-                        $submit.on('tap.mapinfo', function () {
-                            $input.val('');
-                        });
-                    }
-                }, {
-                    key: 'pullUpAction',
-                    value: function pullUpAction() {
-                        var temp = '<li>' + '<div class="comment clearfix">' + '<div class="avatar"></div>' + '<div class="msg">new 评论这是一条评论它评论评论这是一条评论它评论评论这是一条评论它评论</div>' + '</div>' + '</li>';
-                        var reshtml = '';
-                        for (var i = 10; i > 0; i--) {
-                            reshtml = reshtml + temp;
-                        }
-                        this.pullUpActionLock = true;
-                        var $el = this.$el;
-                        var iscrolls = this.iscrolls;
-                        var scrollTo = $el.commentList.find('.comment:last').get(0);
-
-                        $el.loading = $('<li class="loading">loging...</li>');
-                        $el.prompt.hide();
-                        $el.commentList.append($el.loading);
-                        iscrolls.content.refresh();
-                        setTimeout(proxy(function () {
-                            $el.loading.hide().remove();
-                            $el.commentList.append(reshtml);
-                            $el.prompt.show();
-                            iscrolls.content.refresh();
-                            this.pullUpActionLock = false;
-                            iscrolls.content.scrollToElement(scrollTo, 1000);
-                        }, this), 3000);
-                    }
-                }, {
-                    key: 'destroy',
-                    value: function destroy() {
-                        var iscrolls = this.iscrolls;
-                        var self = this;
-                        var $el = this.$el;
-                        babelHelpers.get(Object.getPrototypeOf(MapInfoPage.prototype), 'endPage', this).call(this, function () {
-                            iscrolls.content.off('.mapinfo');
-                            $.each($el, function (index, el) {
-                                el.off('.mapinfo');
-                            });
-                            $.each(iscrolls, function (key, iscroll) {
-                                iscroll.destroy();
-                            });
-                            self.$el = null;
-                        });
-                    }
-                }]);
-                return MapInfoPage;
-            })(BasePage);
-
-            _export('default', MapInfoPage);
         }
     };
 });
@@ -20091,94 +20142,6 @@ System.register('js/page/maplist.js', ['libs/jquery/2.1.4/jquery.js', 'libs/Swip
         }
     };
 });
-System.register('js/page/modal.js', ['libs/jquery/2.1.4/jquery.js', 'js/utils/wsy_utils.js', 'js/router/utils.js', 'js/utils/env.js'], function (_export) {
-    /**
-     * Created by wushuyi on 2015/9/17.
-     */
-    'use strict';
-
-    var $, transitionEnd, routeHistory, env, ModalManage;
-    return {
-        setters: [function (_libsJquery214JqueryJs) {
-            $ = _libsJquery214JqueryJs['default'];
-        }, function (_jsUtilsWsy_utilsJs) {
-            transitionEnd = _jsUtilsWsy_utilsJs.transitionEnd;
-        }, function (_jsRouterUtilsJs) {
-            routeHistory = _jsRouterUtilsJs.routeHistory;
-        }, function (_jsUtilsEnvJs) {
-            env = _jsUtilsEnvJs['default'];
-        }],
-        execute: function () {
-            ModalManage = (function () {
-                function ModalManage() {
-                    babelHelpers.classCallCheck(this, ModalManage);
-
-                    this.initialize.apply(this, arguments);
-                }
-
-                babelHelpers.createClass(ModalManage, [{
-                    key: 'initialize',
-                    value: function initialize(options) {
-                        var $el = {};
-                        this.$el = $el;
-                        $el.modalBox = $('#modal-box');
-                        this['modal_' + options.modal](options);
-                    }
-                }, {
-                    key: 'modal_set',
-                    value: function modal_set(options) {
-                        var $el = this.$el;
-
-                        $el.modal = $('#modal-set');
-                        $el.modalBox.show();
-                        $el.close = $el.modal.find('.close');
-
-                        $el.close.on('tap.modalmanage', function () {
-                            $el.modal.removeClass('active');
-                            routeHistory.goback();
-                        });
-
-                        setTimeout(function () {
-                            $el.modal.addClass('active');
-                        }, 100);
-                    }
-                }, {
-                    key: 'modal_address',
-                    value: function modal_address(options) {
-                        var $el = this.$el;
-
-                        $el.modal = $('#modal-address');
-                        $el.modalBox.show();
-                        $el.close = $el.modal.find('.close');
-
-                        $el.close.one('tap.modalmanage', function () {
-                            $el.modal.removeClass('active');
-                            routeHistory.goback();
-                        });
-
-                        setTimeout(function () {
-                            $el.modal.addClass('active');
-                        }, 100);
-                    }
-                }, {
-                    key: 'destory',
-                    value: function destory() {
-                        var $el = this.$el;
-                        $.each($el, function (key, el) {
-                            el.off('.modalmanage');
-                        });
-                        setTimeout(function () {
-                            $el.modalBox.hide();
-                        }, 400);
-                    }
-                }]);
-                return ModalManage;
-            })();
-
-            _export('default', ModalManage);
-        }
-    };
-});
 System.register('js/page/role.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base.js', 'libs/iScroll/5.1.3/iscroll-lite.js', 'js/router/utils.js', 'js/utils/env.js'], function (_export) {
     /**
      * Created by wushuyi on 2015/9/18.
@@ -20255,6 +20218,172 @@ System.register('js/page/role.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base
         }
     };
 });
+System.register('js/page/modal.js', ['libs/jquery/2.1.4/jquery.js', 'libs/iScroll/5.1.3/iscroll-lite.js', 'js/utils/wsy_utils.js', 'js/router/utils.js', 'js/utils/env.js'], function (_export) {
+    /**
+     * Created by wushuyi on 2015/9/17.
+     */
+    'use strict';
+
+    var $, iScroll, transitionEnd, routeHistory, env, ModalManage;
+    return {
+        setters: [function (_libsJquery214JqueryJs) {
+            $ = _libsJquery214JqueryJs['default'];
+        }, function (_libsIScroll513IscrollLiteJs) {
+            iScroll = _libsIScroll513IscrollLiteJs['default'];
+        }, function (_jsUtilsWsy_utilsJs) {
+            transitionEnd = _jsUtilsWsy_utilsJs.transitionEnd;
+        }, function (_jsRouterUtilsJs) {
+            routeHistory = _jsRouterUtilsJs.routeHistory;
+        }, function (_jsUtilsEnvJs) {
+            env = _jsUtilsEnvJs['default'];
+        }],
+        execute: function () {
+            ModalManage = (function () {
+                function ModalManage() {
+                    babelHelpers.classCallCheck(this, ModalManage);
+
+                    this.initialize.apply(this, arguments);
+                }
+
+                babelHelpers.createClass(ModalManage, [{
+                    key: 'initialize',
+                    value: function initialize(options) {
+                        var $el = {};
+                        this.iscrolls = {};
+                        this.$el = $el;
+                        $el.modalBox = $('#modal-box');
+                        this['modal_' + options.modal](options);
+                    }
+                }, {
+                    key: 'modal_set',
+                    value: function modal_set(options) {
+                        var $el = this.$el;
+
+                        $el.modal = $('#modal-set');
+                        $el.modalBox.show();
+                        $el.modal.show();
+                        $el.close = $el.modal.find('.close');
+
+                        $el.close.on('tap.modalmanage', function () {
+                            $el.modal.removeClass('active');
+                            routeHistory.goback();
+                        });
+
+                        setTimeout(function () {
+                            $el.modal.addClass('active');
+                        }, 100);
+                    }
+                }, {
+                    key: 'modal_address',
+                    value: function modal_address(options) {
+                        var $el = this.$el;
+
+                        $el.modal = $('#modal-address');
+                        $el.modalBox.show();
+                        $el.modal.show();
+                        $el.close = $el.modal.find('.close');
+
+                        $el.close.one('tap.modalmanage', function () {
+                            $el.modal.removeClass('active');
+                            routeHistory.goback();
+                        });
+
+                        setTimeout(function () {
+                            $el.modal.addClass('active');
+                        }, 100);
+                    }
+                }, {
+                    key: 'modal_selectMap',
+                    value: function modal_selectMap() {
+                        var $el = this.$el;
+                        var iscrolls = this.iscrolls;
+
+                        $el.modal = $('#modal-select-map');
+
+                        $el.close = $el.modal.find('.close');
+                        $el.scroll = $el.modal.find('.scroll');
+                        $el.modalBox.show();
+                        $el.modal.show();
+                        $el.close.one('tap.modalmanage', function () {
+                            $el.modal.removeClass('active');
+                            routeHistory.goback();
+                        });
+                        setTimeout(function () {
+                            $el.modal.addClass('active');
+                        }, 100);
+
+                        iscrolls.content = new iScroll($el.scroll.get(0));
+                    }
+                }, {
+                    key: 'modal_addAddrInfo',
+                    value: function modal_addAddrInfo() {
+                        var $el = this.$el;
+                        var iscrolls = this.iscrolls;
+
+                        $el.modal = $('#modal-add-addr-info');
+                        $el.close = $el.modal.find('.close');
+                        $el.scroll = $el.modal.find('.scroll');
+                        $el.modalBox.show();
+                        $el.modal.show();
+                        $el.close.one('tap.modalmanage', function () {
+                            $el.modal.removeClass('active');
+                            routeHistory.goback();
+                        });
+
+                        setTimeout(function () {
+                            $el.modal.addClass('active');
+                        }, 100);
+
+                        iscrolls.content = new iScroll($el.scroll.get(0));
+                    }
+                }, {
+                    key: 'modal_createMap',
+                    value: function modal_createMap() {
+                        var $el = this.$el;
+                        var iscrolls = this.iscrolls;
+
+                        $el.modal = $('#modal-create-map');
+                        $el.close = $el.modal.find('.close');
+                        $el.scroll = $el.modal.find('.scroll');
+                        $el.modalBox.show();
+                        $el.modal.show();
+                        $el.close.one('tap.modalmanage', function () {
+                            $el.modal.removeClass('active');
+                            routeHistory.goback();
+                        });
+
+                        setTimeout(function () {
+                            $el.modal.addClass('active');
+                        }, 100);
+                        iscrolls.content = new iScroll($el.scroll.get(0));
+                    }
+                }, {
+                    key: 'destory',
+                    value: function destory() {
+                        var self = this;
+                        var $el = this.$el;
+                        var iscrolls = this.iscrolls;
+                        $.each($el, function (key, el) {
+                            el.off('.modalmanage');
+                        });
+                        $.each(iscrolls, function (key, iscroll) {
+                            console.log(iscroll);
+                            iscroll.destroy();
+                        });
+                        setTimeout(function () {
+                            $el.modalBox.hide();
+                            $el.modal.hide();
+                            self.$el = null;
+                        }, 400);
+                    }
+                }]);
+                return ModalManage;
+            })();
+
+            _export('default', ModalManage);
+        }
+    };
+});
 System.register('js/page/follow.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base.js', 'libs/iScroll/5.1.3/iscroll-lite.js', 'js/router/utils.js', 'js/utils/env.js'], function (_export) {
     /**
      * Created by wushuyi on 2015/9/18.
@@ -20327,93 +20456,6 @@ System.register('js/page/follow.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/ba
             })(BasePage);
 
             _export('default', FollowPage);
-        }
-    };
-});
-System.register("js/utils/wsy_utils.js", [], function (_export) {
-    /**
-     * Created by wushuyi on 2015/9/10.
-     */
-    "use strict";
-
-    var transitionEnd, animationEnd;
-
-    _export("extend", extend);
-
-    _export("promote", promote);
-
-    _export("proxy", proxy);
-
-    function extend(subclass, superclass) {
-        function o() {
-            this.constructor = subclass;
-        }
-
-        o.prototype = superclass.prototype;
-        return subclass.prototype = new o();
-    }
-
-    function promote(subclass, prefix) {
-        var subP = subclass.prototype,
-            supP = Object.getPrototypeOf && Object.getPrototypeOf(subP) || subP.__proto__;
-        if (supP) {
-            subP[(prefix += "_") + "constructor"] = supP.constructor; // constructor is not always innumerable
-            for (var n in supP) {
-                if (subP.hasOwnProperty(n) && typeof supP[n] == "function") {
-                    subP[prefix + n] = supP[n];
-                }
-            }
-        }
-        return subclass;
-    }
-
-    function proxy(method, scope) {
-        var aArgs = Array.prototype.slice.call(arguments, 2);
-        return function () {
-            return method.apply(scope, Array.prototype.slice.call(arguments, 0).concat(aArgs));
-        };
-    }
-
-    return {
-        setters: [],
-        execute: function () {
-            transitionEnd = (function () {
-                var div = document.createElement('div');
-                var transitions = {
-                    transition: 'transitionend',
-                    WebkitTransition: 'webkitTransitionEnd',
-                    MozTransition: 'mozTransitionEnd',
-                    OTransition: 'oTransitionEnd',
-                    msTransition: 'MSTransitionEnd'
-                };
-
-                for (var t in transitions) {
-                    if (div.style[t] !== undefined) {
-                        return transitions[t];
-                    }
-                }
-            })();
-
-            _export("transitionEnd", transitionEnd);
-
-            animationEnd = (function () {
-                var div = document.createElement('div');
-                var transitions = {
-                    animation: 'animationend',
-                    WebkitAnimation: 'webkitAnimationEnd',
-                    MozAnimation: 'mozAnimationEnd',
-                    OAnimation: 'oAnimationEnd',
-                    msAnimation: 'MSAnimationEnd'
-                };
-
-                for (var t in transitions) {
-                    if (div.style[t] !== undefined) {
-                        return transitions[t];
-                    }
-                }
-            })();
-
-            _export("animationEnd", animationEnd);
         }
     };
 });
@@ -20588,6 +20630,93 @@ System.register('js/page/base.js', ['libs/jquery/2.1.4/jquery.js', 'libs/lodash.
             })();
 
             _export('default', PageBase);
+        }
+    };
+});
+System.register("js/utils/wsy_utils.js", [], function (_export) {
+    /**
+     * Created by wushuyi on 2015/9/10.
+     */
+    "use strict";
+
+    var transitionEnd, animationEnd;
+
+    _export("extend", extend);
+
+    _export("promote", promote);
+
+    _export("proxy", proxy);
+
+    function extend(subclass, superclass) {
+        function o() {
+            this.constructor = subclass;
+        }
+
+        o.prototype = superclass.prototype;
+        return subclass.prototype = new o();
+    }
+
+    function promote(subclass, prefix) {
+        var subP = subclass.prototype,
+            supP = Object.getPrototypeOf && Object.getPrototypeOf(subP) || subP.__proto__;
+        if (supP) {
+            subP[(prefix += "_") + "constructor"] = supP.constructor; // constructor is not always innumerable
+            for (var n in supP) {
+                if (subP.hasOwnProperty(n) && typeof supP[n] == "function") {
+                    subP[prefix + n] = supP[n];
+                }
+            }
+        }
+        return subclass;
+    }
+
+    function proxy(method, scope) {
+        var aArgs = Array.prototype.slice.call(arguments, 2);
+        return function () {
+            return method.apply(scope, Array.prototype.slice.call(arguments, 0).concat(aArgs));
+        };
+    }
+
+    return {
+        setters: [],
+        execute: function () {
+            transitionEnd = (function () {
+                var div = document.createElement('div');
+                var transitions = {
+                    transition: 'transitionend',
+                    WebkitTransition: 'webkitTransitionEnd',
+                    MozTransition: 'mozTransitionEnd',
+                    OTransition: 'oTransitionEnd',
+                    msTransition: 'MSTransitionEnd'
+                };
+
+                for (var t in transitions) {
+                    if (div.style[t] !== undefined) {
+                        return transitions[t];
+                    }
+                }
+            })();
+
+            _export("transitionEnd", transitionEnd);
+
+            animationEnd = (function () {
+                var div = document.createElement('div');
+                var transitions = {
+                    animation: 'animationend',
+                    WebkitAnimation: 'webkitAnimationEnd',
+                    MozAnimation: 'mozAnimationEnd',
+                    OAnimation: 'oAnimationEnd',
+                    msAnimation: 'MSAnimationEnd'
+                };
+
+                for (var t in transitions) {
+                    if (div.style[t] !== undefined) {
+                        return transitions[t];
+                    }
+                }
+            })();
+
+            _export("animationEnd", animationEnd);
         }
     };
 });
@@ -20831,6 +20960,14 @@ System.register('js/component/main_layout.js', ['libs/jquery/2.1.4/jquery.js', '
                                 mobileHA: false
                             }
                         });
+                    }
+                }, {
+                    key: 'viewMoveDefault',
+                    value: function viewMoveDefault() {
+                        var _data = this._data;
+                        if (this.oldRes !== _data.default_height) {
+                            this.viewMoveAnima(_data.default_height);
+                        }
                     }
                 }, {
                     key: 'destroy',

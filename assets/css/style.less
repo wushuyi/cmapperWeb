@@ -53,15 +53,28 @@
   border-radius: 10px;
   display: none;
   overflow: hidden;
+
 }
 
 .modal {
   width: 100%;
   height: 100%;
+  display: none;
   overflow: hidden;
   position: absolute;
   background: #F5F5F5;
 }
+.mask{
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #000000;
+  opacity: 0.6;
+}
+
+
 
 .map {
   position: absolute;
@@ -104,9 +117,9 @@
     width: 80px;
     height: 80px;
     border-radius: 42px;
-    font-size: 14px;
-    text-align: center;
-    line-height: 84px;
+    //font-size: 14px;
+    //text-align: center;
+    //line-height: 84px;
   }
 
   .nav-list .nav-item.a{
@@ -170,6 +183,9 @@
 
 @import "modal-set.less";
 @import "modal-address.less";
+@import "modal-select-map.less";
+@import "modal-add-addr-info.less";
+@import "modal-create-map.less";
 
 #map-xjdd, #map-dw {
   width: 100px;
@@ -258,4 +274,16 @@
 
 .push-left {
   float: left;
+}
+
+.input{
+  width: 100%;
+  border: 2px solid #C8C8C8;
+  border-radius: 8px;
+  height: 66px;
+  outline: none;
+  font-size: 28px;
+  line-height: 66px;
+  padding-left: 20px;
+  padding-right: 20px;
 }

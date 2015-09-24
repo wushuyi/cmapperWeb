@@ -17,7 +17,7 @@ import {routeHistory, getRouter} from './utils.js'
 export let router = new Director.Router();
 router.configure({
     before: function () {
-        console.log('before');
+        env.mainlayout && env.mainlayout.viewMoveDefault();
         routeHistory.push(getRouter());
         window.routeHistory = routeHistory;
     }

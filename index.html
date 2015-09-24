@@ -41,16 +41,16 @@
             <div class="push-left">
                 <ul class="nav-list">
                     <li>
-                        <div class="nav-item a" data-router="/gftj">官方推荐</div>
+                        <div class="nav-item a" data-router="/gftj"></div>
                     </li>
                     <li>
-                        <div class="nav-item b" data-router="/pyq">朋友圈</div>
+                        <div class="nav-item b" data-router="/pyq"></div>
                     </li>
                     <li>
-                        <div class="nav-item c" data-router="/fxdt">发现地图</div>
+                        <div class="nav-item c" data-router="/fxdt"></div>
                     </li>
                     <li>
-                        <div class="nav-item d" data-router="/wd">我的</div>
+                        <div class="nav-item d" data-router="/wd"></div>
                     </li>
                 </ul>
             </div>
@@ -1125,6 +1125,7 @@
         </div>
     </div>
     <div id="modal-box">
+        <div class="mask"></div>
         <div class="modal" id="modal-set">
             <div class="top-bar">
                 <div class="close"><</div>
@@ -1134,25 +1135,316 @@
         <div class="modal" id="modal-address">
             <div class="top-bar">
                 <div class="close">X</div>
-                <div class="eidt_btn">编辑</div>
-                <div class="plus">+</div>
+                <div class="btn_edit">编辑</div>
+                <div class="btn_use">添加</div>
             </div>
-            <div class="num-status">
-                <ul class="horizontal-list">
-                    <li><span class="label">赞数</span></li>
-                    <li><span class="label">地数</span></li>
-                    <li><span class="label">in数</span></li>
+            <div class="top-content">
+                <span class="map-name">地点所属的地图名称</span>
+
+                <div class="addr-box">
+                    <div class="addr-img"></div>
+                    <span class="addr-name">地点名称地点名称地点名称</span>
+                    <ul class="clearfix num-status-box">
+                        <li><div class="num-status">8888</div></li>
+                        <li><div class="num-status">8888</div></li>
+                        <li><div class="num-status">8888</div></li>
+                    </ul>
+                </div>
+                
+
+            </div>
+            <div class="tag-box">
+                <ul class="clearfix">
+                    <li>
+                        <span class="tag">标签1</span>
+                    </li>
+                    <li>
+                        <span class="tag">标签1</span>
+                    </li>
+                    <li>
+                        <span class="tag">标签1</span>
+                    </li>
                 </ul>
             </div>
-            <div class="view-ctl">
-                <span>仅看自己</span>
-                <label class="label-switch">
-                    <input type="checkbox">
-                    <div class="checkbox"></div>
-                </label>
+
+            <div class="addr-info-box">
+                <ul>
+                    <li>
+                        <div class="addr-info">
+                            <div class="tit">地址</div>
+                            <div class="info">Blue Lagoon, lceland</div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="addr-info">
+                            <div class="tit">电话</div>
+                            <div class="info">+354 420 8800</div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="addr-info last">
+                            <div class="tit">网址</div>
+                            <div class="info">http://www.bluelagoon.com</div>
+                        </div>
+                    </li>
+                </ul>
             </div>
+            <div class="hot-num-box">
+                <ul class="clearfix">
+                    <li>
+                        <div class="praise-num hot-box first">13</div>
+                    </li>
+                    <li>
+                        <div class="comment-num hot-box">10</div>
+                    </li>
+                </ul>
+            </div>
+            <div class="comment-box">
+                <ul class="comment-list">
+                    <li>
+                        <div class="comment clearfix">
+                            <div class="avatar"></div>
+                            <div class="msg">评论这是一条评论它评论评论这是一条评论它评论评论这是一条评论它评论</div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="comment clearfix self">
+                            <div class="avatar"></div>
+                            <div class="msg">评论这是一条评论它评论评论这是一条评论它评论评论这是一条评论它评论</div>
+                            <div class="del">x</div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="comment clearfix">
+                            <div class="avatar"></div>
+                            <div class="msg">评论这是一条评论它评论评论这是一条评论它评论评论这是一条评论它评论</div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="comment clearfix self">
+                            <div class="avatar"></div>
+                            <div class="msg">评论这是一条评论它评论评论这是一条评论它评论评论这是一条评论它评论</div>
+                            <div class="del">x</div>
+                        </div>
+                    </li>
 
+                </ul>
+                <div class="prompt">下拉以加载更多</div>
+            </div>
+        </div>
+        <div class="modal" id="modal-select-map">
+            <div class="top-bar">
+                <div class="close"><</div>
+                <div class="title">选择地图</div>
+            </div>
+            <div class="select-box">
+                <input type="text" class="input"/>
+            </div>
+            <div class="list-box scroll">
+                <ul class="map-list clearfix">
+                    <li>
+                        <div class="map-box">
 
+                        </div>
+                    </li>
+                    <li>
+                        <div class="map-box">
+                            <div class="tit-box">
+                                <h3 class="tit">地图标题</h3>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="map-box">
+                            <div class="tit-box">
+                                <h3 class="tit">地图标题</h3>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="map-box">
+                            <div class="tit-box">
+                                <h3 class="tit">地图标题</h3>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="map-box">
+                            <div class="tit-box">
+                                <h3 class="tit">地图标题</h3>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="map-box">
+                            <div class="tit-box">
+                                <h3 class="tit">地图标题</h3>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="map-box">
+                            <div class="tit-box">
+                                <h3 class="tit">地图标题</h3>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="map-box">
+                            <div class="tit-box">
+                                <h3 class="tit">地图标题</h3>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="map-box">
+                            <div class="tit-box">
+                                <h3 class="tit">地图标题</h3>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="map-box">
+                            <div class="tit-box">
+                                <h3 class="tit">地图标题</h3>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="map-box">
+                            <div class="tit-box">
+                                <h3 class="tit">地图标题</h3>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="map-box">
+                            <div class="tit-box">
+                                <h3 class="tit">地图标题</h3>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="modal" id="modal-add-addr-info">
+            <div class="top-bar">
+                <div class="close"><</div>
+                <div class="title">添加地点信息</div>
+                <div class="save-btn">保存</div>
+            </div>
+            <div class="scroll">
+                <div>
+                    <div class="input-box">
+                        <label class="label">地点名称<b>*</b>:</label>
+                        <input type="text" class="input"/>
+                    </div>
+                    <div class="input-box">
+                        <label class="label">地址<b>*</b>:</label>
+                        <input type="text" class="input"/>
+                    </div>
+                    <div class="input-box">
+                        <label class="label">能见度:</label>
+                        <select class="input">
+                            <option>仅自己</option>
+                            <option>所有人</option>
+                        </select>
+                    </div>
+                    <div class="input-box">
+                        <label class="label">网址:</label>
+                        <input type="text" class="input"/>
+                    </div>
+                    <div class="input-box">
+                        <label class="label">电话:</label>
+                        <input type="text" class="input"/>
+                    </div>
+                    <div class="input-box">
+                        <label class="label">Tag<b>*</b>:</label>
+                        <input type="text" class="input"/>
+                    </div>
+                    <div class="tag-box">
+                        <ul class="clearfix">
+                            <li>
+                                <span class="tag-tit">常用Tag:</span>
+                            </li>
+                            <li>
+                                <span class="tag">景点</span>
+                            </li>
+                            <li>
+                                <span class="tag">景点</span>
+                            </li>
+                            <li>
+                                <span class="tag">景点</span>
+                            </li>
+                            <li>
+                                <span class="tag">景点</span>
+                            </li>
+                            <li>
+                                <span class="tag">景点</span>
+                            </li>
+                            <li>
+                                <span class="tag">景点</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal" id="modal-create-map">
+            <div class="top-bar">
+                <div class="close"><</div>
+                <div class="title">创建地图</div>
+                <div class="save-btn">保存</div>
+            </div>
+            <div class="scroll">
+                <div>
+                    <div class="input-box">
+                        <label class="label">地点名称<b>*</b>:</label>
+                        <input type="text" class="input"/>
+                    </div>
+                    <div class="input-box">
+                        <label class="label">能见度:</label>
+                        <select class="input">
+                            <option>仅自己</option>
+                            <option>所有人</option>
+                        </select>
+                    </div>
+                    <div class="tag-box">
+                        <ul class="clearfix">
+                            <li>
+                                <span class="tag-tit">常用Tag:</span>
+                            </li>
+                            <li>
+                                <span class="tag">景点</span>
+                            </li>
+                            <li>
+                                <span class="tag">景点</span>
+                            </li>
+                            <li>
+                                <span class="tag">景点</span>
+                            </li>
+                            <li>
+                                <span class="tag">景点</span>
+                            </li>
+                            <li>
+                                <span class="tag">景点</span>
+                            </li>
+                            <li>
+                                <span class="tag">景点</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="input-box">
+                        <label class="label">地图简介:</label>
+                        <textarea class="input textarea" cols="30" rows="10"></textarea>
+                    </div>
+                    <div class="input-box">
+                        <label class="label">添加封面:</label>
+
+                        <div class="img-file"></div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
