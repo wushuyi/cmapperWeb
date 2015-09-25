@@ -11,33 +11,48 @@
   .tab-close {
     width: 80px;
     height: 80px;
-    background: #D8D8D8;
+    background: #4A90E2 url('../images/icons/close_white.svg') no-repeat 50% 50%;
     float: left;
-    border: 1px solid #979797;
-    font-size: 30px;
-    text-align: center;
-    line-height: 80px;
-    color: #000000;
+    border-right:1px dashed #FFFFFF;
+    //border: 1px solid #979797;
+    //border-bottom-right-radius: 8px;
+    //font-size: 30px;
+    //text-align: center;
+    //line-height: 80px;
+    //color: #000000;
   }
   .tab-item {
     width: 272px;
     height: 80px;
-    background: #D8D8D8;
+    background: #4A90E2;
     float: left;
-    border: 1px solid #979797;
-    font-size: 30px;
+    //border: 1px solid #979797;
+    font-size: 38px;
     text-align: center;
     line-height: 80px;
-    color: #000000;
+    color: #FFFFFF;
   }
   .tab-item.active {
     background: #FFFFFF;
     border-bottom: none;
   }
   .tab-archives {
-
+    border-bottom-right-radius: 8px;
   }
   .tab-list {
+    border-bottom-left-radius: 8px;
+    color: #000000;
+    text-indent: 40px;
+    &:before{
+      width: 40px;
+      height: 40px;
+      margin-left: -30px;
+      margin-right: 10px;
+      margin-bottom: -4px;
+      background: url('../images/icons/spotlist-black.svg') no-repeat;
+      display: inline-block;
+      content: '';
+    }
   }
   .maplist-tab{
     width: 100%;
@@ -50,79 +65,74 @@
     width: 40px;
     height: 40px;
     border-radius: 20px;
-    background: #D8D8D8;
+    //background: #D8D8D8;
+    border: 1px solid #4A90E2;
     margin-left: 10px;
     margin-right: 10px;
     display: inline-block;
     &.active{
-      background: #5EE5C3;
+      background: #4A90E2;
     }
   }
   .address-list{
     padding-bottom: 30px;
   }
-  .address-box{
-    width: 578px;
-    height: 120px;
-    margin-left: 22px;
-    margin-top: 10px;
-    border-radius: 12px;
-    background: #D8D8D8;
+
+
+  .addr-box {
+    border-radius: 8px;
+    background: #EEEEEE;
+    margin-right: 20px;
+    margin-left: 20px;
+    margin-bottom: 10px;
   }
-  .order{
-    position: relative;
+  .addr-img {
     float: left;
-    width: 60px;
+    margin-top: 24px;
+    margin-left: 20px;
+    background: red;
+    height: 70px;
+    width: 66px;
+  }
+  .addr-name {
+    margin-top: 30px;
+    margin-left: 20px;
+    margin-right: 40px;
+    width: 430px;
+    font-size: 30px;
+    float: left;
+  }
+  .num-status-box {
+    width: 400px;
+    height: 50px;
     margin-top: 20px;
-    margin-left: 20px;
-    text-align: center;
-    font-size: 40px;
-    &:before{
-      position: absolute;
-      top: 0;
-      left: 0;
-      content: '';
-      display: block;
-      width: 60px;
-      height: 60px;
-      background: #66A2CD;
-      border-radius: 30px;
-    }
-    &:after{
-      position: absolute;
-      top: 37px;
-      left: 0;
-      content: '';
-      display: block;
-      width: 0;
-      height: 0;
-      border-left: 30px solid transparent;
-      border-right: 30px solid transparent;
-      border-top: 42px solid #66A2CD;
-    }
-  }
-  .address-name{
-    width: 360px;
-    padding-top: 30px;
-    padding-bottom: 20px;
-    margin-left: 20px;
-    font-size: 28px;
-    float: left;
-    height: 100%;
-  }
-  .bottm-bar{
-    height: 100%;
-    float: right;
-    width: 76px;
+    margin-left: 86px;
     margin-right: 10px;
-    .btn-xxx{
-      width: 100%;
-      height: 30px;
-      background: #F3F3F3;
-      border-radius: 10px;
-      text-align: center;
-      line-height: 30px;
-      margin-top: 8px;
+    float: left;
+  }
+  .num-status-box li {
+    float: right;
+  }
+  .num-status {
+    width: 90px;
+    height: 40px;
+    padding-left: 40px;
+    font-size: 20px;
+    line-height: 36px;
+    display: inline-block;
+    background-color: #FFFFFF;
+    margin-left: 20px;
+    color: #4A90E2;
+    border: 4px solid #FFFFFF;
+    border-radius: 8px;
+    &:before {
+      display: inline-block;
+      width: 26px;
+      height: 26px;
+      background: red;
+      margin-left: -40px;
+      margin-right: 10px;
+      content: '';
     }
   }
 }
