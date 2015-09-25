@@ -19036,7 +19036,7 @@ System.register('js/router/index.js', ['libs/Director/1.2.8/director.js', 'js/ro
      */
     'use strict';
 
-    var Director, register_gftj, register_pyq, register_fxdt, register_wd, register_mapinfo, register_maplist, register_modal, register_role, register_follow, env, routeHistory, getRouter, router;
+    var Director, register_gftj, register_pyq, register_fxdt, register_wd, register_mapinfo, register_maplist, register_modal, register_role, register_follow, env, routeHistory, getRouter, isModal, router;
 
     function register_all() {
         register_gftj(router);
@@ -19076,6 +19076,7 @@ System.register('js/router/index.js', ['libs/Director/1.2.8/director.js', 'js/ro
         }, function (_jsRouterUtilsJs) {
             routeHistory = _jsRouterUtilsJs.routeHistory;
             getRouter = _jsRouterUtilsJs.getRouter;
+            isModal = _jsRouterUtilsJs.isModal;
         }],
         execute: function () {
             router = new Director.Router();
@@ -19084,7 +19085,9 @@ System.register('js/router/index.js', ['libs/Director/1.2.8/director.js', 'js/ro
 
             router.configure({
                 before: function before() {
-                    env.mainlayout && env.mainlayout.viewMoveDefault();
+                    if (!isModal()) {
+                        env.mainlayout && env.mainlayout.viewMoveDefault();
+                    }
                     routeHistory.push(getRouter());
                     window.routeHistory = routeHistory;
                 }
@@ -19607,6 +19610,197 @@ System.register('js/router/utils.js', ['js/utils/env.js'], function (_export) {
         }
     };
 });
+System.register('js/page/fxdt.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base.js', 'libs/iScroll/5.1.3/iscroll-lite.js', 'js/utils/env.js'], function (_export) {
+    /**
+     * Created by wushuyi on 2015/9/13.
+     */
+    'use strict';
+
+    var $, BasePage, iScroll, env, FxdtPage;
+    return {
+        setters: [function (_libsJquery214JqueryJs) {
+            $ = _libsJquery214JqueryJs['default'];
+        }, function (_jsPageBaseJs) {
+            BasePage = _jsPageBaseJs['default'];
+        }, function (_libsIScroll513IscrollLiteJs) {
+            iScroll = _libsIScroll513IscrollLiteJs['default'];
+        }, function (_jsUtilsEnvJs) {
+            env = _jsUtilsEnvJs['default'];
+        }],
+        execute: function () {
+            FxdtPage = (function (_BasePage) {
+                babelHelpers.inherits(FxdtPage, _BasePage);
+
+                function FxdtPage() {
+                    babelHelpers.classCallCheck(this, FxdtPage);
+
+                    if (arguments[0] === false) {
+                        return false;
+                    }
+                    babelHelpers.get(Object.getPrototypeOf(FxdtPage.prototype), 'constructor', this).call(this, false);
+                    this.initialize.apply(this, arguments);
+                }
+
+                babelHelpers.createClass(FxdtPage, [{
+                    key: 'initialize',
+                    value: function initialize() {
+                        babelHelpers.get(Object.getPrototypeOf(FxdtPage.prototype), 'initialize', this).call(this);
+                        var $el = {};
+                        this.$el = $el;
+                        var iscrolls = {};
+                        this.iscrolls = iscrolls;
+                        $el.nav = $('.nav-item[data-router="/fxdt"]');
+                        $el.page = $('#page_fxdt');
+                        babelHelpers.get(Object.getPrototypeOf(FxdtPage.prototype), 'startPage', this).call(this);
+                        iscrolls.content = new iScroll($el.page.get(0));
+                        this.onReview = function () {
+                            iscrolls.content.refresh();
+                        };
+                        env.mainlayout.on('review', this.onReview);
+                    }
+                }, {
+                    key: 'destroy',
+                    value: function destroy() {
+                        var self = this;
+                        var iscrolls = this.iscrolls;
+
+                        babelHelpers.get(Object.getPrototypeOf(FxdtPage.prototype), 'endPage', this).call(this, function () {
+                            env.mainlayout.off('review', self.onReview);
+                            $.each(iscrolls, function (key, iscroll) {
+                                iscroll.destroy();
+                            });
+                            self.$el = null;
+                        });
+                    }
+                }]);
+                return FxdtPage;
+            })(BasePage);
+
+            _export('default', FxdtPage);
+        }
+    };
+});
+System.register('js/page/gftj.js', ['libs/jquery/2.1.4/jquery.js', 'libs/Swiper/3.1.2/js/swiper.js', 'js/page/base.js', 'libs/iScroll/5.1.3/iscroll-lite.js', 'js/utils/env.js'], function (_export) {
+    /**
+     * Created by wushuyi on 2015/9/13.
+     */
+    'use strict';
+
+    var $, Swiper, BasePage, iScroll, env, GftjPage;
+    return {
+        setters: [function (_libsJquery214JqueryJs) {
+            $ = _libsJquery214JqueryJs['default'];
+        }, function (_libsSwiper312JsSwiperJs) {
+            Swiper = _libsSwiper312JsSwiperJs['default'];
+        }, function (_jsPageBaseJs) {
+            BasePage = _jsPageBaseJs['default'];
+        }, function (_libsIScroll513IscrollLiteJs) {
+            iScroll = _libsIScroll513IscrollLiteJs['default'];
+        }, function (_jsUtilsEnvJs) {
+            env = _jsUtilsEnvJs['default'];
+        }],
+        execute: function () {
+            GftjPage = (function (_BasePage) {
+                babelHelpers.inherits(GftjPage, _BasePage);
+
+                function GftjPage() {
+                    babelHelpers.classCallCheck(this, GftjPage);
+
+                    if (arguments[0] === false) {
+                        return false;
+                    }
+                    babelHelpers.get(Object.getPrototypeOf(GftjPage.prototype), 'constructor', this).call(this, false);
+                    this.initialize.apply(this, arguments);
+                }
+
+                babelHelpers.createClass(GftjPage, [{
+                    key: 'initialize',
+                    value: function initialize() {
+                        babelHelpers.get(Object.getPrototypeOf(GftjPage.prototype), 'initialize', this).call(this);
+                        var $el = {};
+                        var iscrolls = {};
+                        this.$el = $el;
+                        this.iscrolls = iscrolls;
+                        $el.nav = $('.nav-item[data-router="/gftj"]');
+                        $el.page = $('#page_gftj');
+                        $el.swiper = $el.page.find('.swiper-container');
+                        $el.topPeople = $('.top-people');
+                        $el.classify1 = $('.classify1');
+                        $el.classify2 = $('.classify2');
+                        babelHelpers.get(Object.getPrototypeOf(GftjPage.prototype), 'startPage', this).call(this);
+
+                        this.my_swiper = new Swiper($el.swiper.get(0), {
+                            speed: 400,
+                            loop: true,
+                            pagination: '.swiper-pagination',
+                            autoplay: 2500,
+                            autoplayDisableOnInteraction: false
+                        });
+
+                        this.initIscrolls();
+                    }
+                }, {
+                    key: 'initIscrolls',
+                    value: function initIscrolls() {
+                        var $el = this.$el;
+                        var iscrolls = this.iscrolls;
+
+                        var reset_horizontal = function reset_horizontal($element) {
+                            var $child = $($element.children()[0]);
+                            var $grand_child = $($child.children()[0]);
+
+                            $child.width(10000);
+                            $child.width($grand_child.width());
+                        };
+
+                        reset_horizontal($el.topPeople);
+                        reset_horizontal($el.classify1);
+                        reset_horizontal($el.classify2);
+
+                        iscrolls.content = new iScroll($el.page.get(0));
+                        iscrolls.topPeople = new iScroll($el.topPeople.get(0), {
+                            scrollX: true,
+                            scrollY: false
+                        });
+
+                        iscrolls.classify1 = new iScroll($el.classify1.get(0), {
+                            scrollX: true,
+                            scrollY: false
+                        });
+                        iscrolls.classify2 = new iScroll($el.classify2.get(0), {
+                            scrollX: true,
+                            scrollY: false
+                        });
+
+                        this.onReview = function () {
+                            iscrolls.content.refresh();
+                        };
+                        env.mainlayout.on('review', this.onReview);
+                    }
+                }, {
+                    key: 'destroy',
+                    value: function destroy() {
+                        var self = this;
+                        var iscrolls = this.iscrolls;
+
+                        babelHelpers.get(Object.getPrototypeOf(GftjPage.prototype), 'endPage', this).call(this, function () {
+                            env.mainlayout.off('review', self.onReview);
+                            $.each(iscrolls, function (key, iscroll) {
+                                iscroll.destroy();
+                            });
+
+                            self.my_swiper.destroy();
+                            self.$el = null;
+                        });
+                    }
+                }]);
+                return GftjPage;
+            })(BasePage);
+
+            _export('default', GftjPage);
+        }
+    };
+});
 System.register('js/page/pyq.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base.js', 'libs/iScroll/5.1.3/iscroll-lite.js', 'js/utils/env.js'], function (_export) {
     /**
      * Created by wushuyi on 2015/9/13.
@@ -19752,13 +19946,155 @@ System.register('js/page/wd.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base.j
         }
     };
 });
-System.register('js/page/gftj.js', ['libs/jquery/2.1.4/jquery.js', 'libs/Swiper/3.1.2/js/swiper.js', 'js/page/base.js', 'libs/iScroll/5.1.3/iscroll-lite.js', 'js/utils/env.js'], function (_export) {
+System.register('js/page/mapinfo.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base.js', 'libs/iScroll/5.1.3/iscroll-lite.js', 'js/utils/wsy_utils.js', 'js/router/utils.js', 'js/utils/env.js'], function (_export) {
+    /**
+     * Created by wushuyi on 2015/9/14.
+     */
+    'use strict';
+
+    var $, BasePage, iScroll, proxy, routeHistory, env, MapInfoPage;
+    return {
+        setters: [function (_libsJquery214JqueryJs) {
+            $ = _libsJquery214JqueryJs['default'];
+        }, function (_jsPageBaseJs) {
+            BasePage = _jsPageBaseJs['default'];
+        }, function (_libsIScroll513IscrollLiteJs) {
+            iScroll = _libsIScroll513IscrollLiteJs['default'];
+        }, function (_jsUtilsWsy_utilsJs) {
+            proxy = _jsUtilsWsy_utilsJs.proxy;
+        }, function (_jsRouterUtilsJs) {
+            routeHistory = _jsRouterUtilsJs.routeHistory;
+        }, function (_jsUtilsEnvJs) {
+            env = _jsUtilsEnvJs['default'];
+        }],
+        execute: function () {
+            MapInfoPage = (function (_BasePage) {
+                babelHelpers.inherits(MapInfoPage, _BasePage);
+
+                function MapInfoPage() {
+                    babelHelpers.classCallCheck(this, MapInfoPage);
+
+                    if (arguments[0] === false) {
+                        return false;
+                    }
+                    babelHelpers.get(Object.getPrototypeOf(MapInfoPage.prototype), 'constructor', this).call(this, false);
+                    this.initialize.apply(this, arguments);
+                }
+
+                babelHelpers.createClass(MapInfoPage, [{
+                    key: 'initialize',
+                    value: function initialize(options) {
+                        babelHelpers.get(Object.getPrototypeOf(MapInfoPage.prototype), 'initialize', this).call(this);
+                        var $el = {};
+                        this.$el = $el;
+                        var iscrolls = {};
+                        this.iscrolls = iscrolls;
+                        $el.page = $('#page_mapinfo');
+                        $el.close = $el.page.find('.tab-close');
+                        $el.tabList = $el.page.find('.tab-list');
+                        $el.commentList = $el.page.find('.comment-list');
+                        $el.prompt = $el.commentList.next('.prompt');
+                        $el.hotNumBox = $('.hot-num-box');
+                        $el.commentBox = $('.comment-box');
+                        babelHelpers.get(Object.getPrototypeOf(MapInfoPage.prototype), 'startPage', this).call(this);
+                        iscrolls.content = new iScroll($el.page.get(0));
+
+                        $el.close.one('tap.mapinfo', function () {
+                            var list = routeHistory.get('all');
+                            var route = undefined;
+                            do {
+                                route = list.pop();
+                                //console.log('pop:', route)
+                            } while (route && route.indexOf('/mapinfo') !== -1);
+                            env.router.setRoute(route || env.first_page);
+                        });
+                        $el.tabList.attr('data-router', '/mapinfo/list/' + options.id);
+                        var pullFunc = proxy(function () {
+                            if (this.pullUpActionLock) {
+                                return true;
+                            }
+                            if (iscrolls.content.maxScrollY - iscrolls.content.y > 100) {
+                                this.pullUpAction();
+                            }
+                        }, this);
+                        iscrolls.content.on('scrollStart', function () {
+                            $el.page.one('touchend.mapinfo', pullFunc);
+                        });
+
+                        var $updata = $el.commentBox.find('.updata');
+                        var $submit = $el.commentBox.find('.submit');
+                        var $input = $el.commentBox.find('.input');
+                        $el.hotNumBox.one('tap.mapinfo', '.comment-num', function () {
+                            $updata.velocity({
+                                height: 112
+                            }, {
+                                complete: function complete() {
+                                    iscrolls.content.refresh();
+                                }
+                            });
+                        });
+                        $submit.on('tap.mapinfo', function () {
+                            $input.val('');
+                        });
+                    }
+                }, {
+                    key: 'pullUpAction',
+                    value: function pullUpAction() {
+                        var temp = '<li>' + '<div class="comment clearfix">' + '<div class="avatar"></div>' + '<div class="msg">new 评论这是一条评论它评论评论这是一条评论它评论评论这是一条评论它评论</div>' + '</div>' + '</li>';
+                        var reshtml = '';
+                        for (var i = 10; i > 0; i--) {
+                            reshtml = reshtml + temp;
+                        }
+                        this.pullUpActionLock = true;
+                        var $el = this.$el;
+                        var iscrolls = this.iscrolls;
+                        var scrollTo = $el.commentList.find('.comment:last').get(0);
+
+                        $el.loading = $('<li class="loading">loging...</li>');
+                        $el.prompt.hide();
+                        $el.commentList.append($el.loading);
+                        iscrolls.content.refresh();
+                        setTimeout(proxy(function () {
+                            $el.loading.hide().remove();
+                            $el.commentList.append(reshtml);
+                            $el.prompt.show();
+                            iscrolls.content.refresh();
+                            this.pullUpActionLock = false;
+                            iscrolls.content.scrollToElement(scrollTo, 1000);
+                        }, this), 3000);
+                    }
+                }, {
+                    key: 'destroy',
+                    value: function destroy() {
+                        var iscrolls = this.iscrolls;
+                        var self = this;
+                        var $el = this.$el;
+                        babelHelpers.get(Object.getPrototypeOf(MapInfoPage.prototype), 'endPage', this).call(this, function () {
+                            iscrolls.content.off('scrollStart');
+                            $.each($el, function (index, el) {
+                                el.off('.mapinfo');
+                            });
+                            $.each(iscrolls, function (key, iscroll) {
+                                iscroll.destroy();
+                            });
+                            self.$el = null;
+                        });
+                    }
+                }]);
+                return MapInfoPage;
+            })(BasePage);
+
+            _export('default', MapInfoPage);
+        }
+    };
+});
+System.register('js/page/maplist.js', ['libs/jquery/2.1.4/jquery.js', 'libs/Swiper/3.1.2/js/swiper.js', 'js/page/base.js', 'libs/iScroll/5.1.3/iscroll-lite.js', 'js/utils/env.js', 'js/router/utils.js'], function (_export) {
     /**
      * Created by wushuyi on 2015/9/13.
      */
     'use strict';
 
-    var $, Swiper, BasePage, iScroll, env, GftjPage;
+    var $, Swiper, BasePage, iScroll, env, routeHistory, MapListPage;
     return {
         setters: [function (_libsJquery214JqueryJs) {
             $ = _libsJquery214JqueryJs['default'];
@@ -19770,176 +20106,66 @@ System.register('js/page/gftj.js', ['libs/jquery/2.1.4/jquery.js', 'libs/Swiper/
             iScroll = _libsIScroll513IscrollLiteJs['default'];
         }, function (_jsUtilsEnvJs) {
             env = _jsUtilsEnvJs['default'];
+        }, function (_jsRouterUtilsJs) {
+            routeHistory = _jsRouterUtilsJs.routeHistory;
         }],
         execute: function () {
-            GftjPage = (function (_BasePage) {
-                babelHelpers.inherits(GftjPage, _BasePage);
+            MapListPage = (function (_BasePage) {
+                babelHelpers.inherits(MapListPage, _BasePage);
 
-                function GftjPage() {
-                    babelHelpers.classCallCheck(this, GftjPage);
+                function MapListPage() {
+                    babelHelpers.classCallCheck(this, MapListPage);
 
                     if (arguments[0] === false) {
                         return false;
                     }
-                    babelHelpers.get(Object.getPrototypeOf(GftjPage.prototype), 'constructor', this).call(this, false);
+                    babelHelpers.get(Object.getPrototypeOf(MapListPage.prototype), 'constructor', this).call(this, false);
                     this.initialize.apply(this, arguments);
                 }
 
-                babelHelpers.createClass(GftjPage, [{
+                babelHelpers.createClass(MapListPage, [{
                     key: 'initialize',
-                    value: function initialize() {
-                        babelHelpers.get(Object.getPrototypeOf(GftjPage.prototype), 'initialize', this).call(this);
-                        var $el = {};
-                        var iscrolls = {};
-                        this.$el = $el;
-                        this.iscrolls = iscrolls;
-                        $el.nav = $('.nav-item[data-router="/gftj"]');
-                        $el.page = $('#page_gftj');
-                        $el.swiper = $el.page.find('.swiper-container');
-                        $el.topPeople = $('.top-people');
-                        $el.classify1 = $('.classify1');
-                        $el.classify2 = $('.classify2');
-                        babelHelpers.get(Object.getPrototypeOf(GftjPage.prototype), 'startPage', this).call(this);
-
-                        this.my_swiper = new Swiper($el.swiper.get(0), {
-                            speed: 400,
-                            loop: true,
-                            pagination: '.swiper-pagination',
-                            autoplay: 2500,
-                            autoplayDisableOnInteraction: false
-                        });
-
-                        this.initIscrolls();
-                    }
-                }, {
-                    key: 'initIscrolls',
-                    value: function initIscrolls() {
-                        var $el = this.$el;
-                        var iscrolls = this.iscrolls;
-
-                        var reset_horizontal = function reset_horizontal($element) {
-                            var $child = $($element.children()[0]);
-                            var $grand_child = $($child.children()[0]);
-
-                            $child.width(10000);
-                            $child.width($grand_child.width());
-                        };
-
-                        reset_horizontal($el.topPeople);
-                        reset_horizontal($el.classify1);
-                        reset_horizontal($el.classify2);
-
-                        iscrolls.content = new iScroll($el.page.get(0));
-                        iscrolls.topPeople = new iScroll($el.topPeople.get(0), {
-                            scrollX: true,
-                            scrollY: false
-                        });
-
-                        iscrolls.classify1 = new iScroll($el.classify1.get(0), {
-                            scrollX: true,
-                            scrollY: false
-                        });
-                        iscrolls.classify2 = new iScroll($el.classify2.get(0), {
-                            scrollX: true,
-                            scrollY: false
-                        });
-
-                        this.onReview = function () {
-                            iscrolls.content.refresh();
-                        };
-                        env.mainlayout.on('review', this.onReview);
-                    }
-                }, {
-                    key: 'destroy',
-                    value: function destroy() {
-                        var self = this;
-                        var iscrolls = this.iscrolls;
-
-                        babelHelpers.get(Object.getPrototypeOf(GftjPage.prototype), 'endPage', this).call(this, function () {
-                            env.mainlayout.off('review', self.onReview);
-                            $.each(iscrolls, function (key, iscroll) {
-                                iscroll.destroy();
-                            });
-
-                            self.my_swiper.destroy();
-                            self.$el = null;
-                        });
-                    }
-                }]);
-                return GftjPage;
-            })(BasePage);
-
-            _export('default', GftjPage);
-        }
-    };
-});
-System.register('js/page/fxdt.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base.js', 'libs/iScroll/5.1.3/iscroll-lite.js', 'js/utils/env.js'], function (_export) {
-    /**
-     * Created by wushuyi on 2015/9/13.
-     */
-    'use strict';
-
-    var $, BasePage, iScroll, env, FxdtPage;
-    return {
-        setters: [function (_libsJquery214JqueryJs) {
-            $ = _libsJquery214JqueryJs['default'];
-        }, function (_jsPageBaseJs) {
-            BasePage = _jsPageBaseJs['default'];
-        }, function (_libsIScroll513IscrollLiteJs) {
-            iScroll = _libsIScroll513IscrollLiteJs['default'];
-        }, function (_jsUtilsEnvJs) {
-            env = _jsUtilsEnvJs['default'];
-        }],
-        execute: function () {
-            FxdtPage = (function (_BasePage) {
-                babelHelpers.inherits(FxdtPage, _BasePage);
-
-                function FxdtPage() {
-                    babelHelpers.classCallCheck(this, FxdtPage);
-
-                    if (arguments[0] === false) {
-                        return false;
-                    }
-                    babelHelpers.get(Object.getPrototypeOf(FxdtPage.prototype), 'constructor', this).call(this, false);
-                    this.initialize.apply(this, arguments);
-                }
-
-                babelHelpers.createClass(FxdtPage, [{
-                    key: 'initialize',
-                    value: function initialize() {
-                        babelHelpers.get(Object.getPrototypeOf(FxdtPage.prototype), 'initialize', this).call(this);
+                    value: function initialize(options) {
+                        babelHelpers.get(Object.getPrototypeOf(MapListPage.prototype), 'initialize', this).call(this);
                         var $el = {};
                         this.$el = $el;
                         var iscrolls = {};
                         this.iscrolls = iscrolls;
-                        $el.nav = $('.nav-item[data-router="/fxdt"]');
-                        $el.page = $('#page_fxdt');
-                        babelHelpers.get(Object.getPrototypeOf(FxdtPage.prototype), 'startPage', this).call(this);
+                        $el.page = $('#page_maplist');
+                        $el.close = $el.page.find('.tab-close');
+                        $el.tabArchives = $el.page.find('.tab-archives');
+                        babelHelpers.get(Object.getPrototypeOf(MapListPage.prototype), 'startPage', this).call(this);
+                        $el.close.one('tap.maplist', function () {
+                            var list = routeHistory.get('all');
+                            var route = undefined;
+                            do {
+                                route = list.pop();
+                                //console.log('pop:', route)
+                            } while (route && route.indexOf('/mapinfo') !== -1);
+                            env.router.setRoute(route || env.first_page);
+                        });
+                        $el.tabArchives.attr('data-router', '/mapinfo/archives/' + options.id);
+
                         iscrolls.content = new iScroll($el.page.get(0));
-                        this.onReview = function () {
-                            iscrolls.content.refresh();
-                        };
-                        env.mainlayout.on('review', this.onReview);
                     }
                 }, {
                     key: 'destroy',
                     value: function destroy() {
-                        var self = this;
-                        var iscrolls = this.iscrolls;
+                        var _this = this;
 
-                        babelHelpers.get(Object.getPrototypeOf(FxdtPage.prototype), 'endPage', this).call(this, function () {
-                            env.mainlayout.off('review', self.onReview);
+                        var iscrolls = this.iscrolls;
+                        babelHelpers.get(Object.getPrototypeOf(MapListPage.prototype), 'endPage', this).call(this, function () {
                             $.each(iscrolls, function (key, iscroll) {
                                 iscroll.destroy();
                             });
-                            self.$el = null;
+                            _this.$el = null;
                         });
                     }
                 }]);
-                return FxdtPage;
+                return MapListPage;
             })(BasePage);
 
-            _export('default', FxdtPage);
+            _export('default', MapListPage);
         }
     };
 });
@@ -20119,148 +20345,6 @@ System.register('js/page/modal.js', ['libs/jquery/2.1.4/jquery.js', 'libs/iScrol
         }
     };
 });
-System.register('js/page/mapinfo.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base.js', 'libs/iScroll/5.1.3/iscroll-lite.js', 'js/utils/wsy_utils.js', 'js/router/utils.js', 'js/utils/env.js'], function (_export) {
-    /**
-     * Created by wushuyi on 2015/9/14.
-     */
-    'use strict';
-
-    var $, BasePage, iScroll, proxy, routeHistory, env, MapInfoPage;
-    return {
-        setters: [function (_libsJquery214JqueryJs) {
-            $ = _libsJquery214JqueryJs['default'];
-        }, function (_jsPageBaseJs) {
-            BasePage = _jsPageBaseJs['default'];
-        }, function (_libsIScroll513IscrollLiteJs) {
-            iScroll = _libsIScroll513IscrollLiteJs['default'];
-        }, function (_jsUtilsWsy_utilsJs) {
-            proxy = _jsUtilsWsy_utilsJs.proxy;
-        }, function (_jsRouterUtilsJs) {
-            routeHistory = _jsRouterUtilsJs.routeHistory;
-        }, function (_jsUtilsEnvJs) {
-            env = _jsUtilsEnvJs['default'];
-        }],
-        execute: function () {
-            MapInfoPage = (function (_BasePage) {
-                babelHelpers.inherits(MapInfoPage, _BasePage);
-
-                function MapInfoPage() {
-                    babelHelpers.classCallCheck(this, MapInfoPage);
-
-                    if (arguments[0] === false) {
-                        return false;
-                    }
-                    babelHelpers.get(Object.getPrototypeOf(MapInfoPage.prototype), 'constructor', this).call(this, false);
-                    this.initialize.apply(this, arguments);
-                }
-
-                babelHelpers.createClass(MapInfoPage, [{
-                    key: 'initialize',
-                    value: function initialize(options) {
-                        babelHelpers.get(Object.getPrototypeOf(MapInfoPage.prototype), 'initialize', this).call(this);
-                        var $el = {};
-                        this.$el = $el;
-                        var iscrolls = {};
-                        this.iscrolls = iscrolls;
-                        $el.page = $('#page_mapinfo');
-                        $el.close = $el.page.find('.tab-close');
-                        $el.tabList = $el.page.find('.tab-list');
-                        $el.commentList = $el.page.find('.comment-list');
-                        $el.prompt = $el.commentList.next('.prompt');
-                        $el.hotNumBox = $('.hot-num-box');
-                        $el.commentBox = $('.comment-box');
-                        babelHelpers.get(Object.getPrototypeOf(MapInfoPage.prototype), 'startPage', this).call(this);
-                        iscrolls.content = new iScroll($el.page.get(0));
-
-                        $el.close.one('tap.mapinfo', function () {
-                            var list = routeHistory.get('all');
-                            var route = undefined;
-                            do {
-                                route = list.pop();
-                                //console.log('pop:', route)
-                            } while (route && route.indexOf('/mapinfo') !== -1);
-                            env.router.setRoute(route || env.first_page);
-                        });
-                        $el.tabList.attr('data-router', '/mapinfo/list/' + options.id);
-                        var pullFunc = proxy(function () {
-                            if (this.pullUpActionLock) {
-                                return true;
-                            }
-                            if (iscrolls.content.maxScrollY - iscrolls.content.y > 100) {
-                                this.pullUpAction();
-                            }
-                        }, this);
-                        iscrolls.content.on('scrollStart', function () {
-                            $el.page.one('touchend.mapinfo', pullFunc);
-                        });
-
-                        var $updata = $el.commentBox.find('.updata');
-                        var $submit = $el.commentBox.find('.submit');
-                        var $input = $el.commentBox.find('.input');
-                        $el.hotNumBox.one('tap.mapinfo', '.comment-num', function () {
-                            $updata.velocity({
-                                height: 112
-                            }, {
-                                complete: function complete() {
-                                    iscrolls.content.refresh();
-                                }
-                            });
-                        });
-                        $submit.on('tap.mapinfo', function () {
-                            $input.val('');
-                        });
-                    }
-                }, {
-                    key: 'pullUpAction',
-                    value: function pullUpAction() {
-                        var temp = '<li>' + '<div class="comment clearfix">' + '<div class="avatar"></div>' + '<div class="msg">new 评论这是一条评论它评论评论这是一条评论它评论评论这是一条评论它评论</div>' + '</div>' + '</li>';
-                        var reshtml = '';
-                        for (var i = 10; i > 0; i--) {
-                            reshtml = reshtml + temp;
-                        }
-                        this.pullUpActionLock = true;
-                        var $el = this.$el;
-                        var iscrolls = this.iscrolls;
-                        var scrollTo = $el.commentList.find('.comment:last').get(0);
-
-                        $el.loading = $('<li class="loading">loging...</li>');
-                        $el.prompt.hide();
-                        $el.commentList.append($el.loading);
-                        iscrolls.content.refresh();
-                        setTimeout(proxy(function () {
-                            $el.loading.hide().remove();
-                            $el.commentList.append(reshtml);
-                            $el.prompt.show();
-                            iscrolls.content.refresh();
-                            this.pullUpActionLock = false;
-                            iscrolls.content.scrollToElement(scrollTo, 1000);
-                        }, this), 3000);
-                    }
-                }, {
-                    key: 'destroy',
-                    value: function destroy() {
-                        var iscrolls = this.iscrolls;
-                        var self = this;
-                        var $el = this.$el;
-                        babelHelpers.get(Object.getPrototypeOf(MapInfoPage.prototype), 'endPage', this).call(this, function () {
-                            iscrolls.content.off('scrollStart');
-                            $.each($el, function (index, el) {
-                                el.off('.mapinfo');
-                            });
-                            $.each(iscrolls, function (key, iscroll) {
-                                iscroll.destroy();
-                            });
-                            self.$el = null;
-                        });
-                    }
-                }]);
-                return MapInfoPage;
-            })(BasePage);
-
-            _export('default', MapInfoPage);
-        }
-    };
-});
 System.register('js/page/role.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base.js', 'libs/iScroll/5.1.3/iscroll-lite.js', 'js/router/utils.js', 'js/utils/env.js'], function (_export) {
     /**
      * Created by wushuyi on 2015/9/18.
@@ -20334,87 +20418,6 @@ System.register('js/page/role.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base
             })(BasePage);
 
             _export('default', RolePage);
-        }
-    };
-});
-System.register('js/page/maplist.js', ['libs/jquery/2.1.4/jquery.js', 'libs/Swiper/3.1.2/js/swiper.js', 'js/page/base.js', 'libs/iScroll/5.1.3/iscroll-lite.js', 'js/utils/env.js', 'js/router/utils.js'], function (_export) {
-    /**
-     * Created by wushuyi on 2015/9/13.
-     */
-    'use strict';
-
-    var $, Swiper, BasePage, iScroll, env, routeHistory, MapListPage;
-    return {
-        setters: [function (_libsJquery214JqueryJs) {
-            $ = _libsJquery214JqueryJs['default'];
-        }, function (_libsSwiper312JsSwiperJs) {
-            Swiper = _libsSwiper312JsSwiperJs['default'];
-        }, function (_jsPageBaseJs) {
-            BasePage = _jsPageBaseJs['default'];
-        }, function (_libsIScroll513IscrollLiteJs) {
-            iScroll = _libsIScroll513IscrollLiteJs['default'];
-        }, function (_jsUtilsEnvJs) {
-            env = _jsUtilsEnvJs['default'];
-        }, function (_jsRouterUtilsJs) {
-            routeHistory = _jsRouterUtilsJs.routeHistory;
-        }],
-        execute: function () {
-            MapListPage = (function (_BasePage) {
-                babelHelpers.inherits(MapListPage, _BasePage);
-
-                function MapListPage() {
-                    babelHelpers.classCallCheck(this, MapListPage);
-
-                    if (arguments[0] === false) {
-                        return false;
-                    }
-                    babelHelpers.get(Object.getPrototypeOf(MapListPage.prototype), 'constructor', this).call(this, false);
-                    this.initialize.apply(this, arguments);
-                }
-
-                babelHelpers.createClass(MapListPage, [{
-                    key: 'initialize',
-                    value: function initialize(options) {
-                        babelHelpers.get(Object.getPrototypeOf(MapListPage.prototype), 'initialize', this).call(this);
-                        var $el = {};
-                        this.$el = $el;
-                        var iscrolls = {};
-                        this.iscrolls = iscrolls;
-                        $el.page = $('#page_maplist');
-                        $el.close = $el.page.find('.tab-close');
-                        $el.tabArchives = $el.page.find('.tab-archives');
-                        babelHelpers.get(Object.getPrototypeOf(MapListPage.prototype), 'startPage', this).call(this);
-                        $el.close.one('tap.maplist', function () {
-                            var list = routeHistory.get('all');
-                            var route = undefined;
-                            do {
-                                route = list.pop();
-                                //console.log('pop:', route)
-                            } while (route && route.indexOf('/mapinfo') !== -1);
-                            env.router.setRoute(route || env.first_page);
-                        });
-                        $el.tabArchives.attr('data-router', '/mapinfo/archives/' + options.id);
-
-                        iscrolls.content = new iScroll($el.page.get(0));
-                    }
-                }, {
-                    key: 'destroy',
-                    value: function destroy() {
-                        var _this = this;
-
-                        var iscrolls = this.iscrolls;
-                        babelHelpers.get(Object.getPrototypeOf(MapListPage.prototype), 'endPage', this).call(this, function () {
-                            $.each(iscrolls, function (key, iscroll) {
-                                iscroll.destroy();
-                            });
-                            _this.$el = null;
-                        });
-                    }
-                }]);
-                return MapListPage;
-            })(BasePage);
-
-            _export('default', MapListPage);
         }
     };
 });

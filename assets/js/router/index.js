@@ -12,12 +12,11 @@ import {default as register_modal} from './modal.js'
 import {default as register_role} from './role.js'
 import {default as  register_follow} from './follow.js'
 import env from '../utils/env.js'
-import {routeHistory, getRouter} from './utils.js'
+import {routeHistory, getRouter, isModal} from './utils.js'
 
 export let router = new Director.Router();
 router.configure({
     before: function () {
-        env.mainlayout && env.mainlayout.viewMoveDefault();
         routeHistory.push(getRouter());
         window.routeHistory = routeHistory;
     }

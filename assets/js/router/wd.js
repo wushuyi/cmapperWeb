@@ -13,6 +13,7 @@ function register(router) {
         if (env[page]) {
             return false;
         }
+        env.mainlayout && env.mainlayout.viewMoveDefault();
         env[page] = new WdPage();
     });
     router.on('after', route, function () {
