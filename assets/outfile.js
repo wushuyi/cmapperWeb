@@ -15287,6 +15287,214 @@ _removeDefine();
 })();
 (function() {
 var _removeDefine = System.get("@@amd-helpers").createDefine();
+(function() {
+  'use strict';
+  function EventEmitter() {}
+  var proto = EventEmitter.prototype;
+  var exports = this;
+  var originalGlobalValue = exports.EventEmitter;
+  function indexOfListener(listeners, listener) {
+    var i = listeners.length;
+    while (i--) {
+      if (listeners[i].listener === listener) {
+        return i;
+      }
+    }
+    return -1;
+  }
+  function alias(name) {
+    return function aliasClosure() {
+      return this[name].apply(this, arguments);
+    };
+  }
+  proto.getListeners = function getListeners(evt) {
+    var events = this._getEvents();
+    var response;
+    var key;
+    if (evt instanceof RegExp) {
+      response = {};
+      for (key in events) {
+        if (events.hasOwnProperty(key) && evt.test(key)) {
+          response[key] = events[key];
+        }
+      }
+    } else {
+      response = events[evt] || (events[evt] = []);
+    }
+    return response;
+  };
+  proto.flattenListeners = function flattenListeners(listeners) {
+    var flatListeners = [];
+    var i;
+    for (i = 0; i < listeners.length; i += 1) {
+      flatListeners.push(listeners[i].listener);
+    }
+    return flatListeners;
+  };
+  proto.getListenersAsObject = function getListenersAsObject(evt) {
+    var listeners = this.getListeners(evt);
+    var response;
+    if (listeners instanceof Array) {
+      response = {};
+      response[evt] = listeners;
+    }
+    return response || listeners;
+  };
+  proto.addListener = function addListener(evt, listener) {
+    var listeners = this.getListenersAsObject(evt);
+    var listenerIsWrapped = typeof listener === 'object';
+    var key;
+    for (key in listeners) {
+      if (listeners.hasOwnProperty(key) && indexOfListener(listeners[key], listener) === -1) {
+        listeners[key].push(listenerIsWrapped ? listener : {
+          listener: listener,
+          once: false
+        });
+      }
+    }
+    return this;
+  };
+  proto.on = alias('addListener');
+  proto.addOnceListener = function addOnceListener(evt, listener) {
+    return this.addListener(evt, {
+      listener: listener,
+      once: true
+    });
+  };
+  proto.once = alias('addOnceListener');
+  proto.defineEvent = function defineEvent(evt) {
+    this.getListeners(evt);
+    return this;
+  };
+  proto.defineEvents = function defineEvents(evts) {
+    for (var i = 0; i < evts.length; i += 1) {
+      this.defineEvent(evts[i]);
+    }
+    return this;
+  };
+  proto.removeListener = function removeListener(evt, listener) {
+    var listeners = this.getListenersAsObject(evt);
+    var index;
+    var key;
+    for (key in listeners) {
+      if (listeners.hasOwnProperty(key)) {
+        index = indexOfListener(listeners[key], listener);
+        if (index !== -1) {
+          listeners[key].splice(index, 1);
+        }
+      }
+    }
+    return this;
+  };
+  proto.off = alias('removeListener');
+  proto.addListeners = function addListeners(evt, listeners) {
+    return this.manipulateListeners(false, evt, listeners);
+  };
+  proto.removeListeners = function removeListeners(evt, listeners) {
+    return this.manipulateListeners(true, evt, listeners);
+  };
+  proto.manipulateListeners = function manipulateListeners(remove, evt, listeners) {
+    var i;
+    var value;
+    var single = remove ? this.removeListener : this.addListener;
+    var multiple = remove ? this.removeListeners : this.addListeners;
+    if (typeof evt === 'object' && !(evt instanceof RegExp)) {
+      for (i in evt) {
+        if (evt.hasOwnProperty(i) && (value = evt[i])) {
+          if (typeof value === 'function') {
+            single.call(this, i, value);
+          } else {
+            multiple.call(this, i, value);
+          }
+        }
+      }
+    } else {
+      i = listeners.length;
+      while (i--) {
+        single.call(this, evt, listeners[i]);
+      }
+    }
+    return this;
+  };
+  proto.removeEvent = function removeEvent(evt) {
+    var type = typeof evt;
+    var events = this._getEvents();
+    var key;
+    if (type === 'string') {
+      delete events[evt];
+    } else if (evt instanceof RegExp) {
+      for (key in events) {
+        if (events.hasOwnProperty(key) && evt.test(key)) {
+          delete events[key];
+        }
+      }
+    } else {
+      delete this._events;
+    }
+    return this;
+  };
+  proto.removeAllListeners = alias('removeEvent');
+  proto.emitEvent = function emitEvent(evt, args) {
+    var listeners = this.getListenersAsObject(evt);
+    var listener;
+    var i;
+    var key;
+    var response;
+    for (key in listeners) {
+      if (listeners.hasOwnProperty(key)) {
+        i = listeners[key].length;
+        while (i--) {
+          listener = listeners[key][i];
+          if (listener.once === true) {
+            this.removeListener(evt, listener.listener);
+          }
+          response = listener.listener.apply(this, args || []);
+          if (response === this._getOnceReturnValue()) {
+            this.removeListener(evt, listener.listener);
+          }
+        }
+      }
+    }
+    return this;
+  };
+  proto.trigger = alias('emitEvent');
+  proto.emit = function emit(evt) {
+    var args = Array.prototype.slice.call(arguments, 1);
+    return this.emitEvent(evt, args);
+  };
+  proto.setOnceReturnValue = function setOnceReturnValue(value) {
+    this._onceReturnValue = value;
+    return this;
+  };
+  proto._getOnceReturnValue = function _getOnceReturnValue() {
+    if (this.hasOwnProperty('_onceReturnValue')) {
+      return this._onceReturnValue;
+    } else {
+      return true;
+    }
+  };
+  proto._getEvents = function _getEvents() {
+    return this._events || (this._events = {});
+  };
+  EventEmitter.noConflict = function noConflict() {
+    exports.EventEmitter = originalGlobalValue;
+    return EventEmitter;
+  };
+  if (typeof define === 'function' && define.amd) {
+    define("libs/EventEmitter/4.2.9/EventEmitter.js", [], function() {
+      return EventEmitter;
+    });
+  } else if (typeof module === 'object' && module.exports) {
+    module.exports = EventEmitter;
+  } else {
+    exports.EventEmitter = EventEmitter;
+  }
+}.call(this));
+
+_removeDefine();
+})();
+(function() {
+var _removeDefine = System.get("@@amd-helpers").createDefine();
 (function(window, document, exportName, undefined) {
   'use strict';
   var VENDOR_PREFIXES = ['', 'webkit', 'moz', 'MS', 'ms', 'o'];
@@ -16641,214 +16849,6 @@ var _removeDefine = System.get("@@amd-helpers").createDefine();
     window[exportName] = Hammer;
   }
 })(window, document, 'Hammer');
-
-_removeDefine();
-})();
-(function() {
-var _removeDefine = System.get("@@amd-helpers").createDefine();
-(function() {
-  'use strict';
-  function EventEmitter() {}
-  var proto = EventEmitter.prototype;
-  var exports = this;
-  var originalGlobalValue = exports.EventEmitter;
-  function indexOfListener(listeners, listener) {
-    var i = listeners.length;
-    while (i--) {
-      if (listeners[i].listener === listener) {
-        return i;
-      }
-    }
-    return -1;
-  }
-  function alias(name) {
-    return function aliasClosure() {
-      return this[name].apply(this, arguments);
-    };
-  }
-  proto.getListeners = function getListeners(evt) {
-    var events = this._getEvents();
-    var response;
-    var key;
-    if (evt instanceof RegExp) {
-      response = {};
-      for (key in events) {
-        if (events.hasOwnProperty(key) && evt.test(key)) {
-          response[key] = events[key];
-        }
-      }
-    } else {
-      response = events[evt] || (events[evt] = []);
-    }
-    return response;
-  };
-  proto.flattenListeners = function flattenListeners(listeners) {
-    var flatListeners = [];
-    var i;
-    for (i = 0; i < listeners.length; i += 1) {
-      flatListeners.push(listeners[i].listener);
-    }
-    return flatListeners;
-  };
-  proto.getListenersAsObject = function getListenersAsObject(evt) {
-    var listeners = this.getListeners(evt);
-    var response;
-    if (listeners instanceof Array) {
-      response = {};
-      response[evt] = listeners;
-    }
-    return response || listeners;
-  };
-  proto.addListener = function addListener(evt, listener) {
-    var listeners = this.getListenersAsObject(evt);
-    var listenerIsWrapped = typeof listener === 'object';
-    var key;
-    for (key in listeners) {
-      if (listeners.hasOwnProperty(key) && indexOfListener(listeners[key], listener) === -1) {
-        listeners[key].push(listenerIsWrapped ? listener : {
-          listener: listener,
-          once: false
-        });
-      }
-    }
-    return this;
-  };
-  proto.on = alias('addListener');
-  proto.addOnceListener = function addOnceListener(evt, listener) {
-    return this.addListener(evt, {
-      listener: listener,
-      once: true
-    });
-  };
-  proto.once = alias('addOnceListener');
-  proto.defineEvent = function defineEvent(evt) {
-    this.getListeners(evt);
-    return this;
-  };
-  proto.defineEvents = function defineEvents(evts) {
-    for (var i = 0; i < evts.length; i += 1) {
-      this.defineEvent(evts[i]);
-    }
-    return this;
-  };
-  proto.removeListener = function removeListener(evt, listener) {
-    var listeners = this.getListenersAsObject(evt);
-    var index;
-    var key;
-    for (key in listeners) {
-      if (listeners.hasOwnProperty(key)) {
-        index = indexOfListener(listeners[key], listener);
-        if (index !== -1) {
-          listeners[key].splice(index, 1);
-        }
-      }
-    }
-    return this;
-  };
-  proto.off = alias('removeListener');
-  proto.addListeners = function addListeners(evt, listeners) {
-    return this.manipulateListeners(false, evt, listeners);
-  };
-  proto.removeListeners = function removeListeners(evt, listeners) {
-    return this.manipulateListeners(true, evt, listeners);
-  };
-  proto.manipulateListeners = function manipulateListeners(remove, evt, listeners) {
-    var i;
-    var value;
-    var single = remove ? this.removeListener : this.addListener;
-    var multiple = remove ? this.removeListeners : this.addListeners;
-    if (typeof evt === 'object' && !(evt instanceof RegExp)) {
-      for (i in evt) {
-        if (evt.hasOwnProperty(i) && (value = evt[i])) {
-          if (typeof value === 'function') {
-            single.call(this, i, value);
-          } else {
-            multiple.call(this, i, value);
-          }
-        }
-      }
-    } else {
-      i = listeners.length;
-      while (i--) {
-        single.call(this, evt, listeners[i]);
-      }
-    }
-    return this;
-  };
-  proto.removeEvent = function removeEvent(evt) {
-    var type = typeof evt;
-    var events = this._getEvents();
-    var key;
-    if (type === 'string') {
-      delete events[evt];
-    } else if (evt instanceof RegExp) {
-      for (key in events) {
-        if (events.hasOwnProperty(key) && evt.test(key)) {
-          delete events[key];
-        }
-      }
-    } else {
-      delete this._events;
-    }
-    return this;
-  };
-  proto.removeAllListeners = alias('removeEvent');
-  proto.emitEvent = function emitEvent(evt, args) {
-    var listeners = this.getListenersAsObject(evt);
-    var listener;
-    var i;
-    var key;
-    var response;
-    for (key in listeners) {
-      if (listeners.hasOwnProperty(key)) {
-        i = listeners[key].length;
-        while (i--) {
-          listener = listeners[key][i];
-          if (listener.once === true) {
-            this.removeListener(evt, listener.listener);
-          }
-          response = listener.listener.apply(this, args || []);
-          if (response === this._getOnceReturnValue()) {
-            this.removeListener(evt, listener.listener);
-          }
-        }
-      }
-    }
-    return this;
-  };
-  proto.trigger = alias('emitEvent');
-  proto.emit = function emit(evt) {
-    var args = Array.prototype.slice.call(arguments, 1);
-    return this.emitEvent(evt, args);
-  };
-  proto.setOnceReturnValue = function setOnceReturnValue(value) {
-    this._onceReturnValue = value;
-    return this;
-  };
-  proto._getOnceReturnValue = function _getOnceReturnValue() {
-    if (this.hasOwnProperty('_onceReturnValue')) {
-      return this._onceReturnValue;
-    } else {
-      return true;
-    }
-  };
-  proto._getEvents = function _getEvents() {
-    return this._events || (this._events = {});
-  };
-  EventEmitter.noConflict = function noConflict() {
-    exports.EventEmitter = originalGlobalValue;
-    return EventEmitter;
-  };
-  if (typeof define === 'function' && define.amd) {
-    define("libs/EventEmitter/4.2.9/EventEmitter.js", [], function() {
-      return EventEmitter;
-    });
-  } else if (typeof module === 'object' && module.exports) {
-    module.exports = EventEmitter;
-  } else {
-    exports.EventEmitter = EventEmitter;
-  }
-}.call(this));
 
 _removeDefine();
 })();
@@ -19030,19 +19030,6 @@ System.register('js/main.js', ['libs/jquery/2.1.4/jquery.js', 'js/router/index.j
     }
   };
 });
-System.register("js/utils/env.js", [], function (_export) {
-  /**
-   * Created by wushuyi on 2015/9/13.
-   */
-  "use strict";
-
-  return {
-    setters: [],
-    execute: function () {
-      _export("default", {});
-    }
-  };
-});
 System.register('js/router/index.js', ['libs/Director/1.2.8/director.js', 'js/router/gftj.js', 'js/router/pyq.js', 'js/router/fxdt.js', 'js/router/wd.js', 'js/router/mapinfo.js', 'js/router/maplist.js', 'js/router/modal.js', 'js/router/role.js', 'js/router/follow.js', 'js/utils/env.js', 'js/router/utils.js'], function (_export) {
     /**
      * Created by wushuyi on 2015/9/13.
@@ -19108,86 +19095,26 @@ System.register('js/router/index.js', ['libs/Director/1.2.8/director.js', 'js/ro
         }
     };
 });
-System.register('js/router/gftj.js', ['js/page/gftj.js', 'js/utils/env.js', 'js/router/utils.js'], function (_export) {
-    /**
-     * Created by wushuyi on 2015/9/13.
-     */
-    'use strict';
+System.register("js/utils/env.js", [], function (_export) {
+  /**
+   * Created by wushuyi on 2015/9/13.
+   */
+  "use strict";
 
-    var GftjPage, env, routeHistory, getRouter;
-
-    function register(router) {
-        var route = '/gftj';
-        var page = 'gftj_page';
-
-        router.on(route, function (id) {
-            if (env[page]) {
-                return false;
-            }
-            env[page] = new GftjPage();
-        });
-        router.on('after', route, function () {
-            env[page].destroy();
-            delete env[page];
-        });
+  return {
+    setters: [],
+    execute: function () {
+      _export("default", {});
     }
-
-    return {
-        setters: [function (_jsPageGftjJs) {
-            GftjPage = _jsPageGftjJs['default'];
-        }, function (_jsUtilsEnvJs) {
-            env = _jsUtilsEnvJs['default'];
-        }, function (_jsRouterUtilsJs) {
-            routeHistory = _jsRouterUtilsJs.routeHistory;
-            getRouter = _jsRouterUtilsJs.getRouter;
-        }],
-        execute: function () {
-            _export('default', register);
-        }
-    };
+  };
 });
-System.register('js/router/fxdt.js', ['js/page/fxdt.js', 'js/utils/env.js'], function (_export) {
+System.register('js/router/pyq.js', ['js/page/pyq.js', 'js/utils/env.js', 'js/router/utils.js'], function (_export) {
     /**
      * Created by wushuyi on 2015/9/13.
      */
     'use strict';
 
-    var FxdtPage, env;
-
-    function register(router) {
-        var route = '/fxdt';
-        var page = 'fxdt_page';
-
-        router.on(route, function (id) {
-            if (env[page]) {
-                return false;
-            }
-            env[page] = new FxdtPage();
-        });
-        router.on('after', route, function () {
-            env[page].destroy();
-            delete env[page];
-        });
-    }
-
-    return {
-        setters: [function (_jsPageFxdtJs) {
-            FxdtPage = _jsPageFxdtJs['default'];
-        }, function (_jsUtilsEnvJs) {
-            env = _jsUtilsEnvJs['default'];
-        }],
-        execute: function () {
-            _export('default', register);
-        }
-    };
-});
-System.register('js/router/pyq.js', ['js/page/pyq.js', 'js/utils/env.js'], function (_export) {
-    /**
-     * Created by wushuyi on 2015/9/13.
-     */
-    'use strict';
-
-    var PyqPage, env;
+    var PyqPage, env, isModal;
 
     function register(router) {
         var route = '/pyq';
@@ -19200,6 +19127,9 @@ System.register('js/router/pyq.js', ['js/page/pyq.js', 'js/utils/env.js'], funct
             env[page] = new PyqPage();
         });
         router.on('after', route, function () {
+            if (isModal()) {
+                return false;
+            }
             env[page].destroy();
             delete env[page];
         });
@@ -19210,38 +19140,88 @@ System.register('js/router/pyq.js', ['js/page/pyq.js', 'js/utils/env.js'], funct
             PyqPage = _jsPagePyqJs['default'];
         }, function (_jsUtilsEnvJs) {
             env = _jsUtilsEnvJs['default'];
+        }, function (_jsRouterUtilsJs) {
+            isModal = _jsRouterUtilsJs.isModal;
         }],
         execute: function () {
             _export('default', register);
         }
     };
 });
-System.register('js/router/mapinfo.js', ['js/page/mapinfo.js', 'js/utils/env.js'], function (_export) {
+System.register('js/router/gftj.js', ['js/page/gftj.js', 'js/utils/env.js', 'js/router/utils.js'], function (_export) {
     /**
-     * Created by wushuyi on 2015/9/14.
+     * Created by wushuyi on 2015/9/13.
      */
     'use strict';
 
-    var MapInfoPage, env;
+    var GftjPage, env, isModal;
 
     function register(router) {
-        var route = '/mapinfo/archives/:id';
+        var route = '/gftj';
+        var page = 'gftj_page';
+
         router.on(route, function (id) {
-            env.mapinfo_page = new MapInfoPage({
-                id: id
-            });
+            if (env[page]) {
+                return false;
+            }
+            env[page] = new GftjPage();
         });
         router.on('after', route, function () {
-            env.mapinfo_page.destroy();
-            delete env.mapinfo_page;
+            if (isModal()) {
+                return false;
+            }
+            env[page].destroy();
+            delete env[page];
         });
     }
 
     return {
-        setters: [function (_jsPageMapinfoJs) {
-            MapInfoPage = _jsPageMapinfoJs['default'];
+        setters: [function (_jsPageGftjJs) {
+            GftjPage = _jsPageGftjJs['default'];
         }, function (_jsUtilsEnvJs) {
             env = _jsUtilsEnvJs['default'];
+        }, function (_jsRouterUtilsJs) {
+            isModal = _jsRouterUtilsJs.isModal;
+        }],
+        execute: function () {
+            _export('default', register);
+        }
+    };
+});
+System.register('js/router/fxdt.js', ['js/page/fxdt.js', 'js/utils/env.js', 'js/router/utils.js'], function (_export) {
+    /**
+     * Created by wushuyi on 2015/9/13.
+     */
+    'use strict';
+
+    var FxdtPage, env, isModal;
+
+    function register(router) {
+        var route = '/fxdt';
+        var page = 'fxdt_page';
+
+        router.on(route, function (id) {
+            if (env[page]) {
+                return false;
+            }
+            env[page] = new FxdtPage();
+        });
+        router.on('after', route, function () {
+            if (isModal()) {
+                return false;
+            }
+            env[page].destroy();
+            delete env[page];
+        });
+    }
+
+    return {
+        setters: [function (_jsPageFxdtJs) {
+            FxdtPage = _jsPageFxdtJs['default'];
+        }, function (_jsUtilsEnvJs) {
+            env = _jsUtilsEnvJs['default'];
+        }, function (_jsRouterUtilsJs) {
+            isModal = _jsRouterUtilsJs.isModal;
         }],
         execute: function () {
             _export('default', register);
@@ -19254,7 +19234,7 @@ System.register('js/router/wd.js', ['js/page/wd.js', 'js/utils/env.js', 'js/rout
      */
     'use strict';
 
-    var WdPage, env, getRouter;
+    var WdPage, env, isModal;
 
     function register(router) {
         var route = '/wd';
@@ -19267,15 +19247,9 @@ System.register('js/router/wd.js', ['js/page/wd.js', 'js/utils/env.js', 'js/rout
             env[page] = new WdPage();
         });
         router.on('after', route, function () {
-            var nowRoute = getRouter();
-            if (nowRoute.indexOf('/modal') !== -1) {
-                setTimeout(function () {
-                    env[page].destroy();
-                    delete env[page];
-                }, 500);
+            if (isModal()) {
                 return false;
             }
-
             env[page].destroy();
             delete env[page];
         });
@@ -19287,7 +19261,49 @@ System.register('js/router/wd.js', ['js/page/wd.js', 'js/utils/env.js', 'js/rout
         }, function (_jsUtilsEnvJs) {
             env = _jsUtilsEnvJs['default'];
         }, function (_jsRouterUtilsJs) {
-            getRouter = _jsRouterUtilsJs.getRouter;
+            isModal = _jsRouterUtilsJs.isModal;
+        }],
+        execute: function () {
+            _export('default', register);
+        }
+    };
+});
+System.register('js/router/mapinfo.js', ['js/page/mapinfo.js', 'js/utils/env.js', 'js/router/utils.js'], function (_export) {
+    /**
+     * Created by wushuyi on 2015/9/14.
+     */
+    'use strict';
+
+    var MapInfoPage, env, isModal;
+
+    function register(router) {
+        var route = '/mapinfo/archives/:id';
+        var page = 'mapinfo_archives_page';
+
+        router.on(route, function (id) {
+            if (env[page]) {
+                return false;
+            }
+            env[page] = new MapInfoPage({
+                id: id
+            });
+        });
+        router.on('after', route, function () {
+            if (isModal()) {
+                return false;
+            }
+            env[page].destroy();
+            delete env[page];
+        });
+    }
+
+    return {
+        setters: [function (_jsPageMapinfoJs) {
+            MapInfoPage = _jsPageMapinfoJs['default'];
+        }, function (_jsUtilsEnvJs) {
+            env = _jsUtilsEnvJs['default'];
+        }, function (_jsRouterUtilsJs) {
+            isModal = _jsRouterUtilsJs.isModal;
         }],
         execute: function () {
             _export('default', register);
@@ -19300,7 +19316,7 @@ System.register('js/router/maplist.js', ['js/page/maplist.js', 'js/utils/env.js'
      */
     'use strict';
 
-    var MapListPage, env, getRouter;
+    var MapListPage, env, isModal;
 
     function register(router) {
         var route = 'mapinfo/list/:id';
@@ -19315,12 +19331,7 @@ System.register('js/router/maplist.js', ['js/page/maplist.js', 'js/utils/env.js'
             });
         });
         router.on('after', route, function () {
-            var nowRoute = getRouter();
-            if (nowRoute.indexOf('/modal') !== -1) {
-                setTimeout(function () {
-                    env[page].destroy();
-                    delete env[page];
-                }, 500);
+            if (isModal()) {
                 return false;
             }
             env[page].destroy();
@@ -19334,44 +19345,7 @@ System.register('js/router/maplist.js', ['js/page/maplist.js', 'js/utils/env.js'
         }, function (_jsUtilsEnvJs) {
             env = _jsUtilsEnvJs['default'];
         }, function (_jsRouterUtilsJs) {
-            getRouter = _jsRouterUtilsJs.getRouter;
-        }],
-        execute: function () {
-            _export('default', register);
-        }
-    };
-});
-System.register('js/router/role.js', ['js/page/role.js', 'js/utils/env.js'], function (_export) {
-    /**
-     * Created by wushuyi on 2015/9/18.
-     */
-    'use strict';
-
-    var RolePage, env;
-
-    function register(router) {
-        var route = '/role/:id';
-        var page = 'role_page';
-
-        router.on(route, function (id) {
-            if (env[page]) {
-                return false;
-            }
-            env[page] = new RolePage({
-                id: id
-            });
-        });
-        router.on('after', route, function () {
-            env[page].destroy();
-            delete env[page];
-        });
-    }
-
-    return {
-        setters: [function (_jsPageRoleJs) {
-            RolePage = _jsPageRoleJs['default'];
-        }, function (_jsUtilsEnvJs) {
-            env = _jsUtilsEnvJs['default'];
+            isModal = _jsRouterUtilsJs.isModal;
         }],
         execute: function () {
             _export('default', register);
@@ -19482,13 +19456,55 @@ System.register('js/router/modal.js', ['js/page/modal.js', 'js/utils/env.js'], f
         }
     };
 });
+System.register('js/router/role.js', ['js/page/role.js', 'js/utils/env.js', 'js/router/utils.js'], function (_export) {
+    /**
+     * Created by wushuyi on 2015/9/18.
+     */
+    'use strict';
+
+    var RolePage, env, isModal;
+
+    function register(router) {
+        var route = '/role/:id';
+        var page = 'role_page';
+
+        router.on(route, function (id) {
+            if (env[page]) {
+                return false;
+            }
+            env[page] = new RolePage({
+                id: id
+            });
+        });
+        router.on('after', route, function () {
+            if (isModal()) {
+                return false;
+            }
+            env[page].destroy();
+            delete env[page];
+        });
+    }
+
+    return {
+        setters: [function (_jsPageRoleJs) {
+            RolePage = _jsPageRoleJs['default'];
+        }, function (_jsUtilsEnvJs) {
+            env = _jsUtilsEnvJs['default'];
+        }, function (_jsRouterUtilsJs) {
+            isModal = _jsRouterUtilsJs.isModal;
+        }],
+        execute: function () {
+            _export('default', register);
+        }
+    };
+});
 System.register('js/router/follow.js', ['js/page/follow.js', 'js/utils/env.js', 'js/router/utils.js'], function (_export) {
     /**
      * Created by wushuyi on 2015/9/13.
      */
     'use strict';
 
-    var FollowPage, env, routeHistory;
+    var FollowPage, env, isModal;
 
     function register(router) {
         var route = '/follow/:type/:id';
@@ -19503,6 +19519,9 @@ System.register('js/router/follow.js', ['js/page/follow.js', 'js/utils/env.js', 
             });
         });
         router.on('after', route, function () {
+            if (isModal()) {
+                return false;
+            }
             env[page].destroy();
             delete env[page];
         });
@@ -19514,7 +19533,7 @@ System.register('js/router/follow.js', ['js/page/follow.js', 'js/utils/env.js', 
         }, function (_jsUtilsEnvJs) {
             env = _jsUtilsEnvJs['default'];
         }, function (_jsRouterUtilsJs) {
-            routeHistory = _jsRouterUtilsJs.routeHistory;
+            isModal = _jsRouterUtilsJs.isModal;
         }],
         execute: function () {
             _export('default', register);
@@ -19531,10 +19550,16 @@ System.register('js/router/utils.js', ['js/utils/env.js'], function (_export) {
 
     _export('getRouter', getRouter);
 
+    _export('isModal', isModal);
+
     function getRouter() {
         var path = env.router.getRoute();
         path.unshift('');
         return path.join('/');
+    }
+
+    function isModal() {
+        return getRouter().indexOf('/modal') !== -1;
     }
 
     return {
@@ -19579,6 +19604,151 @@ System.register('js/router/utils.js', ['js/utils/env.js'], function (_export) {
             };
 
             _export('routeHistory', routeHistory);
+        }
+    };
+});
+System.register('js/page/pyq.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base.js', 'libs/iScroll/5.1.3/iscroll-lite.js', 'js/utils/env.js'], function (_export) {
+    /**
+     * Created by wushuyi on 2015/9/13.
+     */
+    'use strict';
+
+    var $, BasePage, iScroll, env, PyqPage;
+    return {
+        setters: [function (_libsJquery214JqueryJs) {
+            $ = _libsJquery214JqueryJs['default'];
+        }, function (_jsPageBaseJs) {
+            BasePage = _jsPageBaseJs['default'];
+        }, function (_libsIScroll513IscrollLiteJs) {
+            iScroll = _libsIScroll513IscrollLiteJs['default'];
+        }, function (_jsUtilsEnvJs) {
+            env = _jsUtilsEnvJs['default'];
+        }],
+        execute: function () {
+            PyqPage = (function (_BasePage) {
+                babelHelpers.inherits(PyqPage, _BasePage);
+
+                function PyqPage() {
+                    babelHelpers.classCallCheck(this, PyqPage);
+
+                    if (arguments[0] === false) {
+                        return false;
+                    }
+                    babelHelpers.get(Object.getPrototypeOf(PyqPage.prototype), 'constructor', this).call(this, false);
+                    this.initialize.apply(this, arguments);
+                }
+
+                babelHelpers.createClass(PyqPage, [{
+                    key: 'initialize',
+                    value: function initialize() {
+                        babelHelpers.get(Object.getPrototypeOf(PyqPage.prototype), 'initialize', this).call(this);
+                        var $el = {};
+                        this.$el = $el;
+                        var iscrolls = {};
+                        this.iscrolls = iscrolls;
+                        $el.nav = $('.nav-item[data-router="/pyq"]');
+                        $el.page = $('#page_pyq');
+                        babelHelpers.get(Object.getPrototypeOf(PyqPage.prototype), 'startPage', this).call(this);
+                        iscrolls.content = new iScroll($el.page.get(0));
+
+                        this.onReview = function () {
+                            iscrolls.content.refresh();
+                        };
+                        env.mainlayout.on('review', this.onReview);
+                    }
+                }, {
+                    key: 'destroy',
+                    value: function destroy() {
+                        var _this = this;
+
+                        var self = this;
+                        var iscrolls = this.iscrolls;
+
+                        babelHelpers.get(Object.getPrototypeOf(PyqPage.prototype), 'endPage', this).call(this, function () {
+                            env.mainlayout.off('review', self.onReview);
+                            $.each(iscrolls, function (key, iscroll) {
+                                iscroll.destroy();
+                            });
+                            _this.$el = null;
+                        });
+                    }
+                }]);
+                return PyqPage;
+            })(BasePage);
+
+            _export('default', PyqPage);
+        }
+    };
+});
+System.register('js/page/wd.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base.js', 'libs/iScroll/5.1.3/iscroll-lite.js', 'js/utils/env.js'], function (_export) {
+    /**
+     * Created by wushuyi on 2015/9/13.
+     */
+    'use strict';
+
+    //import Swiper from 'Swiper'
+    var $, BasePage, iScroll, env, WdPage;
+    return {
+        setters: [function (_libsJquery214JqueryJs) {
+            $ = _libsJquery214JqueryJs['default'];
+        }, function (_jsPageBaseJs) {
+            BasePage = _jsPageBaseJs['default'];
+        }, function (_libsIScroll513IscrollLiteJs) {
+            iScroll = _libsIScroll513IscrollLiteJs['default'];
+        }, function (_jsUtilsEnvJs) {
+            env = _jsUtilsEnvJs['default'];
+        }],
+        execute: function () {
+            WdPage = (function (_BasePage) {
+                babelHelpers.inherits(WdPage, _BasePage);
+
+                function WdPage() {
+                    babelHelpers.classCallCheck(this, WdPage);
+
+                    if (arguments[0] === false) {
+                        return false;
+                    }
+                    babelHelpers.get(Object.getPrototypeOf(WdPage.prototype), 'constructor', this).call(this, false);
+                    this.initialize.apply(this, arguments);
+                }
+
+                babelHelpers.createClass(WdPage, [{
+                    key: 'initialize',
+                    value: function initialize() {
+                        babelHelpers.get(Object.getPrototypeOf(WdPage.prototype), 'initialize', this).call(this);
+                        var $el = {};
+                        this.$el = $el;
+                        var iscrolls = {};
+                        this.iscrolls = iscrolls;
+                        $el.nav = $('.nav-item[data-router="/wd"]');
+                        $el.page = $('#page_wd');
+                        babelHelpers.get(Object.getPrototypeOf(WdPage.prototype), 'startPage', this).call(this);
+                        iscrolls.content = new iScroll($el.page.get(0));
+
+                        this.onReview = function () {
+                            iscrolls.content.refresh();
+                        };
+                        env.mainlayout.on('review', this.onReview);
+                    }
+                }, {
+                    key: 'destroy',
+                    value: function destroy() {
+                        var self = this;
+                        var iscrolls = this.iscrolls;
+                        var $el = this.$el;
+                        babelHelpers.get(Object.getPrototypeOf(WdPage.prototype), 'endPage', this).call(this, function () {
+                            env.mainlayout.off('review', self.onReview);
+                            $.each(iscrolls, function (key, iscroll) {
+                                iscroll.destroy();
+                            });
+                            self.$el = null;
+                        });
+                    }
+                }]);
+                return WdPage;
+            })(BasePage);
+
+            _export('default', WdPage);
         }
     };
 });
@@ -19773,76 +19943,179 @@ System.register('js/page/fxdt.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base
         }
     };
 });
-System.register('js/page/pyq.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base.js', 'libs/iScroll/5.1.3/iscroll-lite.js', 'js/utils/env.js'], function (_export) {
+System.register('js/page/modal.js', ['libs/jquery/2.1.4/jquery.js', 'libs/iScroll/5.1.3/iscroll-lite.js', 'js/utils/wsy_utils.js', 'js/router/utils.js', 'js/utils/env.js'], function (_export) {
     /**
-     * Created by wushuyi on 2015/9/13.
+     * Created by wushuyi on 2015/9/17.
      */
     'use strict';
 
-    var $, BasePage, iScroll, env, PyqPage;
+    var $, iScroll, transitionEnd, routeHistory, getRouter, env, ModalManage;
     return {
         setters: [function (_libsJquery214JqueryJs) {
             $ = _libsJquery214JqueryJs['default'];
-        }, function (_jsPageBaseJs) {
-            BasePage = _jsPageBaseJs['default'];
         }, function (_libsIScroll513IscrollLiteJs) {
             iScroll = _libsIScroll513IscrollLiteJs['default'];
+        }, function (_jsUtilsWsy_utilsJs) {
+            transitionEnd = _jsUtilsWsy_utilsJs.transitionEnd;
+        }, function (_jsRouterUtilsJs) {
+            routeHistory = _jsRouterUtilsJs.routeHistory;
+            getRouter = _jsRouterUtilsJs.getRouter;
         }, function (_jsUtilsEnvJs) {
             env = _jsUtilsEnvJs['default'];
         }],
         execute: function () {
-            PyqPage = (function (_BasePage) {
-                babelHelpers.inherits(PyqPage, _BasePage);
+            ModalManage = (function () {
+                function ModalManage() {
+                    babelHelpers.classCallCheck(this, ModalManage);
 
-                function PyqPage() {
-                    babelHelpers.classCallCheck(this, PyqPage);
-
-                    if (arguments[0] === false) {
-                        return false;
-                    }
-                    babelHelpers.get(Object.getPrototypeOf(PyqPage.prototype), 'constructor', this).call(this, false);
                     this.initialize.apply(this, arguments);
                 }
 
-                babelHelpers.createClass(PyqPage, [{
+                babelHelpers.createClass(ModalManage, [{
                     key: 'initialize',
-                    value: function initialize() {
-                        babelHelpers.get(Object.getPrototypeOf(PyqPage.prototype), 'initialize', this).call(this);
+                    value: function initialize(options) {
                         var $el = {};
+                        this.iscrolls = {};
                         this.$el = $el;
-                        var iscrolls = {};
-                        this.iscrolls = iscrolls;
-                        $el.nav = $('.nav-item[data-router="/pyq"]');
-                        $el.page = $('#page_pyq');
-                        babelHelpers.get(Object.getPrototypeOf(PyqPage.prototype), 'startPage', this).call(this);
-                        iscrolls.content = new iScroll($el.page.get(0));
-
-                        this.onReview = function () {
-                            iscrolls.content.refresh();
-                        };
-                        env.mainlayout.on('review', this.onReview);
+                        $el.modalBox = $('#modal-box');
+                        this['modal_' + options.modal](options);
                     }
                 }, {
-                    key: 'destroy',
-                    value: function destroy() {
-                        var _this = this;
+                    key: 'modal_set',
+                    value: function modal_set(options) {
+                        var $el = this.$el;
 
-                        var self = this;
+                        $el.modal = $('#modal-set');
+                        $el.modalBox.show();
+                        $el.modal.show();
+                        $el.close = $el.modal.find('.close');
+
+                        $el.close.on('tap.modalmanage', function () {
+                            $el.modal.removeClass('active');
+                            routeHistory.goback();
+                        });
+
+                        setTimeout(function () {
+                            $el.modal.addClass('active');
+                        }, 100);
+                    }
+                }, {
+                    key: 'modal_address',
+                    value: function modal_address(options) {
+                        var $el = this.$el;
+                        var iscrolls = this.iscrolls;
+                        $el.modal = $('#modal-address');
+                        $el.modalBox.show();
+                        $el.modal.show();
+                        $el.close = $el.modal.find('.close');
+                        $el.scroll = $el.modal.find('.scroll');
+                        $el.close.one('tap.modalmanage', function () {
+                            $el.modal.removeClass('active');
+                            routeHistory.goback();
+                        });
+
+                        setTimeout(function () {
+                            $el.modal.addClass('active');
+                        }, 100);
+
+                        iscrolls.content = new iScroll($el.scroll.get(0));
+                    }
+                }, {
+                    key: 'modal_selectMap',
+                    value: function modal_selectMap() {
+                        var $el = this.$el;
                         var iscrolls = this.iscrolls;
 
-                        babelHelpers.get(Object.getPrototypeOf(PyqPage.prototype), 'endPage', this).call(this, function () {
-                            env.mainlayout.off('review', self.onReview);
-                            $.each(iscrolls, function (key, iscroll) {
-                                iscroll.destroy();
-                            });
-                            _this.$el = null;
+                        $el.modal = $('#modal-select-map');
+
+                        $el.close = $el.modal.find('.close');
+                        $el.scroll = $el.modal.find('.scroll');
+                        $el.modalBox.show();
+                        $el.modal.show();
+                        $el.close.one('tap.modalmanage', function () {
+                            $el.modal.removeClass('active');
+                            routeHistory.goback();
                         });
+                        setTimeout(function () {
+                            $el.modal.addClass('active');
+                        }, 100);
+
+                        iscrolls.content = new iScroll($el.scroll.get(0));
+                    }
+                }, {
+                    key: 'modal_addAddrInfo',
+                    value: function modal_addAddrInfo() {
+                        var $el = this.$el;
+                        var iscrolls = this.iscrolls;
+
+                        $el.modal = $('#modal-add-addr-info');
+                        $el.close = $el.modal.find('.close');
+                        $el.scroll = $el.modal.find('.scroll');
+                        $el.modalBox.show();
+                        $el.modal.show();
+                        $el.close.one('tap.modalmanage', function () {
+                            $el.modal.removeClass('active');
+                            routeHistory.goback();
+                        });
+
+                        setTimeout(function () {
+                            $el.modal.addClass('active');
+                        }, 100);
+
+                        iscrolls.content = new iScroll($el.scroll.get(0));
+                    }
+                }, {
+                    key: 'modal_createMap',
+                    value: function modal_createMap() {
+                        var $el = this.$el;
+                        var iscrolls = this.iscrolls;
+
+                        $el.modal = $('#modal-create-map');
+                        $el.close = $el.modal.find('.close');
+                        $el.scroll = $el.modal.find('.scroll');
+                        $el.modalBox.show();
+                        $el.modal.show();
+                        $el.close.one('tap.modalmanage', function () {
+                            $el.modal.removeClass('active');
+                            routeHistory.goback();
+                        });
+
+                        setTimeout(function () {
+                            $el.modal.addClass('active');
+                        }, 100);
+                        iscrolls.content = new iScroll($el.scroll.get(0));
+                    }
+                }, {
+                    key: 'destory',
+                    value: function destory() {
+                        var self = this;
+                        var $el = this.$el;
+                        var iscrolls = this.iscrolls;
+                        $.each($el, function (key, el) {
+                            el.off('.modalmanage');
+                        });
+                        $.each(iscrolls, function (key, iscroll) {
+                            //console.log(iscroll);
+                            iscroll.destroy();
+                        });
+                        var route = getRouter();
+                        if (route.indexOf('/modal') !== -1) {
+                            $el.modal.hide();
+                            $el.modal.removeClass('active');
+                            self.$el = null;
+                            return false;
+                        }
+                        setTimeout(function () {
+                            $el.modalBox.hide();
+                            $el.modal.hide();
+                            self.$el = null;
+                        }, 400);
                     }
                 }]);
-                return PyqPage;
-            })(BasePage);
+                return ModalManage;
+            })();
 
-            _export('default', PyqPage);
+            _export('default', ModalManage);
         }
     };
 });
@@ -19917,7 +20190,6 @@ System.register('js/page/mapinfo.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/b
                                 this.pullUpAction();
                             }
                         }, this);
-                        console.log(iscrolls);
                         iscrolls.content.on('scrollStart', function () {
                             $el.page.one('touchend.mapinfo', pullFunc);
                         });
@@ -19986,159 +20258,6 @@ System.register('js/page/mapinfo.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/b
             })(BasePage);
 
             _export('default', MapInfoPage);
-        }
-    };
-});
-System.register('js/page/wd.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base.js', 'libs/iScroll/5.1.3/iscroll-lite.js', 'js/utils/env.js'], function (_export) {
-    /**
-     * Created by wushuyi on 2015/9/13.
-     */
-    'use strict';
-
-    //import Swiper from 'Swiper'
-    var $, BasePage, iScroll, env, WdPage;
-    return {
-        setters: [function (_libsJquery214JqueryJs) {
-            $ = _libsJquery214JqueryJs['default'];
-        }, function (_jsPageBaseJs) {
-            BasePage = _jsPageBaseJs['default'];
-        }, function (_libsIScroll513IscrollLiteJs) {
-            iScroll = _libsIScroll513IscrollLiteJs['default'];
-        }, function (_jsUtilsEnvJs) {
-            env = _jsUtilsEnvJs['default'];
-        }],
-        execute: function () {
-            WdPage = (function (_BasePage) {
-                babelHelpers.inherits(WdPage, _BasePage);
-
-                function WdPage() {
-                    babelHelpers.classCallCheck(this, WdPage);
-
-                    if (arguments[0] === false) {
-                        return false;
-                    }
-                    babelHelpers.get(Object.getPrototypeOf(WdPage.prototype), 'constructor', this).call(this, false);
-                    this.initialize.apply(this, arguments);
-                }
-
-                babelHelpers.createClass(WdPage, [{
-                    key: 'initialize',
-                    value: function initialize() {
-                        babelHelpers.get(Object.getPrototypeOf(WdPage.prototype), 'initialize', this).call(this);
-                        var $el = {};
-                        this.$el = $el;
-                        var iscrolls = {};
-                        this.iscrolls = iscrolls;
-                        $el.nav = $('.nav-item[data-router="/wd"]');
-                        $el.page = $('#page_wd');
-                        babelHelpers.get(Object.getPrototypeOf(WdPage.prototype), 'startPage', this).call(this);
-                        iscrolls.content = new iScroll($el.page.get(0));
-
-                        this.onReview = function () {
-                            iscrolls.content.refresh();
-                        };
-                        env.mainlayout.on('review', this.onReview);
-                    }
-                }, {
-                    key: 'destroy',
-                    value: function destroy() {
-                        var self = this;
-                        var iscrolls = this.iscrolls;
-                        var $el = this.$el;
-                        babelHelpers.get(Object.getPrototypeOf(WdPage.prototype), 'endPage', this).call(this, function () {
-                            env.mainlayout.off('review', self.onReview);
-                            $.each(iscrolls, function (key, iscroll) {
-                                iscroll.destroy();
-                            });
-                            self.$el = null;
-                        });
-                    }
-                }]);
-                return WdPage;
-            })(BasePage);
-
-            _export('default', WdPage);
-        }
-    };
-});
-System.register('js/page/maplist.js', ['libs/jquery/2.1.4/jquery.js', 'libs/Swiper/3.1.2/js/swiper.js', 'js/page/base.js', 'libs/iScroll/5.1.3/iscroll-lite.js', 'js/utils/env.js', 'js/router/utils.js'], function (_export) {
-    /**
-     * Created by wushuyi on 2015/9/13.
-     */
-    'use strict';
-
-    var $, Swiper, BasePage, iScroll, env, routeHistory, MapListPage;
-    return {
-        setters: [function (_libsJquery214JqueryJs) {
-            $ = _libsJquery214JqueryJs['default'];
-        }, function (_libsSwiper312JsSwiperJs) {
-            Swiper = _libsSwiper312JsSwiperJs['default'];
-        }, function (_jsPageBaseJs) {
-            BasePage = _jsPageBaseJs['default'];
-        }, function (_libsIScroll513IscrollLiteJs) {
-            iScroll = _libsIScroll513IscrollLiteJs['default'];
-        }, function (_jsUtilsEnvJs) {
-            env = _jsUtilsEnvJs['default'];
-        }, function (_jsRouterUtilsJs) {
-            routeHistory = _jsRouterUtilsJs.routeHistory;
-        }],
-        execute: function () {
-            MapListPage = (function (_BasePage) {
-                babelHelpers.inherits(MapListPage, _BasePage);
-
-                function MapListPage() {
-                    babelHelpers.classCallCheck(this, MapListPage);
-
-                    if (arguments[0] === false) {
-                        return false;
-                    }
-                    babelHelpers.get(Object.getPrototypeOf(MapListPage.prototype), 'constructor', this).call(this, false);
-                    this.initialize.apply(this, arguments);
-                }
-
-                babelHelpers.createClass(MapListPage, [{
-                    key: 'initialize',
-                    value: function initialize(options) {
-                        babelHelpers.get(Object.getPrototypeOf(MapListPage.prototype), 'initialize', this).call(this);
-                        var $el = {};
-                        this.$el = $el;
-                        var iscrolls = {};
-                        this.iscrolls = iscrolls;
-                        $el.page = $('#page_maplist');
-                        $el.close = $el.page.find('.tab-close');
-                        $el.tabArchives = $el.page.find('.tab-archives');
-                        babelHelpers.get(Object.getPrototypeOf(MapListPage.prototype), 'startPage', this).call(this);
-                        $el.close.one('tap.maplist', function () {
-                            var list = routeHistory.get('all');
-                            var route = undefined;
-                            do {
-                                route = list.pop();
-                                console.log('pop:', route);
-                            } while (route && route.indexOf('/mapinfo') !== -1);
-                            env.router.setRoute(route || env.first_page);
-                        });
-                        $el.tabArchives.attr('data-router', '/mapinfo/archives/' + options.id);
-
-                        iscrolls.content = new iScroll($el.page.get(0));
-                    }
-                }, {
-                    key: 'destroy',
-                    value: function destroy() {
-                        var _this = this;
-
-                        var iscrolls = this.iscrolls;
-                        babelHelpers.get(Object.getPrototypeOf(MapListPage.prototype), 'endPage', this).call(this, function () {
-                            $.each(iscrolls, function (key, iscroll) {
-                                iscroll.destroy();
-                            });
-                            _this.$el = null;
-                        });
-                    }
-                }]);
-                return MapListPage;
-            })(BasePage);
-
-            _export('default', MapListPage);
         }
     };
 });
@@ -20218,169 +20337,84 @@ System.register('js/page/role.js', ['libs/jquery/2.1.4/jquery.js', 'js/page/base
         }
     };
 });
-System.register('js/page/modal.js', ['libs/jquery/2.1.4/jquery.js', 'libs/iScroll/5.1.3/iscroll-lite.js', 'js/utils/wsy_utils.js', 'js/router/utils.js', 'js/utils/env.js'], function (_export) {
+System.register('js/page/maplist.js', ['libs/jquery/2.1.4/jquery.js', 'libs/Swiper/3.1.2/js/swiper.js', 'js/page/base.js', 'libs/iScroll/5.1.3/iscroll-lite.js', 'js/utils/env.js', 'js/router/utils.js'], function (_export) {
     /**
-     * Created by wushuyi on 2015/9/17.
+     * Created by wushuyi on 2015/9/13.
      */
     'use strict';
 
-    var $, iScroll, transitionEnd, routeHistory, env, ModalManage;
+    var $, Swiper, BasePage, iScroll, env, routeHistory, MapListPage;
     return {
         setters: [function (_libsJquery214JqueryJs) {
             $ = _libsJquery214JqueryJs['default'];
+        }, function (_libsSwiper312JsSwiperJs) {
+            Swiper = _libsSwiper312JsSwiperJs['default'];
+        }, function (_jsPageBaseJs) {
+            BasePage = _jsPageBaseJs['default'];
         }, function (_libsIScroll513IscrollLiteJs) {
             iScroll = _libsIScroll513IscrollLiteJs['default'];
-        }, function (_jsUtilsWsy_utilsJs) {
-            transitionEnd = _jsUtilsWsy_utilsJs.transitionEnd;
-        }, function (_jsRouterUtilsJs) {
-            routeHistory = _jsRouterUtilsJs.routeHistory;
         }, function (_jsUtilsEnvJs) {
             env = _jsUtilsEnvJs['default'];
+        }, function (_jsRouterUtilsJs) {
+            routeHistory = _jsRouterUtilsJs.routeHistory;
         }],
         execute: function () {
-            ModalManage = (function () {
-                function ModalManage() {
-                    babelHelpers.classCallCheck(this, ModalManage);
+            MapListPage = (function (_BasePage) {
+                babelHelpers.inherits(MapListPage, _BasePage);
 
+                function MapListPage() {
+                    babelHelpers.classCallCheck(this, MapListPage);
+
+                    if (arguments[0] === false) {
+                        return false;
+                    }
+                    babelHelpers.get(Object.getPrototypeOf(MapListPage.prototype), 'constructor', this).call(this, false);
                     this.initialize.apply(this, arguments);
                 }
 
-                babelHelpers.createClass(ModalManage, [{
+                babelHelpers.createClass(MapListPage, [{
                     key: 'initialize',
                     value: function initialize(options) {
+                        babelHelpers.get(Object.getPrototypeOf(MapListPage.prototype), 'initialize', this).call(this);
                         var $el = {};
-                        this.iscrolls = {};
                         this.$el = $el;
-                        $el.modalBox = $('#modal-box');
-                        this['modal_' + options.modal](options);
-                    }
-                }, {
-                    key: 'modal_set',
-                    value: function modal_set(options) {
-                        var $el = this.$el;
-
-                        $el.modal = $('#modal-set');
-                        $el.modalBox.show();
-                        $el.modal.show();
-                        $el.close = $el.modal.find('.close');
-
-                        $el.close.on('tap.modalmanage', function () {
-                            $el.modal.removeClass('active');
-                            routeHistory.goback();
+                        var iscrolls = {};
+                        this.iscrolls = iscrolls;
+                        $el.page = $('#page_maplist');
+                        $el.close = $el.page.find('.tab-close');
+                        $el.tabArchives = $el.page.find('.tab-archives');
+                        babelHelpers.get(Object.getPrototypeOf(MapListPage.prototype), 'startPage', this).call(this);
+                        $el.close.one('tap.maplist', function () {
+                            var list = routeHistory.get('all');
+                            var route = undefined;
+                            do {
+                                route = list.pop();
+                                //console.log('pop:', route)
+                            } while (route && route.indexOf('/mapinfo') !== -1);
+                            env.router.setRoute(route || env.first_page);
                         });
+                        $el.tabArchives.attr('data-router', '/mapinfo/archives/' + options.id);
 
-                        setTimeout(function () {
-                            $el.modal.addClass('active');
-                        }, 100);
+                        iscrolls.content = new iScroll($el.page.get(0));
                     }
                 }, {
-                    key: 'modal_address',
-                    value: function modal_address(options) {
-                        var $el = this.$el;
+                    key: 'destroy',
+                    value: function destroy() {
+                        var _this = this;
 
-                        $el.modal = $('#modal-address');
-                        $el.modalBox.show();
-                        $el.modal.show();
-                        $el.close = $el.modal.find('.close');
-
-                        $el.close.one('tap.modalmanage', function () {
-                            $el.modal.removeClass('active');
-                            routeHistory.goback();
-                        });
-
-                        setTimeout(function () {
-                            $el.modal.addClass('active');
-                        }, 100);
-                    }
-                }, {
-                    key: 'modal_selectMap',
-                    value: function modal_selectMap() {
-                        var $el = this.$el;
                         var iscrolls = this.iscrolls;
-
-                        $el.modal = $('#modal-select-map');
-
-                        $el.close = $el.modal.find('.close');
-                        $el.scroll = $el.modal.find('.scroll');
-                        $el.modalBox.show();
-                        $el.modal.show();
-                        $el.close.one('tap.modalmanage', function () {
-                            $el.modal.removeClass('active');
-                            routeHistory.goback();
+                        babelHelpers.get(Object.getPrototypeOf(MapListPage.prototype), 'endPage', this).call(this, function () {
+                            $.each(iscrolls, function (key, iscroll) {
+                                iscroll.destroy();
+                            });
+                            _this.$el = null;
                         });
-                        setTimeout(function () {
-                            $el.modal.addClass('active');
-                        }, 100);
-
-                        iscrolls.content = new iScroll($el.scroll.get(0));
-                    }
-                }, {
-                    key: 'modal_addAddrInfo',
-                    value: function modal_addAddrInfo() {
-                        var $el = this.$el;
-                        var iscrolls = this.iscrolls;
-
-                        $el.modal = $('#modal-add-addr-info');
-                        $el.close = $el.modal.find('.close');
-                        $el.scroll = $el.modal.find('.scroll');
-                        $el.modalBox.show();
-                        $el.modal.show();
-                        $el.close.one('tap.modalmanage', function () {
-                            $el.modal.removeClass('active');
-                            routeHistory.goback();
-                        });
-
-                        setTimeout(function () {
-                            $el.modal.addClass('active');
-                        }, 100);
-
-                        iscrolls.content = new iScroll($el.scroll.get(0));
-                    }
-                }, {
-                    key: 'modal_createMap',
-                    value: function modal_createMap() {
-                        var $el = this.$el;
-                        var iscrolls = this.iscrolls;
-
-                        $el.modal = $('#modal-create-map');
-                        $el.close = $el.modal.find('.close');
-                        $el.scroll = $el.modal.find('.scroll');
-                        $el.modalBox.show();
-                        $el.modal.show();
-                        $el.close.one('tap.modalmanage', function () {
-                            $el.modal.removeClass('active');
-                            routeHistory.goback();
-                        });
-
-                        setTimeout(function () {
-                            $el.modal.addClass('active');
-                        }, 100);
-                        iscrolls.content = new iScroll($el.scroll.get(0));
-                    }
-                }, {
-                    key: 'destory',
-                    value: function destory() {
-                        var self = this;
-                        var $el = this.$el;
-                        var iscrolls = this.iscrolls;
-                        $.each($el, function (key, el) {
-                            el.off('.modalmanage');
-                        });
-                        $.each(iscrolls, function (key, iscroll) {
-                            console.log(iscroll);
-                            iscroll.destroy();
-                        });
-                        setTimeout(function () {
-                            $el.modalBox.hide();
-                            $el.modal.hide();
-                            self.$el = null;
-                        }, 400);
                     }
                 }]);
-                return ModalManage;
-            })();
+                return MapListPage;
+            })(BasePage);
 
-            _export('default', ModalManage);
+            _export('default', MapListPage);
         }
     };
 });
@@ -20556,7 +20590,7 @@ System.register('js/page/base.js', ['libs/jquery/2.1.4/jquery.js', 'libs/lodash.
                         $(document).on('click', 'a', function (evt) {
                             evt.preventDefault();
                         });
-                        $('.wrapper').on('tap', '[data-router]', function (evt) {
+                        $(document.body).on('tap', '[data-router]', function (evt) {
                             evt.preventDefault();
                             if (env.router_wait) {
                                 return false;

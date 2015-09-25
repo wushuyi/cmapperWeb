@@ -77,7 +77,7 @@ class PageBase {
         $(document).on('click', 'a', (evt) => {
             evt.preventDefault();
         });
-        $('.wrapper').on('tap', '[data-router]', function (evt) {
+        $(document.body).on('tap', '[data-router]', function (evt) {
             evt.preventDefault();
             if (env.router_wait) {
                 return false;

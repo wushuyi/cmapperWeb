@@ -4,7 +4,7 @@
 import $ from 'jquery'
 import iScroll from 'iScroll'
 import {transitionEnd} from '../utils/wsy_utils.js'
-import {routeHistory} from '../router/utils.js'
+import {routeHistory, getRouter} from '../router/utils.js'
 import {default as env} from '../utils/env.js'
 
 
@@ -42,12 +42,12 @@ class ModalManage {
 
     modal_address(options) {
         let $el = this.$el;
-
+        let iscrolls = this.iscrolls;
         $el.modal = $('#modal-address');
         $el.modalBox.show();
         $el.modal.show();
         $el.close = $el.modal.find('.close');
-
+        $el.scroll = $el.modal.find('.scroll');
         $el.close.one('tap.modalmanage', function () {
             $el.modal.removeClass('active');
             routeHistory.goback();
@@ -56,6 +56,8 @@ class ModalManage {
         setTimeout(function () {
             $el.modal.addClass('active');
         }, 100);
+
+        iscrolls.content = new iScroll($el.scroll.get(0));
     }
 
     modal_selectMap() {
@@ -128,9 +130,16 @@ class ModalManage {
             el.off('.modalmanage');
         });
         $.each(iscrolls, function (key, iscroll) {
-            console.log(iscroll);
+            //console.log(iscroll);
             iscroll.destroy();
         });
+        let route = getRouter();
+        if (route.indexOf('/modal') !== -1) {
+            $el.modal.hide();
+            $el.modal.removeClass('active');
+            self.$el = null;
+            return false;
+        }
         setTimeout(function () {
             $el.modalBox.hide();
             $el.modal.hide();

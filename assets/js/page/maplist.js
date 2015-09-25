@@ -33,7 +33,7 @@ class MapListPage extends BasePage {
             let route;
             do {
                 route = list.pop();
-                console.log('pop:', route)
+                //console.log('pop:', route)
             } while (route && route.indexOf('/mapinfo') !== -1);
             env.router.setRoute(route || env.first_page);
         });

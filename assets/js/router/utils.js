@@ -23,10 +23,10 @@ export let routeHistory = {
     },
     goback: function (num) {
         env.goback = true;
-        if(!num){
+        if (!num) {
             num = 1;
         }
-        for(let i = 0; i < num; i++){
+        for (let i = 0; i < num; i++) {
             historyList.pop();
         }
         let route = historyList[historyList.length - 1] || '/gftj';
@@ -44,3 +44,7 @@ export let routeHistory = {
         }
     },
 };
+
+export function isModal() {
+    return getRouter().indexOf('/modal') !== -1;
+}

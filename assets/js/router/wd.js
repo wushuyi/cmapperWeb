@@ -3,7 +3,7 @@
  */
 import {default as WdPage} from '../page/wd.js'
 import env from '../utils/env.js'
-import {getRouter} from './utils.js'
+import {isModal} from './utils.js'
 
 function register(router) {
     let route = '/wd';
@@ -16,15 +16,9 @@ function register(router) {
         env[page] = new WdPage();
     });
     router.on('after', route, function () {
-        let nowRoute = getRouter();
-        if (nowRoute.indexOf('/modal') !== -1) {
-            setTimeout(function () {
-                env[page].destroy();
-                delete env[page];
-            }, 500);
+        if(isModal()){
             return false;
         }
-
         env[page].destroy();
         delete env[page];
     });

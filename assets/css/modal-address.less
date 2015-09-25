@@ -25,6 +25,16 @@
     color: #000000;
     z-index: 1;
   }
+
+  .scroll {
+    position: absolute;
+    right: 0;
+    left: 0;
+    top: 80px;
+    bottom: 0px;
+    overflow: hidden;
+  }
+
   .btn_edit, .btn_use {
     position: absolute;
     right: 0;
@@ -201,13 +211,21 @@
       display: inline-block;
       content: '';
     }
-    &.first{
+    &.first {
       margin-right: 20px;
     }
   }
 
-  .comment-list{
-    border-top: 1px solid #CBCBCB;
+  .comment-box{
+    margin-top: 20px;
+    margin-left: 20px;
+    margin-right: 20px;
+    background-color: #FFFFFF;
+    border: 1px solid #E5E4E4;
+    border-radius: 8px;
+  }
+  .comment-list {
+    //border-top: 1px solid #CBCBCB;
   }
   .comment-list li {
     width: 100%;
@@ -247,10 +265,13 @@
       left: 0;
       z-index: auto;
       float: left;
+      margin-top: 10px;
+      margin-left: 20px;
     }
     .msg {
       margin-left: 20px;
-      width: 460px;
+      margin-right: 40px;
+      width: 400px;
       font-size: 28px;
       float: left;
     }
@@ -272,4 +293,11 @@
       }
     }
   }
+  .prompt{
+    font-size: 28px;
+    color: #A39B9B;
+    text-align: center;
+    margin-bottom: 10px;
+  }
+
 }

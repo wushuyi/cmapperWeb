@@ -3,7 +3,7 @@
  */
 import {default as MapListPage} from '../page/maplist.js'
 import env from '../utils/env.js'
-import {getRouter} from './utils.js'
+import {isModal} from './utils.js'
 
 function register(router) {
     let route = 'mapinfo/list/:id';
@@ -18,12 +18,7 @@ function register(router) {
         });
     });
     router.on('after', route, function () {
-        let nowRoute = getRouter();
-        if (nowRoute.indexOf('/modal') !== -1) {
-            setTimeout(function () {
-                env[page].destroy();
-                delete env[page];
-            }, 500);
+        if(isModal()){
             return false;
         }
         env[page].destroy();

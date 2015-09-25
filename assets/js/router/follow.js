@@ -3,7 +3,7 @@
  */
 import {default as FollowPage} from '../page/follow.js'
 import env from '../utils/env.js'
-import {routeHistory} from './utils.js'
+import {isModal} from './utils.js'
 
 function register(router) {
     let route = '/follow/:type/:id';
@@ -18,6 +18,9 @@ function register(router) {
         });
     });
     router.on('after', route, function () {
+        if(isModal()){
+            return false;
+        }
         env[page].destroy();
         delete env[page];
     });

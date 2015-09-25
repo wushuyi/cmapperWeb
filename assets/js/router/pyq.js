@@ -3,6 +3,7 @@
  */
 import {default as PyqPage} from '../page/pyq.js'
 import env from '../utils/env.js'
+import {isModal} from './utils.js'
 
 function register(router) {
     let route = '/pyq';
@@ -15,6 +16,9 @@ function register(router) {
         env[page] = new PyqPage();
     });
     router.on('after', route, function () {
+        if(isModal()){
+            return false;
+        }
         env[page].destroy();
         delete env[page];
     });

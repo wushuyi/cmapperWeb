@@ -3,7 +3,7 @@
  */
 import {default as GftjPage} from '../page/gftj.js'
 import env from '../utils/env.js'
-import {routeHistory, getRouter} from './utils.js'
+import {isModal} from './utils.js'
 
 function register(router) {
     let route = '/gftj';
@@ -16,6 +16,9 @@ function register(router) {
         env[page] = new GftjPage();
     });
     router.on('after', route, function () {
+        if(isModal()){
+            return false;
+        }
         env[page].destroy();
         delete env[page];
     });
