@@ -426,6 +426,11 @@ html.android .label-switch input[type="checkbox"] + .checkbox:before {
   right: 0;
   bottom: 0;
   background: #000000;
+  opacity: 0;
+  -webkit-transition: opacity 600ms;
+          transition: opacity 600ms;
+}
+.mask.active {
   opacity: 0.6;
 }
 .map {
@@ -1391,15 +1396,13 @@ html.android .label-switch input[type="checkbox"] + .checkbox:before {
 }
 #modal-set .close {
   position: absolute;
+  top: 10px;
   left: 0;
   width: 70px;
   height: 70px;
-  font-size: 40px;
-  font-weight: bold;
-  text-align: center;
-  line-height: 70px;
-  color: #000000;
   z-index: 1;
+  background: url('../images/icons/back_black.svg') no-repeat 50% 50%;
+  background-size: 40px;
 }
 #modal-set .title {
   position: absolute;
@@ -1471,7 +1474,6 @@ html.android .label-switch input[type="checkbox"] + .checkbox:before {
   right: 80px;
 }
 #modal-address .top-content {
-  height: 200px;
   margin-left: 20px;
   margin-right: 20px;
 }
@@ -1696,9 +1698,8 @@ html.android .label-switch input[type="checkbox"] + .checkbox:before {
   width: 240px;
   height: 50px;
   margin-top: 20px;
-  margin-left: 180px;
   margin-right: 40px;
-  float: left;
+  float: right;
 }
 #modal-address .comment .btn-bar .btn {
   background: red;

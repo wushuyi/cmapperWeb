@@ -64,17 +64,20 @@
   position: absolute;
   background: #F5F5F5;
 }
-.mask{
+
+.mask {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
   background: #000000;
-  opacity: 0.6;
+  opacity: 0;
+  transition: opacity 600ms;
+  &.active {
+    opacity: 0.6;
+  }
 }
-
-
 
 .map {
   position: absolute;
@@ -95,6 +98,7 @@
   //background: #393248;
   bottom: 0;
   width: 100%;
+
 }
 
 .nav {
@@ -122,31 +126,31 @@
     //line-height: 84px;
   }
 
-  .nav-list .nav-item.a{
+  .nav-list .nav-item.a {
     background: url("../images/icons/favorite-link.svg") no-repeat;
   }
-  .nav-list .nav-item.a.active{
+  .nav-list .nav-item.a.active {
     background: url("../images/icons/favorite-active.svg") no-repeat;
   }
 
-  .nav-list .nav-item.b{
+  .nav-list .nav-item.b {
     background: url("../images/icons/friends-link.svg") no-repeat;
   }
-  .nav-list .nav-item.b.active{
+  .nav-list .nav-item.b.active {
     background: url("../images/icons/friends-active.svg") no-repeat;
   }
 
-  .nav-list .nav-item.c{
+  .nav-list .nav-item.c {
     background: url("../images/icons/radar-link.svg") no-repeat;
   }
-  .nav-list .nav-item.c.active{
+  .nav-list .nav-item.c.active {
     background: url("../images/icons/radar-active.svg") no-repeat;
   }
 
-  .nav-list .nav-item.d{
+  .nav-list .nav-item.d {
     background: url("../images/icons/user-link.svg") no-repeat;
   }
-  .nav-list .nav-item.d.active{
+  .nav-list .nav-item.d.active {
     background: url("../images/icons/user-active.svg") no-repeat;
   }
 
@@ -220,7 +224,7 @@
   margin-bottom: 0px;
   margin-right: 0px;
   transition: all 400ms;
-  &:after{
+  &:after {
     content: '新建地点';
   }
 }
@@ -230,7 +234,7 @@
   right: 50%;
   margin-bottom: -50px;
   margin-right: -50px;
-  &:after{
+  &:after {
     content: '+';
   }
 }
@@ -276,7 +280,7 @@
   float: left;
 }
 
-.input{
+.input {
   width: 100%;
   border: 2px solid #C8C8C8;
   border-radius: 8px;
