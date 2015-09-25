@@ -423,25 +423,44 @@
                 </div>
                 <div id="page_fxdt" class="page cached">
                     <div class="scroll">
-                        <ul class="select-list top-list">
-                            <li>
-                                <input type="text" class="search" placeholder="查询关键字"/>
-                            </li>
-                            <li>
-                                距离雷达
-                            </li>
-                            <li>
-                                人气雷达
-                            </li>
-                        </ul>
-                        <ul class="select-list">
-                            <li>餐饮</li>
-                            <li>娱乐</li>
-                            <li>旅游</li>
-                            <li>购物</li>
-                            <li>美容与健身</li>
-                            <li>其他</li>
-                        </ul>
+                        <div class="input-box">
+                            <select class="input">
+                                <option>按距离</option>
+                                <option>按人气</option>
+                                <option>按时间</option>
+                            </select>
+                        </div>
+                        <div class="input-box">
+                            <input type="text" class="input" placeholder="请输入Tag"/>
+                        </div>
+                        <div class="tag-box">
+                            <ul class="clearfix">
+                                <li>
+                                    <span class="tag-tit">常用Tag:</span>
+                                </li>
+                                <li>
+                                    <span class="tag">景点</span>
+                                </li>
+                                <li>
+                                    <span class="tag">景点</span>
+                                </li>
+                                <li>
+                                    <span class="tag">景点</span>
+                                </li>
+                                <li>
+                                    <span class="tag">景点</span>
+                                </li>
+                                <li>
+                                    <span class="tag">景点</span>
+                                </li>
+                                <li>
+                                    <span class="tag">景点</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="search-box">
+                            <div class="search-btn"></div>
+                        </div>
                     </div>
                 </div>
                 <div id="page_wd" class="page cached">
@@ -450,9 +469,7 @@
                             <div class="role-img">头像</div>
                             <h2 class="role-name">名字名字</h2>
 
-                            <div class="set-button" data-router="/modal/set">
-                                设定
-                            </div>
+                            <div class="set-button" data-router="/modal/set"></div>
                             <div class="vcard-stats">
                                 <div class="vcard-stat">
                                     <strong class="vcard-stat-count">372</strong>
@@ -585,7 +602,7 @@
                 <div id="page_mapinfo" class="page cached">
                     <div class="scroll">
                         <div class="tab-bar">
-                            <div class="tab-close">X</div>
+                            <div class="tab-close"></div>
                             <div class="tab-item active tab-archives">地图档案</div>
                             <div class="tab-item tab-list">地点列表(888)</div>
                         </div>
@@ -1212,29 +1229,57 @@
                                 <div class="comment clearfix">
                                     <div class="avatar"></div>
                                     <div class="msg">评论这是一条评论它评论评论这是一条评论它评论评论这是一条评论它评论</div>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="comment clearfix self">
-                                    <div class="avatar"></div>
-                                    <div class="msg">评论这是一条评论它评论评论这是一条评论它评论评论这是一条评论它评论</div>
-                                    <div class="del">x</div>
+                                    <div class="btn-bar">
+                                        <div class="btn"></div>
+                                        <div class="btn"></div>
+                                        <div class="btn"></div>
+                                    </div>
                                 </div>
                             </li>
                             <li>
                                 <div class="comment clearfix">
                                     <div class="avatar"></div>
                                     <div class="msg">评论这是一条评论它评论评论这是一条评论它评论评论这是一条评论它评论</div>
+                                    <div class="btn-bar">
+                                        <div class="btn"></div>
+                                        <div class="btn"></div>
+                                        <div class="btn"></div>
+                                    </div>
                                 </div>
                             </li>
                             <li>
-                                <div class="comment clearfix self">
+                                <div class="comment clearfix">
                                     <div class="avatar"></div>
                                     <div class="msg">评论这是一条评论它评论评论这是一条评论它评论评论这是一条评论它评论</div>
-                                    <div class="del">x</div>
+                                    <div class="btn-bar">
+                                        <div class="btn"></div>
+                                        <div class="btn"></div>
+                                        <div class="btn"></div>
+                                    </div>
                                 </div>
                             </li>
-
+                            <li>
+                                <div class="comment clearfix">
+                                    <div class="avatar"></div>
+                                    <div class="msg">评论这是一条评论它评论评论这是一条评论它评论评论这是一条评论它评论</div>
+                                    <div class="btn-bar">
+                                        <div class="btn"></div>
+                                        <div class="btn"></div>
+                                        <div class="btn"></div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="comment clearfix">
+                                    <div class="avatar"></div>
+                                    <div class="msg">评论这是一条评论它评论评论这是一条评论它评论评论这是一条评论它评论</div>
+                                    <div class="btn-bar">
+                                        <div class="btn"></div>
+                                        <div class="btn"></div>
+                                        <div class="btn"></div>
+                                    </div>
+                                </div>
+                            </li>
                         </ul>
                         <div class="prompt">下拉以加载更多</div>
                     </div>

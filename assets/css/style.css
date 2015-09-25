@@ -50,7 +50,7 @@ textarea:-moz-placeholder {
   color: #a9a9a9;
 }
 body {
-  background-color: #393248;
+  background-color: #282828;
   font-weight: bold;
 }
 img {
@@ -445,7 +445,6 @@ html.android .label-switch input[type="checkbox"] + .checkbox:before {
   position: absolute;
   top: 252px;
   /*transform: translateY(265px);*/
-  background: #393248;
   bottom: 0;
   width: 100%;
 }
@@ -660,42 +659,53 @@ html.android .label-switch input[type="checkbox"] + .checkbox:before {
   border-radius: 8px;
   overflow: hidden;
   background: #EEEEEE;
-  padding-top: 40px;
-  padding-bottom: 40px;
 }
-#page_fxdt .select-list {
-  background: #EEEEEE;
+#page_fxdt .input-box {
+  margin: 20px 20px 0 20px;
+}
+#page_fxdt .input-box .input {
+  height: 80px;
+}
+#page_fxdt .tag-box {
+  margin: 20px 44px 20px 44px;
+}
+#page_fxdt .tag-box li {
+  float: left;
+}
+#page_fxdt .tag-tit {
+  display: inline-block;
+  font-size: 30px;
+  padding: 12px 6px 12px 2px;
+}
+#page_fxdt .tag {
+  display: inline-block;
+  margin: 6px;
+  color: #FFFFFF;
+  font-size: 30px;
+  padding: 10px 30px 10px 30px;
+  background: #FFCC00;
+  border: 2px solid #C29C02;
+  border-radius: 8px;
+}
+#page_fxdt .search-box {
+  height: 400px;
   width: 100%;
-  padding-left: 20px;
-  padding-right: 20px;
+  position: relative;
 }
-#page_fxdt .select-list li {
-  width: 100%;
-  height: 96px;
-  border-bottom: 1px solid #979797;
-  font-size: 32px;
-  color: #000000;
-  text-align: center;
-  line-height: 96px;
-}
-#page_fxdt .top-list {
-  border-bottom: 1px solid #979797;
-}
-#page_fxdt .top-list li:nth-child(1) {
-  border-bottom: none;
-}
-#page_fxdt .top-list:last-of-type {
-  border-bottom: none;
-}
-#page_fxdt .search {
-  width: 100%;
-  border: 1px solid #9B9B9B;
-  border-radius: 16px;
-  height: 100%;
-  outline: none;
-  font-size: 32px;
-  color: #000000;
-  text-align: center;
+#page_fxdt .search-btn {
+  width: 152px;
+  height: 152px;
+  border-radius: 76px;
+  background-image: url('../images/icons/search.svg');
+  background-size: 64px 64px;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  background-color: #4A4A4A;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -76px;
+  margin-left: -76px;
 }
 #page_wd > .scroll {
   border-radius: 8px;
@@ -752,18 +762,12 @@ html.android .label-switch input[type="checkbox"] + .checkbox:before {
   font-weight: bold;
 }
 #page_wd .set-button {
-  width: 80px;
-  height: 80px;
+  width: 64px;
+  height: 64px;
   position: absolute;
   right: 10px;
   top: 20px;
-  border-radius: 40px;
-  background: #D8D8D8;
-  border: 1px solid #9B9B9B;
-  overflow: hidden;
-  font-size: 28px;
-  line-height: 80px;
-  text-align: center;
+  background: url('../images/icons/setting.png') no-repeat;
 }
 #page_wd .map-list {
   float: left;
@@ -809,20 +813,15 @@ html.android .label-switch input[type="checkbox"] + .checkbox:before {
 #page_mapinfo .tab-close {
   width: 80px;
   height: 80px;
-  background: #D8D8D8;
+  background: #4a90e2 url('../images/icons/close_white.svg') no-repeat 50% 50%;
   float: left;
-  border: 1px solid #979797;
-  font-size: 30px;
-  text-align: center;
-  line-height: 80px;
-  color: #000000;
+  border-bottom-right-radius: 8px;
 }
 #page_mapinfo .tab-item {
   width: 272px;
   height: 80px;
-  background: #D8D8D8;
+  background: #4A90E2;
   float: left;
-  border: 1px solid #979797;
   font-size: 30px;
   text-align: center;
   line-height: 80px;
@@ -831,6 +830,9 @@ html.android .label-switch input[type="checkbox"] + .checkbox:before {
 #page_mapinfo .tab-item.active {
   background: #FFFFFF;
   border-bottom: none;
+}
+#page_mapinfo .tab-list {
+  border-bottom-left-radius: 8px;
 }
 #page_mapinfo .archives-box {
   margin-top: 20px;
@@ -1658,20 +1660,26 @@ html.android .label-switch input[type="checkbox"] + .checkbox:before {
   font-size: 28px;
   float: left;
 }
-#modal-address .comment.self .msg {
-  width: 380px;
+#modal-address .comment .btn-bar {
+  width: 240px;
+  height: 50px;
+  margin-top: 20px;
+  margin-left: 180px;
+  margin-right: 40px;
+  float: left;
 }
-#modal-address .comment.self .del {
+#modal-address .comment .btn-bar .btn {
+  background: red;
   width: 40px;
   height: 40px;
-  float: left;
-  border-radius: 20px;
-  background: #FFADAD;
-  font-size: 28px;
-  text-align: center;
-  line-height: 34px;
-  margin-top: 20px;
-  margin-left: 20px;
+  float: right;
+  margin-left: 40px;
+}
+#modal-address .comment:after {
+  content: '';
+  border: 1px dashed #E5E5E5;
+  margin-right: 30px;
+  margin-left: 30px;
 }
 #modal-address .prompt {
   font-size: 28px;

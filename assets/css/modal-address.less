@@ -275,22 +275,26 @@
       font-size: 28px;
       float: left;
     }
-    &.self {
-      .msg {
-        width: 380px;
-      }
-      .del {
+    .btn-bar{
+      width: 240px;
+      height: 50px;
+      margin-top: 20px;
+      margin-left: 180px;
+      margin-right: 40px;
+      float: left;
+      .btn{
+        background: red;
         width: 40px;
         height: 40px;
-        float: left;
-        border-radius: 20px;
-        background: #FFADAD;
-        font-size: 28px;
-        text-align: center;
-        line-height: 34px;
-        margin-top: 20px;
-        margin-left: 20px;
+        float: right;
+        margin-left: 40px;
       }
+    }
+    &:after{
+      content: '';
+      border: 1px dashed #E5E5E5;
+      margin-right: 30px;
+      margin-left: 30px;
     }
   }
   .prompt{
