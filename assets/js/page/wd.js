@@ -4,7 +4,7 @@
 import $ from 'jquery'
 //import Swiper from 'Swiper'
 import {default as BasePage} from './base.js'
-import iScroll from 'iScroll';
+import iscroll from 'iscroll';
 import {default as env} from '../utils/env.js'
 
 
@@ -26,7 +26,7 @@ class WdPage extends BasePage {
         $el.nav = $('.nav-item[data-router="/wd"]');
         $el.page = $('#page_wd');
         super.startPage();
-        iscrolls.content = new iScroll($el.page.get(0));
+        iscrolls.content = new iscroll($el.page.get(0));
 
         this.onReview = function () {
             iscrolls.content.refresh();

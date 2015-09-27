@@ -3,7 +3,7 @@
  */
 import $ from 'jquery'
 import {default as BasePage} from './base.js'
-import iScroll from 'iScroll';
+import iscroll from 'iscroll';
 import {proxy} from '../utils/wsy_utils.js'
 import {routeHistory} from '../router/utils.js'
 import {default as env} from '../utils/env.js'
@@ -32,7 +32,7 @@ class MapInfoPage extends BasePage {
         $el.hotNumBox = $('.hot-num-box');
         $el.commentBox = $('.comment-box');
         super.startPage();
-        iscrolls.content = new iScroll($el.page.get(0));
+        iscrolls.content = new iscroll($el.page.get(0));
 
         $el.close.one('tap.mapinfo', function () {
             let list = routeHistory.get('all');
@@ -78,7 +78,12 @@ class MapInfoPage extends BasePage {
         let temp = '<li>' +
             '<div class="comment clearfix">' +
             '<div class="avatar"></div>' +
-            '<div class="msg">new 评论这是一条评论它评论评论这是一条评论它评论评论这是一条评论它评论</div>' +
+            '<div class="msg">评论这是一条评论它评论评论这是一条评论它评论评论这是一条评论它评论</div>' +
+            '<div class="btn-bar">' +
+            '<div class="btn"></div>' +
+            '<div class="btn"></div>' +
+            '<div class="btn"></div>' +
+            '</div>' +
             '</div>' +
             '</li>';
         let reshtml = '';

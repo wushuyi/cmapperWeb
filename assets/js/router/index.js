@@ -1,7 +1,7 @@
 /**
  * Created by wushuyi on 2015/9/13.
  */
-import Director from 'Director'
+import Director from 'director'
 import {default as register_gftj} from './gftj.js'
 import {default as register_pyq} from './pyq.js'
 import {default as register_fxdt} from './fxdt.js'

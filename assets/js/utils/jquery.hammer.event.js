@@ -2,9 +2,9 @@
  * Created by wushuyi on 2015/9/10.
  */
 import $ from 'jquery'
-import Hammer from 'Hammer'
+import hammer from 'hammer'
 
-Hammer.Manager.prototype.emit = (function (originalEmit) {
+hammer.Manager.prototype.emit = (function (originalEmit) {
     return function (type, data) {
         originalEmit.call(this, type, data);
         $(this.element).trigger({
@@ -12,14 +12,14 @@ Hammer.Manager.prototype.emit = (function (originalEmit) {
             gesture: data
         });
     };
-})(Hammer.Manager.prototype.emit);
+})(hammer.Manager.prototype.emit);
 
 //$.event.special['tap'] = {
 //    setup: function () {
 //        var self = this;
 //        var $self = $(this);
-//        var mc = new Hammer.Manager(self);
-//        var tap = new Hammer.Tap({event: 'tap'});
+//        var mc = new hammer.Manager(self);
+//        var tap = new hammer.Tap({event: 'tap'});
 //        mc.add(tap);
 //        $self.data('hammer-tap', mc);
 //    },

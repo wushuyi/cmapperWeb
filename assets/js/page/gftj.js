@@ -4,7 +4,7 @@
 import $ from 'jquery'
 import Swiper from 'Swiper'
 import {default as BasePage} from './base.js'
-import iScroll from 'iScroll';
+import iscroll from 'iscroll';
 import {default as env} from '../utils/env.js'
 
 
@@ -40,10 +40,10 @@ class GftjPage extends BasePage {
             autoplayDisableOnInteraction: false,
         });
 
-        this.initIscrolls();
+        this.initiscrolls();
     }
 
-    initIscrolls() {
+    initiscrolls() {
         let $el = this.$el;
         let iscrolls = this.iscrolls;
 
@@ -59,17 +59,17 @@ class GftjPage extends BasePage {
         reset_horizontal($el.classify1);
         reset_horizontal($el.classify2);
 
-        iscrolls.content = new iScroll($el.page.get(0));
-        iscrolls.topPeople = new iScroll($el.topPeople.get(0), {
+        iscrolls.content = new iscroll($el.page.get(0));
+        iscrolls.topPeople = new iscroll($el.topPeople.get(0), {
             scrollX: true,
             scrollY: false,
         });
 
-        iscrolls.classify1 = new iScroll($el.classify1.get(0), {
+        iscrolls.classify1 = new iscroll($el.classify1.get(0), {
             scrollX: true,
             scrollY: false,
         });
-        iscrolls.classify2 = new iScroll($el.classify2.get(0), {
+        iscrolls.classify2 = new iscroll($el.classify2.get(0), {
             scrollX: true,
             scrollY: false,
         });

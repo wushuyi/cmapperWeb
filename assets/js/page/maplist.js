@@ -4,7 +4,7 @@
 import $ from 'jquery'
 import Swiper from 'Swiper'
 import {default as BasePage} from './base.js'
-import iScroll from 'iScroll';
+import iscroll from 'iscroll';
 import env from '../utils/env.js'
 import {routeHistory} from '../router/utils.js'
 
@@ -39,7 +39,7 @@ class MapListPage extends BasePage {
         });
         $el.tabArchives.attr('data-router', '/mapinfo/archives/' + options.id);
 
-        iscrolls.content = new iScroll($el.page.get(0));
+        iscrolls.content = new iscroll($el.page.get(0));
     }
 
     destroy() {

@@ -4,7 +4,7 @@
 var gulp = require('gulp');
 var run = require('gulp-run');
 
-gulp.task('default',['build-css','build-js'], function () {
+gulp.task('default', ['build-css', 'build-js'], function () {
     run('echo "ok!').exec();
 });
 
@@ -12,6 +12,13 @@ gulp.task('build-css', function () {
     run("lessc --no-color --autoprefix assets/css/style.less > assets/css/style.css").exec();
 });
 
-gulp.task('build-js', function () {
-    run('node ./tools/build.js').exec();
+gulp.task('build-js', ['clear-cache'], function () {
+    run('jspm bundle ./assets/js/main ./build/build.js --minify --inject').exec();
+});
+
+gulp.task('build-cache', ['clear-cache'], function () {
+    run('jspm bundle ./bundle.config.js ./cache/cache.js --inject').exec();
+});
+gulp.task('clear-cache', function () {
+    run('jspm unbundle').exec();
 });

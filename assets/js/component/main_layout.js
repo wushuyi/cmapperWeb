@@ -2,7 +2,7 @@
  * Created by wushuyi on 2015/9/13.
  */
 import $ from 'jquery'
-import Hammer from 'Hammer'
+import hammer from 'hammer'
 import 'velocity'
 import EventEmitter from 'EventEmitter'
 import '../utils/jquery.hammer.event.js'
@@ -50,16 +50,16 @@ class MainLayout extends EventEmitter {
     }
 
     initListener() {
-        this.initHammer();
+        this.inithammer();
         this.initControl();
     }
 
-    initHammer() {
-        let mc = new Hammer.Manager(this.$el.height_control.get(0));
+    inithammer() {
+        let mc = new hammer.Manager(this.$el.height_control.get(0));
         this.hammer = mc;
-        let pan = new Hammer.Pan({direction: Hammer.DIRECTION_VERTICAL});
-        //let doubletap = new Hammer.Tap({event: 'doubletap', taps: 2});
-        let singletap = new Hammer.Tap({event: 'singletap'});
+        let pan = new hammer.Pan({direction: hammer.DIRECTION_VERTICAL});
+        //let doubletap = new hammer.Tap({event: 'doubletap', taps: 2});
+        let singletap = new hammer.Tap({event: 'singletap'});
         mc.add([pan, singletap]);
         //doubletap.recognizeWith('singletap');
         //singletap.requireFailure('doubletap');

@@ -2,7 +2,7 @@
  * Created by wushuyi on 2015/9/17.
  */
 import $ from 'jquery'
-import iScroll from 'iScroll'
+import iscroll from 'iscroll'
 import {transitionEnd} from '../utils/wsy_utils.js'
 import {routeHistory, isModal} from '../router/utils.js'
 import {default as env} from '../utils/env.js'
@@ -54,7 +54,7 @@ class ModalManage {
         $el.modal = $('#modal-address');
         this.public_init();
         $el.scroll = $el.modal.find('.scroll');
-        iscrolls.content = new iScroll($el.scroll.get(0));
+        iscrolls.content = new iscroll($el.scroll.get(0));
     }
 
     modal_selectMap() {
@@ -63,7 +63,7 @@ class ModalManage {
         $el.modal = $('#modal-select-map');
         this.public_init();
         $el.scroll = $el.modal.find('.scroll');
-        iscrolls.content = new iScroll($el.scroll.get(0));
+        iscrolls.content = new iscroll($el.scroll.get(0));
     }
 
     modal_addAddrInfo() {
@@ -72,7 +72,7 @@ class ModalManage {
         $el.modal = $('#modal-add-addr-info');
         this.public_init();
         $el.scroll = $el.modal.find('.scroll');
-        iscrolls.content = new iScroll($el.scroll.get(0));
+        iscrolls.content = new iscroll($el.scroll.get(0));
     }
 
     modal_createMap() {
@@ -81,7 +81,7 @@ class ModalManage {
         $el.modal = $('#modal-create-map');
         this.public_init();
         $el.scroll = $el.modal.find('.scroll');
-        iscrolls.content = new iScroll($el.scroll.get(0));
+        iscrolls.content = new iscroll($el.scroll.get(0));
     }
 
     destory() {
