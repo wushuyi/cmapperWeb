@@ -1058,6 +1058,15 @@ html.android .label-switch input[type="checkbox"] + .checkbox:before {
   float: right;
   margin-left: 40px;
 }
+#page_mapinfo .comment .btn-bar .btn.btn-like {
+  background: transparent url('../images/icons/like.svg') no-repeat;
+}
+#page_mapinfo .comment .btn-bar .btn.btn-del {
+  background: transparent url('../images/icons/delete.svg') no-repeat;
+}
+#page_mapinfo .comment .btn-bar .btn.btn-report {
+  background: transparent url('../images/icons/report.svg') no-repeat;
+}
 #page_mapinfo .comment:after {
   content: '';
   border: 1px dashed #E5E5E5;
@@ -1193,8 +1202,18 @@ html.android .label-switch input[type="checkbox"] + .checkbox:before {
   height: 26px;
   background: red;
   margin-left: -40px;
-  margin-right: 10px;
+  margin-right: 6px;
+  margin-bottom: -6px;
   content: '';
+}
+#page_maplist .num-status.num-like:before {
+  background: transparent url('../images/icons/heart_small.svg') no-repeat;
+}
+#page_maplist .num-status.num-map:before {
+  background: transparent url('../images/icons/map_blue.svg') no-repeat;
+}
+#page_maplist .num-status.num-checkin:before {
+  background: transparent url('../images/icons/checkin.svg') no-repeat;
 }
 #page_role > .scroll {
   border-radius: 8px;
@@ -1457,12 +1476,8 @@ html.android .label-switch input[type="checkbox"] + .checkbox:before {
   left: 0;
   width: 80px;
   height: 80px;
-  font-size: 40px;
-  font-weight: bold;
-  text-align: center;
-  line-height: 70px;
-  color: #000000;
   z-index: 1;
+  background: transparent url('../images/icons/close_black.svg') no-repeat;
 }
 #modal-address .scroll {
   position: absolute;
@@ -1479,14 +1494,15 @@ html.android .label-switch input[type="checkbox"] + .checkbox:before {
   width: 80px;
   height: 80px;
   z-index: 1;
-  font-size: 30px;
-  font-weight: bold;
-  text-align: center;
-  line-height: 70px;
-  color: #000000;
 }
 #modal-address .btn_edit {
   right: 80px;
+  background: transparent url('../images/icons/pencil_black.svg') no-repeat 50% 50%;
+  background-size: 40px;
+}
+#modal-address .btn_use {
+  background: transparent url('../images/icons/pin.svg') no-repeat 50% 50%;
+  background-size: 40px;
 }
 #modal-address .top-content {
   margin-left: 20px;
@@ -1500,10 +1516,11 @@ html.android .label-switch input[type="checkbox"] + .checkbox:before {
 #modal-address .map-name:before {
   margin-left: -50px;
   margin-right: 10px;
+  margin-bottom: -8px;
   display: inline-block;
   width: 40px;
   height: 40px;
-  background: red;
+  background: transparent url('../images/icons/map.svg') no-repeat;
   content: '';
 }
 #modal-address .addr-box {
@@ -1549,12 +1566,22 @@ html.android .label-switch input[type="checkbox"] + .checkbox:before {
 }
 #modal-address .num-status:before {
   display: inline-block;
-  width: 26px;
-  height: 26px;
+  width: 34px;
+  height: 34px;
   background: red;
   margin-left: -40px;
   margin-right: 10px;
+  margin-bottom: -10px;
   content: '';
+}
+#modal-address .num-status.num-like:before {
+  background: transparent url('../images/icons/heart_small.svg') no-repeat;
+}
+#modal-address .num-status.num-map:before {
+  background: transparent url('../images/icons/map_blue.svg') no-repeat;
+}
+#modal-address .num-status.num-checkin:before {
+  background: transparent url('../images/icons/checkin.svg') no-repeat;
 }
 #modal-address .tag-box {
   margin: 34px 20px 0 20px;
@@ -1646,13 +1673,19 @@ html.android .label-switch input[type="checkbox"] + .checkbox:before {
   height: 36px;
   margin-left: -30px;
   margin-right: 10px;
-  margin-bottom: -2px;
+  margin-bottom: -4px;
   background: red;
   display: inline-block;
   content: '';
 }
 #modal-address .hot-box.first {
   margin-right: 20px;
+}
+#modal-address .hot-box.praise-num:before {
+  background: url("../images/icons/like.svg") no-repeat;
+}
+#modal-address .hot-box.comment-num:before {
+  background: url("../images/icons/pencil_blue.svg") no-repeat;
 }
 #modal-address .comment-box {
   margin-top: 20px;
@@ -1722,6 +1755,15 @@ html.android .label-switch input[type="checkbox"] + .checkbox:before {
   height: 40px;
   float: right;
   margin-left: 40px;
+}
+#modal-address .comment .btn-bar .btn.btn-like {
+  background: transparent url('../images/icons/like.svg') no-repeat;
+}
+#modal-address .comment .btn-bar .btn.btn-del {
+  background: transparent url('../images/icons/delete.svg') no-repeat;
+}
+#modal-address .comment .btn-bar .btn.btn-report {
+  background: transparent url('../images/icons/report.svg') no-repeat;
 }
 #modal-address .comment:after {
   content: '';
@@ -1880,11 +1922,8 @@ html.android .label-switch input[type="checkbox"] + .checkbox:before {
   left: 0;
   width: 70px;
   height: 70px;
-  font-size: 40px;
-  font-weight: bold;
-  text-align: center;
-  line-height: 70px;
-  color: #000000;
+  background: transparent url('../images/icons/back_black.svg') no-repeat 50% 50%;
+  background-size: 40px;
   z-index: 1;
 }
 #modal-add-addr-info .title {

@@ -18,12 +18,13 @@
     left: 0;
     width: 80px;
     height: 80px;
-    font-size: 40px;
-    font-weight: bold;
-    text-align: center;
-    line-height: 70px;
-    color: #000000;
+    //font-size: 40px;
+    //font-weight: bold;
+    //text-align: center;
+    //line-height: 70px;
+    //color: #000000;
     z-index: 1;
+    background: transparent url('../images/icons/close_black.svg') no-repeat;
   }
 
   .scroll {
@@ -41,14 +42,21 @@
     width: 80px;
     height: 80px;
     z-index: 1;
-    font-size: 30px;
-    font-weight: bold;
-    text-align: center;
-    line-height: 70px;
-    color: #000000;
+
+    //font-size: 30px;
+    //font-weight: bold;
+    //text-align: center;
+    //line-height: 70px;
+    //color: #000000;
   }
   .btn_edit {
     right: 80px;
+    background: transparent url('../images/icons/pencil_black.svg') no-repeat 50% 50%;
+    background-size: 40px;
+  }
+  .btn_use {
+    background: transparent url('../images/icons/pin.svg') no-repeat 50% 50%;
+    background-size: 40px;
   }
   .top-content {
     margin-left: 20px;
@@ -61,10 +69,11 @@
     &:before {
       margin-left: -50px;
       margin-right: 10px;
+      margin-bottom: -8px;
       display: inline-block;
       width: 40px;
       height: 40px;
-      background: red;
+      background: transparent url('../images/icons/map.svg') no-repeat;
       content: '';
     }
   }
@@ -110,12 +119,22 @@
     display: inline-block;
     &:before {
       display: inline-block;
-      width: 26px;
-      height: 26px;
+      width: 34px;
+      height: 34px;
       background: red;
       margin-left: -40px;
       margin-right: 10px;
+      margin-bottom: -10px;
       content: '';
+    }
+    &.num-like:before {
+      background: transparent url('../images/icons/heart_small.svg') no-repeat;
+    }
+    &.num-map:before {
+      background: transparent url('../images/icons/map_blue.svg') no-repeat;
+    }
+    &.num-checkin:before {
+      background: transparent url('../images/icons/checkin.svg') no-repeat;
     }
   }
   .tag-box {
@@ -207,7 +226,7 @@
       height: 36px;
       margin-left: -30px;
       margin-right: 10px;
-      margin-bottom: -2px;
+      margin-bottom: -4px;
       background: red;
       display: inline-block;
       content: '';
@@ -215,9 +234,15 @@
     &.first {
       margin-right: 20px;
     }
+    &.praise-num:before {
+      background: url("../images/icons/like.svg") no-repeat;
+    }
+    &.comment-num:before {
+      background: url("../images/icons/pencil_blue.svg") no-repeat;
+    }
   }
 
-  .comment-box{
+  .comment-box {
     margin-top: 20px;
     margin-left: 20px;
     margin-right: 20px;
@@ -276,29 +301,38 @@
       font-size: 28px;
       float: left;
     }
-    .btn-bar{
+    .btn-bar {
       width: 240px;
       height: 50px;
       margin-top: 20px;
       margin-right: 40px;
       //background: blue;
       float: right;
-      .btn{
+      .btn {
         background: red;
         width: 40px;
         height: 40px;
         float: right;
         margin-left: 40px;
+        &.btn-like {
+          background: transparent url('../images/icons/like.svg') no-repeat;
+        }
+        &.btn-del {
+          background: transparent url('../images/icons/delete.svg') no-repeat;
+        }
+        &.btn-report {
+          background: transparent url('../images/icons/report.svg') no-repeat;
+        }
       }
     }
-    &:after{
+    &:after {
       content: '';
       border: 1px dashed #E5E5E5;
       margin-right: 30px;
       margin-left: 30px;
     }
   }
-  .prompt{
+  .prompt {
     font-size: 28px;
     color: #A39B9B;
     text-align: center;

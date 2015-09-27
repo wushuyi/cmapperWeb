@@ -13,7 +13,7 @@
     height: 80px;
     background: #4A90E2 url('../images/icons/close_white.svg') no-repeat 50% 50%;
     float: left;
-    border-right:1px dashed #FFFFFF;
+    border-right: 1px dashed #FFFFFF;
     //border: 1px solid #979797;
     //border-bottom-right-radius: 8px;
     //font-size: 30px;
@@ -43,7 +43,7 @@
     border-bottom-left-radius: 8px;
     color: #000000;
     text-indent: 40px;
-    &:before{
+    &:before {
       width: 40px;
       height: 40px;
       margin-left: -30px;
@@ -54,14 +54,14 @@
       content: '';
     }
   }
-  .maplist-tab{
+  .maplist-tab {
     width: 100%;
     height: 40px;
     margin-top: 26px;
     margin-bottom: 26px;
     text-align: center;
   }
-  .maplist-tab li{
+  .maplist-tab li {
     width: 40px;
     height: 40px;
     border-radius: 20px;
@@ -70,14 +70,13 @@
     margin-left: 10px;
     margin-right: 10px;
     display: inline-block;
-    &.active{
+    &.active {
       background: #4A90E2;
     }
   }
-  .address-list{
+  .address-list {
     padding-bottom: 30px;
   }
-
 
   .addr-box {
     border-radius: 8px;
@@ -131,8 +130,18 @@
       height: 26px;
       background: red;
       margin-left: -40px;
-      margin-right: 10px;
+      margin-right: 6px;
+      margin-bottom: -6px;
       content: '';
+    }
+    &.num-like:before {
+      background: transparent url('../images/icons/heart_small.svg') no-repeat;
+    }
+    &.num-map:before {
+      background: transparent url('../images/icons/map_blue.svg') no-repeat;
+    }
+    &.num-checkin:before {
+      background: transparent url('../images/icons/checkin.svg') no-repeat;
     }
   }
 }

@@ -17,21 +17,13 @@
     <meta name="Copyright" content="wushuyi"/>
     <!-- 移动端视图 -->
     <meta name="viewport" content="width=640,target-densitydpi=device-dpi,user-scalable=no"/>
-    <!-- 页面标题图标 -->
-    <!--<link rel="shortcut icon" href="favicon.ico" />-->
-    <!-- css头部加载 有助于 浏览器 渲染 -->
-    <!--<link rel="stylesheet" href="assets/css/reset.css"/>-->
-    <!--<link rel="stylesheet" href="assets/libs/Swiper/3.1.2/css/swiper.css"/>-->
-    <!-- css 重置 -->
 
-    <!-- modernizr 用于处理 各浏览器 兼容 因为要 处理css样式兼容 所以 头部加载 -->
-    <!--<script src="assets/libs/modernizr/2.8.3/modernizr.min.js"></script>-->
-    <!--<script src="assets/libs/holder/2.8.2/holder.min.js"></script>-->
     <link rel="stylesheet" href="./build/build.css"/>
     <link rel="stylesheet" href="assets/css/style.css?v=1"/>
     <script src="./jspm_packages/system.src.js"></script>
     <script src="./system.config.js"></script>
-    <script src="./cache/cache.js"></script>
+    <script src="./build/build.js"></script>
+    <!--<script src="./cache/cache.js"></script>-->
 </head>
 
 <body>
@@ -653,9 +645,8 @@
                                         <div class="avatar"></div>
                                         <div class="msg">评论这是一条评论它评论评论这是一条评论它评论评论这是一条评论它评论</div>
                                         <div class="btn-bar">
-                                            <div class="btn"></div>
-                                            <div class="btn"></div>
-                                            <div class="btn"></div>
+                                            <div class="btn btn-report"></div>
+                                            <div class="btn btn-like"></div>
                                         </div>
                                     </div>
                                 </li>
@@ -664,9 +655,9 @@
                                         <div class="avatar"></div>
                                         <div class="msg">评论这是一条评论它评论评论这是一条评论它评论评论这是一条评论它评论</div>
                                         <div class="btn-bar">
-                                            <div class="btn"></div>
-                                            <div class="btn"></div>
-                                            <div class="btn"></div>
+                                            <div class="btn btn-del"></div>
+                                            <div class="btn btn-report"></div>
+                                            <div class="btn btn-like"></div>
                                         </div>
                                     </div>
                                 </li>
@@ -675,9 +666,9 @@
                                         <div class="avatar"></div>
                                         <div class="msg">评论这是一条评论它评论评论这是一条评论它评论评论这是一条评论它评论</div>
                                         <div class="btn-bar">
-                                            <div class="btn"></div>
-                                            <div class="btn"></div>
-                                            <div class="btn"></div>
+                                            <div class="btn btn-del"></div>
+                                            <div class="btn btn-report"></div>
+                                            <div class="btn btn-like"></div>
                                         </div>
                                     </div>
                                 </li>
@@ -686,9 +677,9 @@
                                         <div class="avatar"></div>
                                         <div class="msg">评论这是一条评论它评论评论这是一条评论它评论评论这是一条评论它评论</div>
                                         <div class="btn-bar">
-                                            <div class="btn"></div>
-                                            <div class="btn"></div>
-                                            <div class="btn"></div>
+                                            <div class="btn btn-del"></div>
+                                            <div class="btn btn-report"></div>
+                                            <div class="btn btn-like"></div>
                                         </div>
                                     </div>
                                 </li>
@@ -697,9 +688,31 @@
                                         <div class="avatar"></div>
                                         <div class="msg">评论这是一条评论它评论评论这是一条评论它评论评论这是一条评论它评论</div>
                                         <div class="btn-bar">
-                                            <div class="btn"></div>
-                                            <div class="btn"></div>
-                                            <div class="btn"></div>
+                                            <div class="btn btn-del"></div>
+                                            <div class="btn btn-report"></div>
+                                            <div class="btn btn-like"></div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="comment clearfix">
+                                        <div class="avatar"></div>
+                                        <div class="msg">评论这是一条评论它评论评论这是一条评论它评论评论这是一条评论它评论</div>
+                                        <div class="btn-bar">
+                                            <div class="btn btn-del"></div>
+                                            <div class="btn btn-report"></div>
+                                            <div class="btn btn-like"></div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="comment clearfix">
+                                        <div class="avatar"></div>
+                                        <div class="msg">评论这是一条评论它评论评论这是一条评论它评论评论这是一条评论它评论</div>
+                                        <div class="btn-bar">
+                                            <div class="btn btn-del"></div>
+                                            <div class="btn btn-report"></div>
+                                            <div class="btn btn-like"></div>
                                         </div>
                                     </div>
                                 </li>
@@ -732,98 +745,98 @@
                                             <span class="addr-name">地点名称地点名称地点名称</span>
                                             <ul class="clearfix num-status-box">
                                                 <li>
-                                                    <div class="num-status">8888</div>
+                                                    <div class="num-status num-checkin">8888</div>
                                                 </li>
                                                 <li>
-                                                    <div class="num-status">8888</div>
+                                                    <div class="num-status num-map">8888</div>
                                                 </li>
                                                 <li>
-                                                    <div class="num-status">8888</div>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="addr-box clearfix">
-                                            <div class="addr-img"></div>
-                                            <span class="addr-name">地点名称地点名称地点名称</span>
-                                            <ul class="clearfix num-status-box">
-                                                <li>
-                                                    <div class="num-status">8888</div>
-                                                </li>
-                                                <li>
-                                                    <div class="num-status">8888</div>
-                                                </li>
-                                                <li>
-                                                    <div class="num-status">8888</div>
+                                                    <div class="num-status num-like">8888</div>
                                                 </li>
                                             </ul>
                                         </div>
                                     </li>
                                     <li>
-                                        <div class="addr-box clearfix">
+                                        <div class="addr-box clearfix" data-router="/modal/address/123">
                                             <div class="addr-img"></div>
                                             <span class="addr-name">地点名称地点名称地点名称</span>
                                             <ul class="clearfix num-status-box">
                                                 <li>
-                                                    <div class="num-status">8888</div>
+                                                    <div class="num-status num-checkin">8888</div>
                                                 </li>
                                                 <li>
-                                                    <div class="num-status">8888</div>
+                                                    <div class="num-status num-map">8888</div>
                                                 </li>
                                                 <li>
-                                                    <div class="num-status">8888</div>
+                                                    <div class="num-status num-like">8888</div>
                                                 </li>
                                             </ul>
                                         </div>
                                     </li>
                                     <li>
-                                        <div class="addr-box clearfix">
+                                        <div class="addr-box clearfix" data-router="/modal/address/123">
                                             <div class="addr-img"></div>
                                             <span class="addr-name">地点名称地点名称地点名称</span>
                                             <ul class="clearfix num-status-box">
                                                 <li>
-                                                    <div class="num-status">8888</div>
+                                                    <div class="num-status num-checkin">8888</div>
                                                 </li>
                                                 <li>
-                                                    <div class="num-status">8888</div>
+                                                    <div class="num-status num-map">8888</div>
                                                 </li>
                                                 <li>
-                                                    <div class="num-status">8888</div>
+                                                    <div class="num-status num-like">8888</div>
                                                 </li>
                                             </ul>
                                         </div>
                                     </li>
                                     <li>
-                                        <div class="addr-box clearfix">
+                                        <div class="addr-box clearfix" data-router="/modal/address/123">
                                             <div class="addr-img"></div>
                                             <span class="addr-name">地点名称地点名称地点名称</span>
                                             <ul class="clearfix num-status-box">
                                                 <li>
-                                                    <div class="num-status">8888</div>
+                                                    <div class="num-status num-checkin">8888</div>
                                                 </li>
                                                 <li>
-                                                    <div class="num-status">8888</div>
+                                                    <div class="num-status num-map">8888</div>
                                                 </li>
                                                 <li>
-                                                    <div class="num-status">8888</div>
+                                                    <div class="num-status num-like">8888</div>
                                                 </li>
                                             </ul>
                                         </div>
                                     </li>
                                     <li>
-                                        <div class="addr-box clearfix">
+                                        <div class="addr-box clearfix" data-router="/modal/address/123">
                                             <div class="addr-img"></div>
                                             <span class="addr-name">地点名称地点名称地点名称</span>
                                             <ul class="clearfix num-status-box">
                                                 <li>
-                                                    <div class="num-status">8888</div>
+                                                    <div class="num-status num-checkin">8888</div>
                                                 </li>
                                                 <li>
-                                                    <div class="num-status">8888</div>
+                                                    <div class="num-status num-map">8888</div>
                                                 </li>
                                                 <li>
-                                                    <div class="num-status">8888</div>
+                                                    <div class="num-status num-like">8888</div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="addr-box clearfix" data-router="/modal/address/123">
+                                            <div class="addr-img"></div>
+                                            <span class="addr-name">地点名称地点名称地点名称</span>
+                                            <ul class="clearfix num-status-box">
+                                                <li>
+                                                    <div class="num-status num-checkin">8888</div>
+                                                </li>
+                                                <li>
+                                                    <div class="num-status num-map">8888</div>
+                                                </li>
+                                                <li>
+                                                    <div class="num-status num-like">8888</div>
                                                 </li>
                                             </ul>
                                         </div>
@@ -1175,9 +1188,9 @@
         </div>
         <div class="modal" id="modal-address">
             <div class="top-bar">
-                <div class="close">X</div>
-                <div class="btn_edit" data-router="/modal/add-addr-info/null">编辑</div>
-                <div class="btn_use">添加</div>
+                <div class="close"></div>
+                <div class="btn_edit" data-router="/modal/add-addr-info/null"></div>
+                <div class="btn_use"></div>
             </div>
             <div class="scroll">
                 <div>
@@ -1189,13 +1202,13 @@
                             <span class="addr-name">地点名称地点名称地点名称</span>
                             <ul class="clearfix num-status-box">
                                 <li>
-                                    <div class="num-status">8888</div>
+                                    <div class="num-status num-checkin">8888</div>
                                 </li>
                                 <li>
-                                    <div class="num-status">8888</div>
+                                    <div class="num-status num-map">8888</div>
                                 </li>
                                 <li>
-                                    <div class="num-status">8888</div>
+                                    <div class="num-status num-like">8888</div>
                                 </li>
                             </ul>
                         </div>
@@ -1254,9 +1267,8 @@
                                     <div class="avatar"></div>
                                     <div class="msg">评论这是一条评论它评论评论这是一条评论它评论评论这是一条评论它评论</div>
                                     <div class="btn-bar">
-                                        <div class="btn"></div>
-                                        <div class="btn"></div>
-                                        <div class="btn"></div>
+                                        <div class="btn btn-report"></div>
+                                        <div class="btn btn-like"></div>
                                     </div>
                                 </div>
                             </li>
@@ -1265,9 +1277,9 @@
                                     <div class="avatar"></div>
                                     <div class="msg">评论这是一条评论它评论评论这是一条评论它评论评论这是一条评论它评论</div>
                                     <div class="btn-bar">
-                                        <div class="btn"></div>
-                                        <div class="btn"></div>
-                                        <div class="btn"></div>
+                                        <div class="btn btn-del"></div>
+                                        <div class="btn btn-report"></div>
+                                        <div class="btn btn-like"></div>
                                     </div>
                                 </div>
                             </li>
@@ -1276,9 +1288,9 @@
                                     <div class="avatar"></div>
                                     <div class="msg">评论这是一条评论它评论评论这是一条评论它评论评论这是一条评论它评论</div>
                                     <div class="btn-bar">
-                                        <div class="btn"></div>
-                                        <div class="btn"></div>
-                                        <div class="btn"></div>
+                                        <div class="btn btn-del"></div>
+                                        <div class="btn btn-report"></div>
+                                        <div class="btn btn-like"></div>
                                     </div>
                                 </div>
                             </li>
@@ -1287,9 +1299,9 @@
                                     <div class="avatar"></div>
                                     <div class="msg">评论这是一条评论它评论评论这是一条评论它评论评论这是一条评论它评论</div>
                                     <div class="btn-bar">
-                                        <div class="btn"></div>
-                                        <div class="btn"></div>
-                                        <div class="btn"></div>
+                                        <div class="btn btn-del"></div>
+                                        <div class="btn btn-report"></div>
+                                        <div class="btn btn-like"></div>
                                     </div>
                                 </div>
                             </li>
@@ -1298,9 +1310,31 @@
                                     <div class="avatar"></div>
                                     <div class="msg">评论这是一条评论它评论评论这是一条评论它评论评论这是一条评论它评论</div>
                                     <div class="btn-bar">
-                                        <div class="btn"></div>
-                                        <div class="btn"></div>
-                                        <div class="btn"></div>
+                                        <div class="btn btn-del"></div>
+                                        <div class="btn btn-report"></div>
+                                        <div class="btn btn-like"></div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="comment clearfix">
+                                    <div class="avatar"></div>
+                                    <div class="msg">评论这是一条评论它评论评论这是一条评论它评论评论这是一条评论它评论</div>
+                                    <div class="btn-bar">
+                                        <div class="btn btn-del"></div>
+                                        <div class="btn btn-report"></div>
+                                        <div class="btn btn-like"></div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="comment clearfix">
+                                    <div class="avatar"></div>
+                                    <div class="msg">评论这是一条评论它评论评论这是一条评论它评论评论这是一条评论它评论</div>
+                                    <div class="btn-bar">
+                                        <div class="btn btn-del"></div>
+                                        <div class="btn btn-report"></div>
+                                        <div class="btn btn-like"></div>
                                     </div>
                                 </div>
                             </li>
@@ -1313,7 +1347,7 @@
         </div>
         <div class="modal" id="modal-select-map">
             <div class="top-bar">
-                <div class="close"><</div>
+                <div class="close"></div>
                 <div class="title">选择地图</div>
             </div>
             <div class="select-box">
@@ -1408,7 +1442,7 @@
         </div>
         <div class="modal" id="modal-add-addr-info">
             <div class="top-bar">
-                <div class="close"><</div>
+                <div class="close"></div>
                 <div class="title">添加地点信息</div>
                 <div class="save-btn">保存</div>
             </div>
@@ -1471,7 +1505,7 @@
         </div>
         <div class="modal" id="modal-create-map">
             <div class="top-bar">
-                <div class="close"><</div>
+                <div class="close"></div>
                 <div class="title">创建地图</div>
                 <div class="save-btn">保存</div>
             </div>
