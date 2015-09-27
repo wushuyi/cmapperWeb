@@ -499,12 +499,9 @@ html.android .label-switch input[type="checkbox"] + .checkbox:before {
 .nav .height-control {
   width: 100px;
   height: 100px;
-  background: #D8D8D8;
-  margin-top: 8px;
+  margin-top: 20px;
   margin-right: 10px;
-  font-size: 14px;
-  text-align: center;
-  line-height: 100px;
+  background: url('../images/icons/move.svg') no-repeat;
 }
 .content {
   position: absolute;
