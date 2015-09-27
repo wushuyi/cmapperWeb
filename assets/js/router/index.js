@@ -11,6 +11,7 @@ import {default as register_maplist} from './maplist.js'
 import {default as register_modal} from './modal.js'
 import {default as register_role} from './role.js'
 import {default as  register_follow} from './follow.js'
+import {default as  register_addaddr} from './addaddr.js'
 import env from '../utils/env.js'
 import {routeHistory, getRouter, isModal} from './utils.js'
 
@@ -33,6 +34,7 @@ function register_all() {
     register_modal(router);
     register_role(router);
     register_follow(router);
+    register_addaddr(router);
 }
 
 export default register_all;

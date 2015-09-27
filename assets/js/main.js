@@ -15,4 +15,6 @@ $('#nav, .prevent_touch').on('touchstart', (evt) => {
 register_all();
 router.init('/gftj');
 
+
+
 window.env = env;

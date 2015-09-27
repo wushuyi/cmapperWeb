@@ -21,7 +21,7 @@
     <link rel="stylesheet" href="./build/build.css"/>
     <link rel="stylesheet" href="assets/css/style.css?v=1"/>
     <script src="./jspm_packages/system.src.js"></script>
-    <script src="./system.config.js"></script>
+    <!--<script src="./system.config.js"></script>-->
     <script src="./build/build.js"></script>
     <!--<script src="./cache/cache.js"></script>-->
 </head>
@@ -589,6 +589,135 @@
                                         <div class="tit-box">
                                             <h3 class="tit">地图标题</h3>
                                         </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="page_add_addr" class="page cached">
+                    <div class="scroll">
+                        <div class="page-title">附近现有地点:</div>
+                        <div class="address-list">
+                            <ul class="horizontal-list">
+                                <li>
+                                    <div class="addr-box clearfix" >
+                                        <div class="addr-img"></div>
+                                        <span class="addr-name">地点名称地点名称地点名称</span>
+                                        <ul class="clearfix num-status-box">
+                                            <li>
+                                                <div class="num-status num-checkin">8888</div>
+                                            </li>
+                                            <li>
+                                                <div class="num-status num-map">8888</div>
+                                            </li>
+                                            <li>
+                                                <div class="num-status num-like">8888</div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="addr-box clearfix" >
+                                        <div class="addr-img"></div>
+                                        <span class="addr-name">地点名称地点名称地点名称</span>
+                                        <ul class="clearfix num-status-box">
+                                            <li>
+                                                <div class="num-status num-checkin">8888</div>
+                                            </li>
+                                            <li>
+                                                <div class="num-status num-map">8888</div>
+                                            </li>
+                                            <li>
+                                                <div class="num-status num-like">8888</div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="addr-box clearfix" >
+                                        <div class="addr-img"></div>
+                                        <span class="addr-name">地点名称地点名称地点名称</span>
+                                        <ul class="clearfix num-status-box">
+                                            <li>
+                                                <div class="num-status num-checkin">8888</div>
+                                            </li>
+                                            <li>
+                                                <div class="num-status num-map">8888</div>
+                                            </li>
+                                            <li>
+                                                <div class="num-status num-like">8888</div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="addr-box clearfix" >
+                                        <div class="addr-img"></div>
+                                        <span class="addr-name">地点名称地点名称地点名称</span>
+                                        <ul class="clearfix num-status-box">
+                                            <li>
+                                                <div class="num-status num-checkin">8888</div>
+                                            </li>
+                                            <li>
+                                                <div class="num-status num-map">8888</div>
+                                            </li>
+                                            <li>
+                                                <div class="num-status num-like">8888</div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="addr-box clearfix" >
+                                        <div class="addr-img"></div>
+                                        <span class="addr-name">地点名称地点名称地点名称</span>
+                                        <ul class="clearfix num-status-box">
+                                            <li>
+                                                <div class="num-status num-checkin">8888</div>
+                                            </li>
+                                            <li>
+                                                <div class="num-status num-map">8888</div>
+                                            </li>
+                                            <li>
+                                                <div class="num-status num-like">8888</div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="addr-box clearfix" >
+                                        <div class="addr-img"></div>
+                                        <span class="addr-name">地点名称地点名称地点名称</span>
+                                        <ul class="clearfix num-status-box">
+                                            <li>
+                                                <div class="num-status num-checkin">8888</div>
+                                            </li>
+                                            <li>
+                                                <div class="num-status num-map">8888</div>
+                                            </li>
+                                            <li>
+                                                <div class="num-status num-like">8888</div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="addr-box clearfix" >
+                                        <div class="addr-img"></div>
+                                        <span class="addr-name">地点名称地点名称地点名称</span>
+                                        <ul class="clearfix num-status-box">
+                                            <li>
+                                                <div class="num-status num-checkin">8888</div>
+                                            </li>
+                                            <li>
+                                                <div class="num-status num-map">8888</div>
+                                            </li>
+                                            <li>
+                                                <div class="num-status num-like">8888</div>
+                                            </li>
+                                        </ul>
                                     </div>
                                 </li>
                             </ul>
@@ -1190,7 +1319,7 @@
             <div class="top-bar">
                 <div class="close"></div>
                 <div class="btn_edit" data-router="/modal/add-addr-info/null"></div>
-                <div class="btn_use"></div>
+                <div class="btn_use" data-router="/modal/select-map/null"></div>
             </div>
             <div class="scroll">
                 <div>
@@ -1356,12 +1485,12 @@
             <div class="list-box scroll">
                 <ul class="map-list clearfix">
                     <li>
-                        <div class="map-box">
+                        <div class="map-box" data-router="/modal/create-map">
 
                         </div>
                     </li>
                     <li>
-                        <div class="map-box">
+                        <div class="map-box" data-router="/modal/add-addr-info/null">
                             <div class="tit-box">
                                 <h3 class="tit">地图标题</h3>
                             </div>
@@ -1507,7 +1636,7 @@
             <div class="top-bar">
                 <div class="close"></div>
                 <div class="title">创建地图</div>
-                <div class="save-btn">保存</div>
+                <div class="save-btn" data-router="/modal/add-addr-info/null">保存</div>
             </div>
             <div class="scroll">
                 <div>
@@ -1561,22 +1690,11 @@
         </div>
     </div>
 </div>
-<!--<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCSqDuHCUNDiT_xUMJNx6wI-67vzrXSHhM&ibraries=geometry"></script>-->
-<!--<script src="assets/babel_helpers.min.js"></script>-->
-<!--<script src="assets/libs/systemjs/0.18.4/system.js"></script>-->
-<!--<script src="assets/outfile.js"></script>-->
-<!--<script>-->
-<!--System.import('js/main.js');-->
-<!--</script>-->
-<!--<script src="assets/libs/gmaps.js/0.4.19/gmaps.js"></script>-->
-<!--<script src="assets/js/component/map.js"></script>-->
-
-<!--<script src="assets/libs/systemjs/0.18.17/system-polyfills.src.js"></script>-->
-<!--<script src="assets/libs/systemjs/0.18.17/system.src.js"></script>-->
-<!--<script src="assets/js/systemjs.config.js"></script>-->
-
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCSqDuHCUNDiT_xUMJNx6wI-67vzrXSHhM&ibraries=geometry"></script>
+<script src="./jspm_packages/github/hpneo/gmaps@0.4.19/gmaps.js"></script>
 <script>
     System.import('./assets/js/main.js');
 </script>
+<script src="./assets/js/component/map.js"></script>
 </body>
 </html>

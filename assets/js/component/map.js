@@ -1,8 +1,6 @@
 /**
  * Created by wushuyi on 2015/9/20.
  */
-
-
 var CurrPosition = (function createCurrPosition() {
     function CurrPosition(map) {
         this.center = null;
@@ -72,48 +70,40 @@ var CurrPosition = (function createCurrPosition() {
 
 
 (function () {
+    if (!google) {
+        return false;
+    }
     if (env.gmap) {
         return false;
     }
     var $el = {};
     $el.map = $('#map');
-    env.mainlayout.viewMove(800);
     var map = env.gmap = new GMaps({
         el: $el.map.get(0),
         lat: 31.216425838137024,
         lng: 121.449533700943,
         zoom: 16,
-        //zoomControl: false,
-        //zoomControlOpt: {
-        //    style: 'SMALL',
-        //    position: 'TOP_LEFT'
-        //},
-        //panControl: false,
-        //streetViewControl: false,
-        //mapTypeControl: false,
-        //overviewMapControl: false
+        zoomControl: false,
+        panControl: false,
+        streetViewControl: false,
+        mapTypeControl: false,
+        overviewMapControl: false
     });
+    var $map_popinfo = $('<div id=""></div>');
     var $map_xjdd = $('<div id="map-xjdd"></div>');
-    var $map_dw = $('<div id="map-dw">定位</div>');
-
+    var $map_dw = $('<div id="map-dw"></div>');
+    var $map_add_btn = $('<div id="map_add_btn"></div>');
     google.maps.event.addListenerOnce(map.map, 'idle', function () {
-        //$el.map.append('<div>test</div>>')
-
-
         $el.map.append($map_xjdd);
         $el.map.append($map_dw);
+        $el.map.append($map_popinfo);
+        $el.map.append($map_add_btn);
     });
 
-
-    var $map_ctl = $('<div id="map-ctl"></div>').append($map_xjdd).append($map_dw);
-    $el.map.on('tap', '#map-xjdd', function (evt) {
-        console.log(evt);
-        var $self = $(this);
-        var isActive = $self.hasClass('active');
-        if (!isActive) {
-            $(this).addClass('active');
-            return false;
-        }
+    $map_xjdd.on('tap', function () {
+        env.router.setRoute('/add_addr');
+    });
+    $map_add_btn.on('tap', function (evt) {
         var position = map.getCenter();
         console.log(position);
         map.addMarker({
@@ -124,8 +114,8 @@ var CurrPosition = (function createCurrPosition() {
                 alert('You clicked in this marker');
             }
         });
+        env.router.setRoute('/modal/select-map/null');
     });
-
     var currposition = new CurrPosition(map);
     $el.map.on('tap', '#map-dw', function (evt) {
         GMaps.geolocate({
