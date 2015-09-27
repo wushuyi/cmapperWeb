@@ -32,7 +32,7 @@ class MapInfoPage extends BasePage {
         $el.hotNumBox = $('.hot-num-box');
         $el.commentBox = $('.comment-box');
         super.startPage();
-        iscrolls.content = new iscroll($el.page.get(0));
+        env.mainScroll = iscrolls.content = new iscroll($el.page.get(0));
 
         $el.close.one('tap.mapinfo', function () {
             let list = routeHistory.get('all');

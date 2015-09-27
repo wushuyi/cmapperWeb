@@ -26,7 +26,7 @@ class AddAddrPage extends BasePage {
         $el.map_xjdd = $('#map-xjdd');
         $el.map_add_btn = $('#map_add_btn');
         super.startPage();
-        iscrolls.content = new iscroll($el.page.get(0));
+        env.mainScroll = iscrolls.content = new iscroll($el.page.get(0));
 
         this.onReview = function () {
             iscrolls.content.refresh();

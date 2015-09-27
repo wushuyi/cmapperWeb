@@ -59,7 +59,7 @@ class GftjPage extends BasePage {
         reset_horizontal($el.classify1);
         reset_horizontal($el.classify2);
 
-        iscrolls.content = new iscroll($el.page.get(0));
+        env.mainScroll = iscrolls.content = new iscroll($el.page.get(0));
         iscrolls.topPeople = new iscroll($el.topPeople.get(0), {
             scrollX: true,
             scrollY: false,

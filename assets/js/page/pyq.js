@@ -25,7 +25,7 @@ class PyqPage extends BasePage {
         $el.nav = $('.nav-item[data-router="/pyq"]');
         $el.page = $('#page_pyq');
         super.startPage();
-        iscrolls.content = new iscroll($el.page.get(0));
+        env.mainScroll = iscrolls.content = new iscroll($el.page.get(0));
 
         this.onReview = function () {
             iscrolls.content.refresh();

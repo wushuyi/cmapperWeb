@@ -40,6 +40,10 @@ class PageBase {
     }
 
     initGoolgeMap() {
+        if(env.initGoolgeMap){
+            return false;
+        }
+        env.initGoolgeMap = true;
         setTimeout(function () {
             window.initGMap();
         }, 0);

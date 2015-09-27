@@ -26,7 +26,7 @@ class WdPage extends BasePage {
         $el.nav = $('.nav-item[data-router="/wd"]');
         $el.page = $('#page_wd');
         super.startPage();
-        iscrolls.content = new iscroll($el.page.get(0));
+        env.mainScroll = iscrolls.content = new iscroll($el.page.get(0));
 
         this.onReview = function () {
             iscrolls.content.refresh();

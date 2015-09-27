@@ -22,6 +22,7 @@
       "jquery/jquery": "github:jquery/jquery@^2.1.4",
       "julianshapiro/velocity": "github:julianshapiro/velocity@^1.2.3",
       "lodash/lodash": "github:lodash/lodash@^3.10.1",
+      "matthewhudson/device.js": "github:matthewhudson/device.js@^0.2.7",
       "necolas/normalize.css": "github:necolas/normalize.css@^3.0.3",
       "nolimits4web/Swiper": "github:nolimits4web/Swiper@^3.1.2"
     },

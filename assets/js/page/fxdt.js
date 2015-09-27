@@ -25,7 +25,7 @@ class FxdtPage extends BasePage {
         $el.nav = $('.nav-item[data-router="/fxdt"]');
         $el.page = $('#page_fxdt');
         super.startPage();
-        iscrolls.content = new iscroll($el.page.get(0));
+        env.mainScroll = iscrolls.content = new iscroll($el.page.get(0));
         this.onReview = function () {
             iscrolls.content.refresh();
         };

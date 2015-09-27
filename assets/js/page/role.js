@@ -30,7 +30,7 @@ class RolePage extends BasePage {
             routeHistory.goback();
         });
         super.startPage();
-        iscrolls.content = new iscroll($el.page.get(0));
+        env.mainScroll = iscrolls.content = new iscroll($el.page.get(0));
     }
 
     destroy() {

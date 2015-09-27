@@ -39,7 +39,7 @@ class MapListPage extends BasePage {
         });
         $el.tabArchives.attr('data-router', '/mapinfo/archives/' + options.id);
 
-        iscrolls.content = new iscroll($el.page.get(0));
+        env.mainScroll = iscrolls.content = new iscroll($el.page.get(0));
     }
 
     destroy() {

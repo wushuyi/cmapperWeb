@@ -1,7 +1,9 @@
 /**
  * Created by wushuyi on 2015/9/20.
  */
+
 window.initGMap = function () {
+
     var CurrPosition = (function createCurrPosition() {
         function CurrPosition(map) {
             this.center = null;
@@ -166,6 +168,5 @@ window.initGMap = function () {
         env.mainlayout.on('moveEnd', function () {
             google.maps.event.trigger(env.gmap.map, 'resize');
         });
-    })
-    ();
+    })();
 }

@@ -372,6 +372,11 @@ html.android .label-switch input[type="checkbox"] + .checkbox:before {
   right: 8px;
   bottom: 8px;
   /*background: red;*/
+  -webkit-transform: translateY(0px);
+      -ms-transform: translateY(0px);
+          transform: translateY(0px);
+  -webkit-transition: -webkit-transform 400ms;
+          transition: transform 400ms;
 }
 .prevent_top {
   position: absolute;
