@@ -1,7 +1,7 @@
 /**
  * Created by wushuyi on 2015/9/20.
  */
-window.initGMap = function(){
+window.initGMap = function () {
     var CurrPosition = (function createCurrPosition() {
         function CurrPosition(map) {
             this.center = null;
@@ -81,8 +81,8 @@ window.initGMap = function(){
         $el.map = $('#map');
         var map = env.gmap = new GMaps({
             el: $el.map.get(0),
-            lat: 31.216425838137024,
-            lng: 121.449533700943,
+            lat: 35.710841,
+            lng: 139.735039,
             zoom: 16,
             zoomControl: false,
             panControl: false,
@@ -104,7 +104,9 @@ window.initGMap = function(){
         $map_xjdd.on('tap', function () {
             env.router.setRoute('/add_addr');
         });
-        $map_add_btn.on('tap', function (evt) {
+        $map_add_btn.on('touchstart', function (evt) {
+            evt.preventDefault();
+        }).on('tap', function (evt) {
             var position = map.getCenter();
             console.log(position);
             map.addMarker({
@@ -122,21 +124,22 @@ window.initGMap = function(){
             GMaps.geolocate({
                 success: function (position) {
                     console.log(position);
-                    var position = {
-                        timestamp: 1442740446453,
-                        coords: {
-                            accuracy: 24,
-                            altitude: null,
-                            altitudeAccuracy: null,
-                            heading: null,
-                            latitude: 31.225098552560077,
-                            longitude: 121.4441679418087,
-                            speed: null,
-                        }
-                    };
+                    //var position = {
+                    //    timestamp: 1442740446453,
+                    //    coords: {
+                    //        accuracy: 24,
+                    //        altitude: null,
+                    //        altitudeAccuracy: null,
+                    //        heading: null,
+                    //        latitude: 31.225098552560077,
+                    //        longitude: 121.4441679418087,
+                    //        speed: null,
+                    //    }
+                    //};
                     currposition.setPosition(position);
                 },
                 error: function (error) {
+                    alert('定位失败!');
                     var position = {
                         timestamp: 1442740446453,
                         coords: {
@@ -144,8 +147,8 @@ window.initGMap = function(){
                             altitude: null,
                             altitudeAccuracy: null,
                             heading: null,
-                            latitude: 31.225098552560077,
-                            longitude: 121.4441679418087,
+                            latitude: 35.710841,
+                            longitude: 139.735039,
                             speed: null,
                         }
                     };
