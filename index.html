@@ -17,7 +17,7 @@
     <meta name="Copyright" content="wushuyi"/>
     <!-- 移动端视图 -->
     <meta name="viewport" content="width=640,target-densitydpi=device-dpi,user-scalable=no"/>
-
+    <!--<script src="http://192.168.0.105:8080/target/target-script-min.js#anonymous"></script>-->
     <link rel="stylesheet" href="./build/build.css"/>
     <link rel="stylesheet" href="assets/css/style.css?v=1"/>
     <script src="./local_packages/systemjs/system.js"></script>
@@ -1315,6 +1315,14 @@
                 <div class="title">设定</div>
             </div>
         </div>
+        <div class="modal" id="modal-cropper">
+            <div class="top-bar">
+                <div class="close"></div>
+                <div class="title">裁剪图片</div>
+                <div class="save-btn">保存</div>
+            </div>
+            <div class="cropper-img-box"></div>
+        </div>
         <div class="modal" id="modal-address">
             <div class="top-bar">
                 <div class="close"></div>
@@ -1683,7 +1691,7 @@
                     <div class="input-box">
                         <label class="label">添加封面:</label>
 
-                        <div class="img-file"></div>
+                        <div class="img-file"><input type="file" accept="image/*"/></div>
                     </div>
                 </div>
             </div>

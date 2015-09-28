@@ -46,7 +46,7 @@ class PageBase {
         }
         env.initGoolgeMap = true;
         setTimeout(function () {
-            //initGmap();
+            initGmap();
         }, 0);
     }
 

@@ -1,13 +1,21 @@
-System.register([], function (_export) {
+System.register(['./signal'], function (_export) {
   /**
    * Created by wushuyi on 2015/9/13.
    */
-  "use strict";
+  'use strict';
 
+  var signal;
   return {
-    setters: [],
+    setters: [function (_signal) {
+      signal = _signal.signal;
+    }],
     execute: function () {
-      _export("default", {});
+
+      console.log(signal);
+
+      _export('default', {
+        signal: signal
+      });
     }
   };
 });

@@ -11,10 +11,13 @@
     "dependencies": {
       "Modernizr/Modernizr": "github:Modernizr/Modernizr@2.8.3",
       "Wolfy87/EventEmitter": "github:Olical/EventEmitter@^4.2.11",
+      "blueimp/JavaScript-Canvas-to-Blob": "github:blueimp/JavaScript-Canvas-to-Blob@^2.2.0",
+      "blueimp/JavaScript-Load-Image": "github:blueimp/JavaScript-Load-Image@^1.14.0",
       "clean-css": "npm:clean-css@^3.4.4",
       "commander": "npm:commander@^2.8.1",
       "css": "github:systemjs/plugin-css@^0.1.18",
       "cubiq/iscroll": "github:cubiq/iscroll@^5.1.3",
+      "fengyuanchen/cropper": "github:fengyuanchen/cropper@^0.11.1",
       "flatiron/director": "github:flatiron/director@^1.2.8",
       "hammerjs/hammer.js": "github:hammerjs/hammer.js@^2.0.4",
       "hpneo/gmaps": "github:hpneo/gmaps@^0.4.19",

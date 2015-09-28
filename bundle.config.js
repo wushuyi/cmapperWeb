@@ -3,6 +3,8 @@
  */
 //import 'babel';
 
+//import './assets/js/style'
+
 import 'EventEmitter';
 import 'Modernizr';
 import 'Swiper';
@@ -14,3 +16,6 @@ import 'jquery';
 import 'lodash';
 import 'velocity';
 import 'device';
+import 'canvas2blob';
+import 'loadImage';
+import 'cropper';

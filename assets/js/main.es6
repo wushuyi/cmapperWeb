@@ -1,7 +1,7 @@
 /**
  * Created by wushuyi on 2015/9/13.
  */
-//import './style.js';
+import './style.js';
 import 'Modernizr';
 import 'holder';
 

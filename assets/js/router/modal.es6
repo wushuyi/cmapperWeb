@@ -78,6 +78,19 @@ function register(router) {
         });
     }
 
+    {
+        let route = '/modal/croppe';
+        let page = 'croppe_modal';
+        router.on(route, function () {
+            env[page] = new ModalManage({
+                modal: 'cropper',
+            });
+        });
+        router.on('after', route, function () {
+            env[page].destory();
+            delete env[page];
+        });
+    }
 }
 
 export default register;

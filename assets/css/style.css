@@ -372,11 +372,8 @@ html.android .label-switch input[type="checkbox"] + .checkbox:before {
   right: 8px;
   bottom: 8px;
   /*background: red;*/
-  -webkit-transform: translateY(0px);
-      -ms-transform: translateY(0px);
-          transform: translateY(0px);
-  -webkit-transition: -webkit-transform 400ms;
-          transition: transform 400ms;
+  -webkit-transition: margin-top 400ms;
+          transition: margin-top 400ms;
 }
 .prevent_top {
   position: absolute;
@@ -2179,7 +2176,72 @@ html.android .label-switch input[type="checkbox"] + .checkbox:before {
   height: 200px;
   border-radius: 8px;
   border: 3px dashed #979797;
-  background: #FFFFFF;
+  background-color: #FFFFFF;
+  background-size: 100%;
+  background-repeat: no-repeat;
+  overflow: hidden;
+}
+#modal-create-map .img-file input {
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+}
+#modal-cropper {
+  -webkit-transform: translateY(-100%);
+      -ms-transform: translateY(-100%);
+          transform: translateY(-100%);
+  -webkit-transition: -webkit-transform 400ms;
+          transition: transform 400ms;
+  -webkit-transition-timing-function: ease-out;
+          transition-timing-function: ease-out;
+  border-radius: 8px;
+  overflow: hidden;
+  -webkit-mask-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAA5JREFUeNpiYGBgAAgwAAAEAAGbA+oJAAAAAElFTkSuQmCC);
+}
+#modal-cropper.active {
+  -webkit-transform: translateY(0%);
+      -ms-transform: translateY(0%);
+          transform: translateY(0%);
+}
+#modal-cropper .top-bar {
+  width: 100%;
+  height: 70px;
+  position: relative;
+}
+#modal-cropper .close {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 70px;
+  height: 70px;
+  z-index: 1;
+  background: url('../images/icons/back_black.svg') no-repeat 50% 50%;
+  background-size: 40px;
+}
+#modal-cropper .title {
+  position: absolute;
+  right: 0;
+  width: 100%;
+  height: 70px;
+  font-size: 40px;
+  font-weight: bold;
+  text-align: center;
+  line-height: 70px;
+  color: #000000;
+}
+#modal-cropper .save-btn {
+  position: absolute;
+  right: 0;
+  z-index: 1;
+  font-size: 30px;
+  font-weight: bold;
+  height: 70px;
+  line-height: 70px;
+  width: 100px;
+  text-align: center;
+}
+#modal-cropper .cropper-img-box {
+  height: 100%;
 }
 #map-xjdd,
 #map-dw {

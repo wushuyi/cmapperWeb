@@ -71,7 +71,9 @@ System.register(['jquery', 'lodash', '../utils/jquery.touch', '../component/main
                             return false;
                         }
                         env.initGoolgeMap = true;
-                        setTimeout(function () {}, 0);
+                        setTimeout(function () {
+                            initGmap();
+                        }, 0);
                     }
                 }, {
                     key: 'initRouterEvent',
@@ -161,7 +163,5 @@ System.register(['jquery', 'lodash', '../utils/jquery.touch', '../component/main
         }
     };
 });
-
-//initGmap();
 
 //# sourceMappingURL=base.js.map

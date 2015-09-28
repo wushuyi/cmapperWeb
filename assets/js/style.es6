@@ -3,4 +3,5 @@
  */
 import 'holder';
 import '../css/reset.css!';
-import 'github:nolimits4web/Swiper@3.1.2/dist/css/swiper.css!';
+import 'Swiper/dist/css/swiper.css!';
+import 'cropper/dist/cropper.css!';
