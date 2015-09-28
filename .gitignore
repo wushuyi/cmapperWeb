@@ -45,3 +45,5 @@ Temporary Items
 .apdisk
 .idea
 /jspm_packages
+*.map
+/assets/js/**/*.js

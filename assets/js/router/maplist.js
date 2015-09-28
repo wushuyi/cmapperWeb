@@ -1,29 +1,44 @@
-/**
- * Created by wushuyi on 2015/9/14.
- */
-import {default as MapListPage} from '../page/maplist.js'
-import env from '../utils/env.js'
-import {isModal} from './utils.js'
+System.register(['../page/maplist.js', '../utils/env.js', './utils.js'], function (_export) {
+    /**
+     * Created by wushuyi on 2015/9/14.
+     */
+    'use strict';
 
-function register(router) {
-    let route = 'mapinfo/list/:id';
-    let page = 'mapinfo_list_page';
+    var MapListPage, env, isModal;
 
-    router.on(route, function (id) {
-        if (env[page]) {
-            return false;
-        }
-        env[page] = new MapListPage({
-            id: id,
+    function register(router) {
+        var route = 'mapinfo/list/:id';
+        var page = 'mapinfo_list_page';
+
+        router.on(route, function (id) {
+            if (env[page]) {
+                return false;
+            }
+            env[page] = new MapListPage({
+                id: id
+            });
         });
-    });
-    router.on('after', route, function () {
-        if(isModal()){
-            return false;
-        }
-        env[page].destroy();
-        delete env[page];
-    });
-}
+        router.on('after', route, function () {
+            if (isModal()) {
+                return false;
+            }
+            env[page].destroy();
+            delete env[page];
+        });
+    }
 
-export default register;
+    return {
+        setters: [function (_pageMaplistJs) {
+            MapListPage = _pageMaplistJs['default'];
+        }, function (_utilsEnvJs) {
+            env = _utilsEnvJs['default'];
+        }, function (_utilsJs) {
+            isModal = _utilsJs.isModal;
+        }],
+        execute: function () {
+            _export('default', register);
+        }
+    };
+});
+
+//# sourceMappingURL=maplist.js.map

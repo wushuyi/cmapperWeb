@@ -1,78 +1,14 @@
-/**
- * Created by wushuyi on 2015/9/20.
- */
+System.register(['jquery'], function (_export) {
+    /**
+     * Created by wushuyi on 2015/9/20.
+     */
+    'use strict';
 
-window.initGMap = function () {
+    var $, CurrPosition;
 
-    var CurrPosition = (function createCurrPosition() {
-        function CurrPosition(map) {
-            this.center = null;
-            this.outside = null;
-            this.map = map;
-        }
+    _export('default', initGmap);
 
-        p = CurrPosition.prototype;
-
-        p.checkDraw = function () {
-            return this.center && this.outside;
-        };
-
-        p.getRadius = function () {
-            console.log(this.map.getZoom());
-            //return 18 / this.map.getZoom() * this.defaultRadius;
-            return Math.pow(2, 20 - this.map.getZoom());
-        };
-
-        p.refreshPosition = function (position) {
-            this.center.setCenter({
-                lat: position.coords.latitude,
-                lng: position.coords.longitude
-            });
-            this.outside.setCenter({
-                lat: position.coords.latitude,
-                lng: position.coords.longitude
-            });
-            this.outside.setRadius(position.coords.accuracy);
-        };
-
-        p.drawPosition = function (position) {
-            var self = this;
-            this.map.on('zoom_changed', function () {
-                self.center.setRadius(self.getRadius());
-            });
-            this.center = this.map.drawCircle({
-                lat: position.coords.latitude,
-                lng: position.coords.longitude,
-                radius: self.getRadius(),
-                fillColor: '#0091FF',
-                fillOpacity: 0.8,
-                strokeColor: '#FFFFFF',
-                strokeWeight: 2,
-            });
-            this.outside = this.map.drawCircle({
-                lat: position.coords.latitude,
-                lng: position.coords.longitude,
-                radius: position.coords.accuracy,
-                fillColor: '#0091FF',
-                fillOpacity: 0.2,
-                strokeColor: '#9DDAFB',
-            });
-        };
-
-        p.setPosition = function (position) {
-            this.checkDraw() ?
-                this.refreshPosition(position) :
-                this.drawPosition(position);
-
-            this.map.setCenter(position.coords.latitude, position.coords.longitude);
-            this.map.setZoom(18);
-        };
-
-        return CurrPosition;
-    })();
-
-
-    (function () {
+    function initGmap() {
         if (!google) {
             return false;
         }
@@ -115,7 +51,7 @@ window.initGMap = function () {
                 lat: position.H,
                 lng: position.L,
                 title: 'Marker',
-                click: function (e) {
+                click: function click(e) {
                     alert('You clicked in this marker');
                 }
             });
@@ -124,7 +60,7 @@ window.initGMap = function () {
         var currposition = new CurrPosition(map);
         $el.map.on('tap', '#map-dw', function (evt) {
             GMaps.geolocate({
-                success: function (position) {
+                success: function success(position) {
                     console.log(position);
                     //var position = {
                     //    timestamp: 1442740446453,
@@ -140,7 +76,7 @@ window.initGMap = function () {
                     //};
                     currposition.setPosition(position);
                 },
-                error: function (error) {
+                error: function error(_error) {
                     alert('定位失败!');
                     var position = {
                         timestamp: 1442740446453,
@@ -151,22 +87,96 @@ window.initGMap = function () {
                             heading: null,
                             latitude: 35.710841,
                             longitude: 139.735039,
-                            speed: null,
+                            speed: null
                         }
                     };
                     currposition.setPosition(position);
-                    console.log('Geolocation failed: ' + error.message);
+                    console.log('Geolocation failed: ' + _error.message);
                 },
-                not_supported: function () {
-                    console.log("Your browser does not support geolocation");
+                not_supported: function not_supported() {
+                    console.log('Your browser does not support geolocation');
                 },
-                always: function () {
-                    //alert("Done!");
-                }
+                always: function always() {}
             });
         });
         env.mainlayout.on('moveEnd', function () {
             google.maps.event.trigger(env.gmap.map, 'resize');
         });
-    })();
-}
+    }
+
+    return {
+        setters: [function (_jquery) {
+            $ = _jquery['default'];
+        }],
+        execute: function () {
+            CurrPosition = (function createCurrPosition() {
+                function CurrPosition(map) {
+                    this.center = null;
+                    this.outside = null;
+                    this.map = map;
+                }
+
+                var p = CurrPosition.prototype;
+
+                p.checkDraw = function () {
+                    return this.center && this.outside;
+                };
+
+                p.getRadius = function () {
+                    console.log(this.map.getZoom());
+                    //return 18 / this.map.getZoom() * this.defaultRadius;
+                    return Math.pow(2, 20 - this.map.getZoom());
+                };
+
+                p.refreshPosition = function (position) {
+                    this.center.setCenter({
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude
+                    });
+                    this.outside.setCenter({
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude
+                    });
+                    this.outside.setRadius(position.coords.accuracy);
+                };
+
+                p.drawPosition = function (position) {
+                    var self = this;
+                    this.map.on('zoom_changed', function () {
+                        self.center.setRadius(self.getRadius());
+                    });
+                    this.center = this.map.drawCircle({
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude,
+                        radius: self.getRadius(),
+                        fillColor: '#0091FF',
+                        fillOpacity: 0.8,
+                        strokeColor: '#FFFFFF',
+                        strokeWeight: 2
+                    });
+                    this.outside = this.map.drawCircle({
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude,
+                        radius: position.coords.accuracy,
+                        fillColor: '#0091FF',
+                        fillOpacity: 0.2,
+                        strokeColor: '#9DDAFB'
+                    });
+                };
+
+                p.setPosition = function (position) {
+                    this.checkDraw() ? this.refreshPosition(position) : this.drawPosition(position);
+
+                    this.map.setCenter(position.coords.latitude, position.coords.longitude);
+                    this.map.setZoom(18);
+                };
+
+                return CurrPosition;
+            })();
+        }
+    };
+});
+
+//alert("Done!");
+
+//# sourceMappingURL=map.js.map
