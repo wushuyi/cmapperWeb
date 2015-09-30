@@ -54,8 +54,8 @@ class DirectionsPage extends BasePage {
         map.removeRoutes();
         map.cleanRoute();
         map.getRoutes({
-            origin: [-12.044012922866312, -77.02470665341184],
-            destination: [-12.090814532191756, -77.02271108990476],
+            origin: [31.238037, 121.471592],
+            destination: [31.227578, 121.475122],
             travelMode: options.mode,
             callback: function (e) {
                 //console.log(e);
@@ -143,7 +143,7 @@ class DirectionsPage extends BasePage {
         $el.map_xjdd.hide();
         $el.map_add_btn.hide();
 
-        env.gmap.setCenter(-12.044012922866312, -77.02470665341184);
+        env.gmap.setCenter(31.238037, 121.471592);
 
         $el.modeSwichBtn.on('tap.directions', function (evt) {
             let $self = $(this);
