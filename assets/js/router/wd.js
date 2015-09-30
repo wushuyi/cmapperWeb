@@ -1,10 +1,10 @@
-System.register(['../page/wd.js', '../utils/env.js', './utils.js'], function (_export) {
+System.register(['../page/wd', '../utils/env', './utils'], function (_export) {
     /**
      * Created by wushuyi on 2015/9/13.
      */
     'use strict';
 
-    var WdPage, env, isModal;
+    var WdPage, env, isModal, isPropPage;
 
     function register(router) {
         var route = '/wd';
@@ -18,7 +18,7 @@ System.register(['../page/wd.js', '../utils/env.js', './utils.js'], function (_e
             env[page] = new WdPage();
         });
         router.on('after', route, function () {
-            if (isModal()) {
+            if (isModal() || isPropPage()) {
                 return false;
             }
             env[page].destroy();
@@ -27,12 +27,13 @@ System.register(['../page/wd.js', '../utils/env.js', './utils.js'], function (_e
     }
 
     return {
-        setters: [function (_pageWdJs) {
-            WdPage = _pageWdJs['default'];
-        }, function (_utilsEnvJs) {
-            env = _utilsEnvJs['default'];
-        }, function (_utilsJs) {
-            isModal = _utilsJs.isModal;
+        setters: [function (_pageWd) {
+            WdPage = _pageWd['default'];
+        }, function (_utilsEnv) {
+            env = _utilsEnv['default'];
+        }, function (_utils) {
+            isModal = _utils.isModal;
+            isPropPage = _utils.isPropPage;
         }],
         execute: function () {
             _export('default', register);

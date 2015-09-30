@@ -1,9 +1,9 @@
 /**
  * Created by wushuyi on 2015/9/13.
  */
-import {default as FollowPage} from '../page/follow.js'
-import env from '../utils/env.js'
-import {isModal} from './utils.js'
+import {default as FollowPage} from '../page/follow'
+import env from '../utils/env'
+import {isModal, isPropPage} from './utils'
 
 function register(router) {
     let route = '/follow/:type/:id';
@@ -18,7 +18,7 @@ function register(router) {
         });
     });
     router.on('after', route, function () {
-        if(isModal()){
+        if (isModal() || isPropPage()) {
             return false;
         }
         env[page].destroy();

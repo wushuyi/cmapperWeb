@@ -74,29 +74,6 @@ System.register(['jquery', 'lodash', 'iscroll', 'hammer', 'canvas2blob', 'loadIm
                         }, 100);
                     }
                 }, {
-                    key: 'modal_set',
-                    value: function modal_set(options) {
-                        var $el = this.$el;
-
-                        $el.modal = $('#modal-set');
-                        this.public_init();
-                    }
-                }, {
-                    key: 'modal_address',
-                    value: function modal_address(options) {
-                        var $el = this.$el;
-                        var iscrolls = this.iscrolls;
-                        $el.modal = $('#modal-address');
-                        this.public_init();
-                        $el.scroll = $el.modal.find('.scroll');
-                        env.mainScroll = iscrolls.content = new iscroll($el.scroll.get(0));
-                        $el.swichBox = $el.modal.find('.swich-box');
-                        $el.checkbox = $el.swichBox.find('input[type=checkbox]');
-                        $el.swichBox.on('tap.modalmanage', function () {
-                            $el.checkbox.prop('checked', !$el.checkbox.prop('checked'));
-                        });
-                    }
-                }, {
                     key: 'modal_selectMap',
                     value: function modal_selectMap() {
                         var $el = this.$el;

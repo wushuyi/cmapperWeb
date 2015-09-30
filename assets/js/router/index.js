@@ -1,10 +1,10 @@
-System.register(['director', './gftj', './pyq', './fxdt', './wd', './mapinfo', './maplist', './modal', './role', './follow', './addaddr', './directions', '../utils/env', './utils'], function (_export) {
+System.register(['director', './gftj', './pyq', './fxdt', './wd', './mapinfo', './maplist', './modal', './prop-page', './role', './follow', './addaddr', './directions', '../utils/env', './utils'], function (_export) {
     /**
      * Created by wushuyi on 2015/9/13.
      */
     'use strict';
 
-    var Director, register_gftj, register_pyq, register_fxdt, register_wd, register_mapinfo, register_maplist, register_modal, register_role, register_follow, register_addaddr, register_directions, env, routeHistory, getRouter, isModal, router;
+    var Director, register_gftj, register_pyq, register_fxdt, register_wd, register_mapinfo, register_maplist, register_modal, register_prop_page, register_role, register_follow, register_addaddr, register_directions, env, routeHistory, getRouter, isModal, router;
 
     function register_all() {
         register_gftj(router);
@@ -14,6 +14,7 @@ System.register(['director', './gftj', './pyq', './fxdt', './wd', './mapinfo', '
         register_mapinfo(router);
         register_maplist(router);
         register_modal(router);
+        register_prop_page(router);
         register_role(router);
         register_follow(router);
         register_addaddr(router);
@@ -37,6 +38,8 @@ System.register(['director', './gftj', './pyq', './fxdt', './wd', './mapinfo', '
             register_maplist = _maplist['default'];
         }, function (_modal) {
             register_modal = _modal['default'];
+        }, function (_propPage) {
+            register_prop_page = _propPage['default'];
         }, function (_role) {
             register_role = _role['default'];
         }, function (_follow) {

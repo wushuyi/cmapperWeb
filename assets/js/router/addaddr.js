@@ -1,10 +1,10 @@
-System.register(['../page/addaddr.js', '../utils/env.js', './utils.js'], function (_export) {
+System.register(['../page/addaddr', '../utils/env', './utils'], function (_export) {
     /**
      * Created by wushuyi on 2015/9/13.
      */
     'use strict';
 
-    var AddAddrPage, env, isModal;
+    var AddAddrPage, env, isModal, isPropPage;
 
     function register(router) {
         var route = '/add_addr';
@@ -18,7 +18,7 @@ System.register(['../page/addaddr.js', '../utils/env.js', './utils.js'], functio
             env[page] = new AddAddrPage();
         });
         router.on('after', route, function () {
-            if (isModal()) {
+            if (isModal() || isPropPage()) {
                 return false;
             }
             env[page].destroy();
@@ -27,12 +27,13 @@ System.register(['../page/addaddr.js', '../utils/env.js', './utils.js'], functio
     }
 
     return {
-        setters: [function (_pageAddaddrJs) {
-            AddAddrPage = _pageAddaddrJs['default'];
-        }, function (_utilsEnvJs) {
-            env = _utilsEnvJs['default'];
-        }, function (_utilsJs) {
-            isModal = _utilsJs.isModal;
+        setters: [function (_pageAddaddr) {
+            AddAddrPage = _pageAddaddr['default'];
+        }, function (_utilsEnv) {
+            env = _utilsEnv['default'];
+        }, function (_utils) {
+            isModal = _utils.isModal;
+            isPropPage = _utils.isPropPage;
         }],
         execute: function () {
             _export('default', register);

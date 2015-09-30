@@ -413,6 +413,16 @@ html.android .label-switch input[type="checkbox"] + .checkbox:before {
   display: none;
   overflow: hidden;
 }
+#prop-page {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  border-radius: 10px;
+  display: none;
+  overflow: hidden;
+}
 .modal {
   width: 100%;
   height: 100%;
@@ -1525,7 +1535,7 @@ html.android .label-switch input[type="checkbox"] + .checkbox:before {
   border-bottom: 1px solid #979797;
   padding: 20px;
 }
-#modal-set {
+#page-set {
   -webkit-transform: translateY(-100%);
       -ms-transform: translateY(-100%);
           transform: translateY(-100%);
@@ -1537,17 +1547,17 @@ html.android .label-switch input[type="checkbox"] + .checkbox:before {
   overflow: hidden;
   -webkit-mask-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAA5JREFUeNpiYGBgAAgwAAAEAAGbA+oJAAAAAElFTkSuQmCC);
 }
-#modal-set.active {
+#page-set.active {
   -webkit-transform: translateY(0%);
       -ms-transform: translateY(0%);
           transform: translateY(0%);
 }
-#modal-set .top-bar {
+#page-set .top-bar {
   width: 100%;
   height: 70px;
   position: relative;
 }
-#modal-set .close {
+#page-set .close {
   position: absolute;
   top: 10px;
   left: 0;
@@ -1557,7 +1567,7 @@ html.android .label-switch input[type="checkbox"] + .checkbox:before {
   background: url('../images/icons/back_black.svg') no-repeat 50% 50%;
   background-size: 40px;
 }
-#modal-set .title {
+#page-set .title {
   position: absolute;
   right: 0;
   width: 100%;
@@ -1568,7 +1578,7 @@ html.android .label-switch input[type="checkbox"] + .checkbox:before {
   line-height: 70px;
   color: #000000;
 }
-#modal-address {
+#page-address {
   -webkit-transform: translateY(-100%);
       -ms-transform: translateY(-100%);
           transform: translateY(-100%);
@@ -1580,17 +1590,17 @@ html.android .label-switch input[type="checkbox"] + .checkbox:before {
   overflow: hidden;
   -webkit-mask-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAA5JREFUeNpiYGBgAAgwAAAEAAGbA+oJAAAAAElFTkSuQmCC);
 }
-#modal-address.active {
+#page-address.active {
   -webkit-transform: translateY(0%);
       -ms-transform: translateY(0%);
           transform: translateY(0%);
 }
-#modal-address .top-bar {
+#page-address .top-bar {
   width: 100%;
   height: 80px;
   position: relative;
 }
-#modal-address .close {
+#page-address .close {
   position: absolute;
   left: 0;
   width: 80px;
@@ -1598,7 +1608,7 @@ html.android .label-switch input[type="checkbox"] + .checkbox:before {
   z-index: 1;
   background: transparent url('../images/icons/close_black.svg') no-repeat;
 }
-#modal-address .scroll {
+#page-address .scroll {
   position: absolute;
   right: 0;
   left: 0;
@@ -1606,7 +1616,7 @@ html.android .label-switch input[type="checkbox"] + .checkbox:before {
   bottom: 0px;
   overflow: hidden;
 }
-#modal-address .swich-box {
+#page-address .swich-box {
   position: absolute;
   top: 14px;
   right: 20px;
@@ -1614,12 +1624,12 @@ html.android .label-switch input[type="checkbox"] + .checkbox:before {
   height: 50px;
   z-index: 10;
 }
-#modal-address .swich-box .label-switch {
+#page-address .swich-box .label-switch {
   position: absolute;
   left: 50%;
   margin-left: -26px;
 }
-#modal-address .swich-box:before {
+#page-address .swich-box:before {
   content: '';
   display: block;
   position: absolute;
@@ -1628,7 +1638,7 @@ html.android .label-switch input[type="checkbox"] + .checkbox:before {
   height: 30px;
   background: transparent url('../images/icons/private.svg') no-repeat;
 }
-#modal-address .swich-box:after {
+#page-address .swich-box:after {
   content: '';
   display: block;
   position: absolute;
@@ -1637,33 +1647,33 @@ html.android .label-switch input[type="checkbox"] + .checkbox:before {
   height: 30px;
   background: transparent url('../images/icons/public.svg') no-repeat;
 }
-#modal-address .btn_edit,
-#modal-address .btn_use {
+#page-address .btn_edit,
+#page-address .btn_use {
   position: absolute;
   right: 0;
   width: 80px;
   height: 80px;
   z-index: 1;
 }
-#modal-address .btn_edit {
+#page-address .btn_edit {
   right: 80px;
   background: transparent url('../images/icons/pencil_black.svg') no-repeat 50% 50%;
   background-size: 40px;
 }
-#modal-address .btn_use {
+#page-address .btn_use {
   background: transparent url('../images/icons/pin.svg') no-repeat 50% 50%;
   background-size: 40px;
 }
-#modal-address .top-content {
+#page-address .top-content {
   margin-left: 20px;
   margin-right: 20px;
 }
-#modal-address .map-name {
+#page-address .map-name {
   padding: 10px 20px 10px 50px;
   font-size: 30px;
   display: inline-block;
 }
-#modal-address .map-name:before {
+#page-address .map-name:before {
   margin-left: -50px;
   margin-right: 10px;
   margin-bottom: -8px;
@@ -1673,20 +1683,20 @@ html.android .label-switch input[type="checkbox"] + .checkbox:before {
   background: transparent url('../images/icons/map.svg') no-repeat;
   content: '';
 }
-#modal-address .addr-box {
+#page-address .addr-box {
   border-radius: 8px;
   border: 1px solid #E5E4E4;
   margin-top: 20px;
   background: #FFFFFF;
 }
-#modal-address .addr-img {
+#page-address .addr-img {
   float: left;
   margin-top: 24px;
   margin-left: 20px;
   height: 70px;
   width: 66px;
 }
-#modal-address .addr-name {
+#page-address .addr-name {
   margin-top: 30px;
   margin-left: 20px;
   margin-right: 40px;
@@ -1694,7 +1704,7 @@ html.android .label-switch input[type="checkbox"] + .checkbox:before {
   font-size: 30px;
   float: left;
 }
-#modal-address .num-status-box {
+#page-address .num-status-box {
   width: 400px;
   height: 50px;
   margin-top: 20px;
@@ -1702,10 +1712,10 @@ html.android .label-switch input[type="checkbox"] + .checkbox:before {
   margin-right: 10px;
   float: right;
 }
-#modal-address .num-status-box li {
+#page-address .num-status-box li {
   float: right;
 }
-#modal-address .num-status {
+#page-address .num-status {
   width: 90px;
   height: 40px;
   padding-left: 40px;
@@ -1713,7 +1723,7 @@ html.android .label-switch input[type="checkbox"] + .checkbox:before {
   line-height: 36px;
   display: inline-block;
 }
-#modal-address .num-status:before {
+#page-address .num-status:before {
   display: inline-block;
   width: 34px;
   height: 34px;
@@ -1723,22 +1733,22 @@ html.android .label-switch input[type="checkbox"] + .checkbox:before {
   margin-bottom: -10px;
   content: '';
 }
-#modal-address .num-status.num-like:before {
+#page-address .num-status.num-like:before {
   background: transparent url('../images/icons/heart_small.svg') no-repeat;
 }
-#modal-address .num-status.num-map:before {
+#page-address .num-status.num-map:before {
   background: transparent url('../images/icons/map_blue.svg') no-repeat;
 }
-#modal-address .num-status.num-checkin:before {
+#page-address .num-status.num-checkin:before {
   background: transparent url('../images/icons/checkin.svg') no-repeat;
 }
-#modal-address .tag-box {
+#page-address .tag-box {
   margin: 34px 20px 0 20px;
 }
-#modal-address .tag-box li {
+#page-address .tag-box li {
   float: left;
 }
-#modal-address .tag {
+#page-address .tag {
   display: inline-block;
   margin: 4px;
   color: #FFFFFF;
@@ -1748,22 +1758,22 @@ html.android .label-switch input[type="checkbox"] + .checkbox:before {
   border: 2px solid #C29C02;
   border-radius: 8px;
 }
-#modal-address .addr-info-box {
+#page-address .addr-info-box {
   margin: 34px 20px 0 20px;
   border: 2px solid #E4E3E3;
   background: #FFFFFF;
 }
-#modal-address .addr-info {
+#page-address .addr-info {
   height: 100px;
   margin-left: 34px;
   margin-right: 34px;
   border-bottom: 2px dashed #EBEBEB;
   position: relative;
 }
-#modal-address .addr-info.last {
+#page-address .addr-info.last {
   border-bottom: none;
 }
-#modal-address .addr-info:after {
+#page-address .addr-info:after {
   position: absolute;
   right: 0;
   display: block;
@@ -1772,7 +1782,7 @@ html.android .label-switch input[type="checkbox"] + .checkbox:before {
   color: #C7C7CC;
   top: 30px;
 }
-#modal-address .addr-info .tit {
+#page-address .addr-info .tit {
   display: block;
   font-size: 40px;
   font-weight: bold;
@@ -1781,7 +1791,7 @@ html.android .label-switch input[type="checkbox"] + .checkbox:before {
   position: absolute;
   top: 24px;
 }
-#modal-address .addr-info .tit:before {
+#page-address .addr-info .tit:before {
   width: 40px;
   height: 40px;
   margin-left: -40px;
@@ -1789,16 +1799,16 @@ html.android .label-switch input[type="checkbox"] + .checkbox:before {
   display: inline-block;
   content: '';
 }
-#modal-address .addr-info.addr .tit:before {
+#page-address .addr-info.addr .tit:before {
   background: transparent url('../images/icons/address.svg') no-repeat;
 }
-#modal-address .addr-info.tel .tit:before {
+#page-address .addr-info.tel .tit:before {
   background: transparent url('../images/icons/tel.svg') no-repeat;
 }
-#modal-address .addr-info.url .tit:before {
+#page-address .addr-info.url .tit:before {
   background: transparent url('../images/icons/url.svg') no-repeat;
 }
-#modal-address .addr-info .info {
+#page-address .addr-info .info {
   position: absolute;
   right: 0;
   width: 380px;
@@ -1807,15 +1817,15 @@ html.android .label-switch input[type="checkbox"] + .checkbox:before {
   line-height: 100%;
   padding-top: 40px;
 }
-#modal-address .hot-num-box {
+#page-address .hot-num-box {
   margin-top: 20px;
   margin-left: 20px;
   margin-right: 20px;
 }
-#modal-address .hot-num-box li {
+#page-address .hot-num-box li {
   float: left;
 }
-#modal-address .hot-box {
+#page-address .hot-box {
   width: 280px;
   height: 80px;
   border: 2px solid #4A90E2;
@@ -1826,7 +1836,7 @@ html.android .label-switch input[type="checkbox"] + .checkbox:before {
   line-height: 80px;
   font-size: 38px;
 }
-#modal-address .hot-box:before {
+#page-address .hot-box:before {
   width: 36px;
   height: 36px;
   margin-left: -30px;
@@ -1836,16 +1846,16 @@ html.android .label-switch input[type="checkbox"] + .checkbox:before {
   display: inline-block;
   content: '';
 }
-#modal-address .hot-box.first {
+#page-address .hot-box.first {
   margin-right: 20px;
 }
-#modal-address .hot-box.praise-num:before {
+#page-address .hot-box.praise-num:before {
   background: url("../images/icons/like.svg") no-repeat;
 }
-#modal-address .hot-box.comment-num:before {
+#page-address .hot-box.comment-num:before {
   background: url("../images/icons/pencil_blue.svg") no-repeat;
 }
-#modal-address .comment-box {
+#page-address .comment-box {
   margin-top: 20px;
   margin-left: 20px;
   margin-right: 20px;
@@ -1853,16 +1863,16 @@ html.android .label-switch input[type="checkbox"] + .checkbox:before {
   border: 1px solid #E5E4E4;
   border-radius: 8px;
 }
-#modal-address .comment-list li {
+#page-address .comment-list li {
   width: 100%;
 }
-#modal-address .comment-list .test {
+#page-address .comment-list .test {
   width: 100%;
   height: 160px;
   background: red;
   margin: 10px 0 10px 0;
 }
-#modal-address .comment-list li.loading {
+#page-address .comment-list li.loading {
   width: 100%;
   height: 160px;
   background: green;
@@ -1871,10 +1881,10 @@ html.android .label-switch input[type="checkbox"] + .checkbox:before {
   text-align: center;
   line-height: 160px;
 }
-#modal-address .comment {
+#page-address .comment {
   margin: 20px 0 20px 0;
 }
-#modal-address .comment .avatar {
+#page-address .comment .avatar {
   width: 100px;
   height: 100px;
   background: #D8D8D8;
@@ -1884,7 +1894,7 @@ html.android .label-switch input[type="checkbox"] + .checkbox:before {
   left: 20px;
   z-index: 1;
 }
-#modal-address .comment .avatar {
+#page-address .comment .avatar {
   position: inherit;
   bottom: 0;
   left: 0;
@@ -1893,43 +1903,43 @@ html.android .label-switch input[type="checkbox"] + .checkbox:before {
   margin-top: 10px;
   margin-left: 20px;
 }
-#modal-address .comment .msg {
+#page-address .comment .msg {
   margin-left: 20px;
   margin-right: 40px;
   width: 400px;
   font-size: 28px;
   float: left;
 }
-#modal-address .comment .btn-bar {
+#page-address .comment .btn-bar {
   width: 240px;
   height: 50px;
   margin-top: 20px;
   margin-right: 40px;
   float: right;
 }
-#modal-address .comment .btn-bar .btn {
+#page-address .comment .btn-bar .btn {
   background: red;
   width: 40px;
   height: 40px;
   float: right;
   margin-left: 40px;
 }
-#modal-address .comment .btn-bar .btn.btn-like {
+#page-address .comment .btn-bar .btn.btn-like {
   background: transparent url('../images/icons/like.svg') no-repeat;
 }
-#modal-address .comment .btn-bar .btn.btn-del {
+#page-address .comment .btn-bar .btn.btn-del {
   background: transparent url('../images/icons/delete.svg') no-repeat;
 }
-#modal-address .comment .btn-bar .btn.btn-report {
+#page-address .comment .btn-bar .btn.btn-report {
   background: transparent url('../images/icons/report.svg') no-repeat;
 }
-#modal-address .comment:after {
+#page-address .comment:after {
   content: '';
   border: 1px dashed #E5E5E5;
   margin-right: 30px;
   margin-left: 30px;
 }
-#modal-address .prompt {
+#page-address .prompt {
   font-size: 28px;
   color: #A39B9B;
   text-align: center;

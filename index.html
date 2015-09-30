@@ -22,8 +22,9 @@
     <link rel="stylesheet" href="assets/css/style.css?v=1"/>
     <script src="./local_packages/systemjs/system.js"></script>
     <!--<script src="./system.config.js"></script>-->
-    <script src="./build/build.js"></script>
     <!--<script src="./cache/cache.js"></script>-->
+
+    <script src="./build/build.js"></script>
 </head>
 
 <body>
@@ -466,7 +467,7 @@
                             <div class="role-img">头像</div>
                             <h2 class="role-name">名字名字</h2>
 
-                            <div class="set-button" data-router="/modal/set"></div>
+                            <div class="set-button" data-router="/page/set"></div>
                             <div class="vcard-stats">
                                 <div class="vcard-stat">
                                     <strong class="vcard-stat-count">372</strong>
@@ -893,7 +894,7 @@
                             <div class="address-list">
                                 <ul class="horizontal-list">
                                     <li>
-                                        <div class="addr-box clearfix" data-router="/modal/address/123">
+                                        <div class="addr-box clearfix" data-router="/page/address/123">
                                             <div class="addr-img spot spot-1">1</div>
                                             <span class="addr-name">地点名称地点名称地点名称</span>
                                             <ul class="clearfix num-status-box">
@@ -910,7 +911,7 @@
                                         </div>
                                     </li>
                                     <li>
-                                        <div class="addr-box clearfix" data-router="/modal/address/123">
+                                        <div class="addr-box clearfix" data-router="/page/address/123">
                                             <div class="addr-img spot spot-2">2</div>
                                             <span class="addr-name">地点名称地点名称地点名称</span>
                                             <ul class="clearfix num-status-box">
@@ -927,7 +928,7 @@
                                         </div>
                                     </li>
                                     <li>
-                                        <div class="addr-box clearfix" data-router="/modal/address/123">
+                                        <div class="addr-box clearfix" data-router="/page/address/123">
                                             <div class="addr-img spot spot-3">3</div>
                                             <span class="addr-name">地点名称地点名称地点名称</span>
                                             <ul class="clearfix num-status-box">
@@ -944,7 +945,7 @@
                                         </div>
                                     </li>
                                     <li>
-                                        <div class="addr-box clearfix" data-router="/modal/address/123">
+                                        <div class="addr-box clearfix" data-router="/page/address/123">
                                             <div class="addr-img spot spot-1">88</div>
                                             <span class="addr-name">地点名称地点名称地点名称</span>
                                             <ul class="clearfix num-status-box">
@@ -961,7 +962,7 @@
                                         </div>
                                     </li>
                                     <li>
-                                        <div class="addr-box clearfix" data-router="/modal/address/123">
+                                        <div class="addr-box clearfix" data-router="/page/address/123">
                                             <div class="addr-img"></div>
                                             <span class="addr-name">地点名称地点名称地点名称</span>
                                             <ul class="clearfix num-status-box">
@@ -978,7 +979,7 @@
                                         </div>
                                     </li>
                                     <li>
-                                        <div class="addr-box clearfix" data-router="/modal/address/123">
+                                        <div class="addr-box clearfix" data-router="/page/address/123">
                                             <div class="addr-img"></div>
                                             <span class="addr-name">地点名称地点名称地点名称</span>
                                             <ul class="clearfix num-status-box">
@@ -1331,34 +1332,26 @@
             </div>
         </div>
     </div>
-    <div id="modal-box">
+    <div id="prop-page">
         <div class="mask"></div>
-        <div class="modal" id="modal-set">
+        <div class="modal" id="page-set">
             <div class="top-bar">
                 <div class="close"></div>
                 <div class="title">设定</div>
             </div>
         </div>
-        <div class="modal" id="modal-cropper">
-            <div class="top-bar">
-                <div class="close"></div>
-                <div class="title">裁剪图片</div>
-                <div class="save-btn">保存</div>
-            </div>
-            <div class="cropper-img-box"></div>
-        </div>
-        <div class="modal" id="modal-address">
+        <div class="modal" id="page-address">
             <div class="top-bar">
                 <div class="close"></div>
                 <div class="btn_edit" data-router="/modal/add-addr-info/null"></div>
                 <div class="btn_use" data-router="/modal/select-map/null"></div>
             </div>
             <div class="scroll">
-
                 <div>
                     <div class="swich-box">
                         <label class="label-switch">
                             <input type="checkbox">
+
                             <div class="checkbox"></div>
                         </label>
                     </div>
@@ -1511,7 +1504,17 @@
                     </div>
                 </div>
             </div>
-
+        </div>
+    </div>
+    <div id="modal-box">
+        <div class="mask"></div>
+        <div class="modal" id="modal-cropper">
+            <div class="top-bar">
+                <div class="close"></div>
+                <div class="title">裁剪图片</div>
+                <div class="save-btn">保存</div>
+            </div>
+            <div class="cropper-img-box"></div>
         </div>
         <div class="modal" id="modal-select-map">
             <div class="top-bar">
@@ -1731,7 +1734,6 @@
 </div>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCSqDuHCUNDiT_xUMJNx6wI-67vzrXSHhM&ibraries=geometry"></script>
 <script src="./local_packages/gmaps/gmaps.min.js"></script>
-<!--<script src="./assets/js/component/map.js"></script>-->
 <script>
     System.import('./assets/js/main.js');
 </script>

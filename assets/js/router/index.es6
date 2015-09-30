@@ -9,6 +9,7 @@ import {default as register_wd} from './wd'
 import {default as register_mapinfo} from './mapinfo'
 import {default as register_maplist} from './maplist'
 import {default as register_modal} from './modal'
+import {default as register_prop_page} from './prop-page'
 import {default as register_role} from './role'
 import {default as  register_follow} from './follow'
 import {default as  register_addaddr} from './addaddr'
@@ -33,6 +34,7 @@ function register_all() {
     register_mapinfo(router);
     register_maplist(router);
     register_modal(router);
+    register_prop_page(router);
     register_role(router);
     register_follow(router);
     register_addaddr(router);

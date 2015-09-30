@@ -1,10 +1,10 @@
-System.register(['../page/follow.js', '../utils/env.js', './utils.js'], function (_export) {
+System.register(['../page/follow', '../utils/env', './utils'], function (_export) {
     /**
      * Created by wushuyi on 2015/9/13.
      */
     'use strict';
 
-    var FollowPage, env, isModal;
+    var FollowPage, env, isModal, isPropPage;
 
     function register(router) {
         var route = '/follow/:type/:id';
@@ -19,7 +19,7 @@ System.register(['../page/follow.js', '../utils/env.js', './utils.js'], function
             });
         });
         router.on('after', route, function () {
-            if (isModal()) {
+            if (isModal() || isPropPage()) {
                 return false;
             }
             env[page].destroy();
@@ -28,12 +28,13 @@ System.register(['../page/follow.js', '../utils/env.js', './utils.js'], function
     }
 
     return {
-        setters: [function (_pageFollowJs) {
-            FollowPage = _pageFollowJs['default'];
-        }, function (_utilsEnvJs) {
-            env = _utilsEnvJs['default'];
-        }, function (_utilsJs) {
-            isModal = _utilsJs.isModal;
+        setters: [function (_pageFollow) {
+            FollowPage = _pageFollow['default'];
+        }, function (_utilsEnv) {
+            env = _utilsEnv['default'];
+        }, function (_utils) {
+            isModal = _utils.isModal;
+            isPropPage = _utils.isPropPage;
         }],
         execute: function () {
             _export('default', register);

@@ -1,10 +1,10 @@
-System.register(['../page/role.js', '../utils/env.js', './utils.js'], function (_export) {
+System.register(['../page/role', '../utils/env', './utils'], function (_export) {
     /**
      * Created by wushuyi on 2015/9/18.
      */
     'use strict';
 
-    var RolePage, env, isModal;
+    var RolePage, env, isModal, isPropPage;
 
     function register(router) {
         var route = '/role/:id';
@@ -19,7 +19,7 @@ System.register(['../page/role.js', '../utils/env.js', './utils.js'], function (
             });
         });
         router.on('after', route, function () {
-            if (isModal()) {
+            if (isModal() || isPropPage()) {
                 return false;
             }
             env[page].destroy();
@@ -28,12 +28,13 @@ System.register(['../page/role.js', '../utils/env.js', './utils.js'], function (
     }
 
     return {
-        setters: [function (_pageRoleJs) {
-            RolePage = _pageRoleJs['default'];
-        }, function (_utilsEnvJs) {
-            env = _utilsEnvJs['default'];
-        }, function (_utilsJs) {
-            isModal = _utilsJs.isModal;
+        setters: [function (_pageRole) {
+            RolePage = _pageRole['default'];
+        }, function (_utilsEnv) {
+            env = _utilsEnv['default'];
+        }, function (_utils) {
+            isModal = _utils.isModal;
+            isPropPage = _utils.isPropPage;
         }],
         execute: function () {
             _export('default', register);

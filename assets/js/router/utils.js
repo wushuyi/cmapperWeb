@@ -10,6 +10,8 @@ System.register(['../utils/env.js'], function (_export) {
 
     _export('isModal', isModal);
 
+    _export('isPropPage', isPropPage);
+
     function getRouter() {
         var path = env.router.getRoute();
         path.unshift('');
@@ -18,6 +20,10 @@ System.register(['../utils/env.js'], function (_export) {
 
     function isModal() {
         return getRouter().indexOf('/modal') !== -1;
+    }
+
+    function isPropPage() {
+        return getRouter().indexOf('/page') !== -1;
     }
 
     return {

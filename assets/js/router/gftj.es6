@@ -1,9 +1,9 @@
 /**
  * Created by wushuyi on 2015/9/13.
  */
-import {default as GftjPage} from '../page/gftj.js'
-import env from '../utils/env.js'
-import {isModal} from './utils.js'
+import {default as GftjPage} from '../page/gftj'
+import env from '../utils/env'
+import {isModal, isPropPage} from './utils'
 
 function register(router) {
     let route = '/gftj';
@@ -17,7 +17,7 @@ function register(router) {
         env[page] = new GftjPage();
     });
     router.on('after', route, function () {
-        if(isModal()){
+        if (isModal() || isPropPage()) {
             return false;
         }
         env[page].destroy();

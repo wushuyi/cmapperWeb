@@ -3,7 +3,7 @@
  */
 import {default as DirectionsPage} from '../page/directions'
 import env from '../utils/env'
-import {isModal} from './utils'
+import {isModal, isPropPage} from './utils'
 
 function register(router) {
     let route = '/directions';
@@ -16,7 +16,7 @@ function register(router) {
         env[page] = new DirectionsPage();
     });
     router.on('after', route, function () {
-        if(isModal()){
+        if (isModal() || isPropPage()) {
             return false;
         }
         env[page].destroy();

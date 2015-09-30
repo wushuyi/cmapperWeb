@@ -7,38 +7,6 @@ System.register(['../page/modal.js', '../utils/env.js'], function (_export) {
     var ModalManage, env;
 
     function register(router) {
-        {
-            (function () {
-                var route = '/modal/set';
-                var page = 'set_modal';
-                router.on(route, function () {
-                    env[page] = new ModalManage({
-                        modal: 'set'
-                    });
-                });
-                router.on('after', route, function () {
-                    env[page].destory();
-                    delete env[page];
-                });
-            })();
-        }
-
-        {
-            (function () {
-                var route = '/modal/address/:id';
-                var page = 'address_modal';
-                router.on(route, function (id) {
-                    env[page] = new ModalManage({
-                        id: id,
-                        modal: 'address'
-                    });
-                });
-                router.on('after', route, function () {
-                    env[page].destory();
-                    delete env[page];
-                });
-            })();
-        }
 
         {
             (function () {

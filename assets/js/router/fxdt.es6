@@ -1,9 +1,9 @@
 /**
  * Created by wushuyi on 2015/9/13.
  */
-import {default as FxdtPage} from '../page/fxdt.js'
-import env from '../utils/env.js'
-import {isModal} from './utils.js'
+import {default as FxdtPage} from '../page/fxdt'
+import env from '../utils/env'
+import {isModal, isPropPage} from './utils'
 
 function register(router) {
     let route = '/fxdt';
@@ -17,7 +17,7 @@ function register(router) {
         env[page] = new FxdtPage();
     });
     router.on('after', route, function () {
-        if(isModal()){
+        if (isModal() || isPropPage()) {
             return false;
         }
         env[page].destroy();

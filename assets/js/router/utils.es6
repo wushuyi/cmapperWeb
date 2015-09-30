@@ -48,3 +48,7 @@ export let routeHistory = {
 export function isModal() {
     return getRouter().indexOf('/modal') !== -1;
 }
+
+export function isPropPage() {
+    return getRouter().indexOf('/page') !== -1;
+}

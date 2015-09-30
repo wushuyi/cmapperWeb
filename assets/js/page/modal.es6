@@ -48,27 +48,6 @@ class ModalManage {
         }, 100);
     }
 
-    modal_set(options) {
-        let $el = this.$el;
-
-        $el.modal = $('#modal-set');
-        this.public_init();
-    }
-
-    modal_address(options) {
-        let $el = this.$el;
-        let iscrolls = this.iscrolls;
-        $el.modal = $('#modal-address');
-        this.public_init();
-        $el.scroll = $el.modal.find('.scroll');
-        env.mainScroll = iscrolls.content = new iscroll($el.scroll.get(0));
-        $el.swichBox = $el.modal.find('.swich-box');
-        $el.checkbox = $el.swichBox.find('input[type=checkbox]');
-        $el.swichBox.on('tap.modalmanage', function () {
-            $el.checkbox.prop('checked', !$el.checkbox.prop('checked'));
-        });
-    }
-
     modal_selectMap() {
         let $el = this.$el;
         let iscrolls = this.iscrolls;

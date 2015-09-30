@@ -1,10 +1,10 @@
-System.register(['../page/mapinfo.js', '../utils/env.js', './utils.js'], function (_export) {
+System.register(['../page/mapinfo', '../utils/env', './utils'], function (_export) {
     /**
      * Created by wushuyi on 2015/9/14.
      */
     'use strict';
 
-    var MapInfoPage, env, isModal;
+    var MapInfoPage, env, isModal, isPropPage;
 
     function register(router) {
         var route = '/mapinfo/archives/:id';
@@ -19,7 +19,7 @@ System.register(['../page/mapinfo.js', '../utils/env.js', './utils.js'], functio
             });
         });
         router.on('after', route, function () {
-            if (isModal()) {
+            if (isModal() || isPropPage()) {
                 return false;
             }
             env[page].destroy();
@@ -28,12 +28,13 @@ System.register(['../page/mapinfo.js', '../utils/env.js', './utils.js'], functio
     }
 
     return {
-        setters: [function (_pageMapinfoJs) {
-            MapInfoPage = _pageMapinfoJs['default'];
-        }, function (_utilsEnvJs) {
-            env = _utilsEnvJs['default'];
-        }, function (_utilsJs) {
-            isModal = _utilsJs.isModal;
+        setters: [function (_pageMapinfo) {
+            MapInfoPage = _pageMapinfo['default'];
+        }, function (_utilsEnv) {
+            env = _utilsEnv['default'];
+        }, function (_utils) {
+            isModal = _utils.isModal;
+            isPropPage = _utils.isPropPage;
         }],
         execute: function () {
             _export('default', register);

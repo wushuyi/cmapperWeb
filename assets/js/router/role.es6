@@ -1,9 +1,9 @@
 /**
  * Created by wushuyi on 2015/9/18.
  */
-import {default as RolePage} from '../page/role.js'
-import env from '../utils/env.js'
-import {isModal} from './utils.js'
+import {default as RolePage} from '../page/role'
+import env from '../utils/env'
+import {isModal, isPropPage} from './utils'
 
 function register(router) {
     let route = '/role/:id';
@@ -18,7 +18,7 @@ function register(router) {
         });
     });
     router.on('after', route, function () {
-        if(isModal()){
+        if (isModal() || isPropPage()) {
             return false;
         }
         env[page].destroy();

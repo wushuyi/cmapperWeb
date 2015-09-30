@@ -1,10 +1,10 @@
-System.register(['../page/gftj.js', '../utils/env.js', './utils.js'], function (_export) {
+System.register(['../page/gftj', '../utils/env', './utils'], function (_export) {
     /**
      * Created by wushuyi on 2015/9/13.
      */
     'use strict';
 
-    var GftjPage, env, isModal;
+    var GftjPage, env, isModal, isPropPage;
 
     function register(router) {
         var route = '/gftj';
@@ -18,7 +18,7 @@ System.register(['../page/gftj.js', '../utils/env.js', './utils.js'], function (
             env[page] = new GftjPage();
         });
         router.on('after', route, function () {
-            if (isModal()) {
+            if (isModal() || isPropPage()) {
                 return false;
             }
             env[page].destroy();
@@ -27,12 +27,13 @@ System.register(['../page/gftj.js', '../utils/env.js', './utils.js'], function (
     }
 
     return {
-        setters: [function (_pageGftjJs) {
-            GftjPage = _pageGftjJs['default'];
-        }, function (_utilsEnvJs) {
-            env = _utilsEnvJs['default'];
-        }, function (_utilsJs) {
-            isModal = _utilsJs.isModal;
+        setters: [function (_pageGftj) {
+            GftjPage = _pageGftj['default'];
+        }, function (_utilsEnv) {
+            env = _utilsEnv['default'];
+        }, function (_utils) {
+            isModal = _utils.isModal;
+            isPropPage = _utils.isPropPage;
         }],
         execute: function () {
             _export('default', register);
