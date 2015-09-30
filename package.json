@@ -5,7 +5,12 @@
     "gulp": "^3.9.0",
     "gulp-run": "^1.6.11"
   },
-  "scripts": {},
+  "scripts": {
+    "build-css": "lessc --no-color --autoprefix assets/css/style.less > assets/css/style.css",
+    "build-js": "jspm bundle ./assets/js/main ./build/build.js --minify --inject",
+    "build-cache": "jspm bundle ./bundle.config.js ./cache/cache.js --inject",
+    "clear-cache": "jspm unbundle"
+  },
   "jspm": {
     "configFile": "system.config.js",
     "dependencies": {
