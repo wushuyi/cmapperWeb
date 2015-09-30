@@ -2,8 +2,9 @@
  * Created by wushuyi on 2015/9/13.
  */
 import {signal} from './signal';
+import $ from 'jquery';
 
-console.log(signal);
 export default {
-    signal: signal
+    signal: signal,
+    mapReady: $.Deferred()
 }

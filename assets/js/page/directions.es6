@@ -7,6 +7,7 @@ import sweetalert from 'sweetalert';
 import {default as BasePage} from './base';
 import iscroll from 'iscroll';
 import {default as env} from '../utils/env';
+import {proxy} from '../utils/wsy_utils'
 
 class Polyline {
     constructor(map) {
@@ -114,26 +115,13 @@ class DirectionsPage extends BasePage {
         this.iscrolls.content.refresh();
     }
 
-    initialize() {
-        //alert('run');
+    mapReady() {
         let self = this;
-        super.initialize();
-        let $el = {};
-        this.$el = $el;
-        let iscrolls = {};
-        this.iscrolls = iscrolls;
-        $el.page = $('#page_directions');
-        super.startPage();
-        env.mainScroll = iscrolls.content = new iscroll($el.page.get(0));
-
-        this.onReview = function () {
-            iscrolls.content.refresh();
-        };
-        env.mainlayout.on('review', this.onReview);
+        let $el = this.$el;
         $el.map_xjdd = $('#map-xjdd');
         $el.map_add_btn = $('#map_add_btn');
 
-        $el.bicyclingBtn = $el.page.find('.bicycling');
+        $el.walkingBtn = $el.page.find('.walking');
         $el.transitBtn = $el.page.find('.transit');
         $el.drivingBtn = $el.page.find('.driving');
         $el.modeSwichBtn = $el.page.find('.btn');
@@ -150,9 +138,9 @@ class DirectionsPage extends BasePage {
             $el.modeSwichBtn.removeClass('active');
             $self.addClass('active');
         });
-        $el.bicyclingBtn.on('tap.directions', function (evt) {
+        $el.walkingBtn.on('tap.directions', function (evt) {
             self.directions({
-                mode: 'bicycling',
+                mode: 'walking',
             });
         });
         $el.transitBtn.on('tap.directions', function (evt) {
@@ -166,6 +154,25 @@ class DirectionsPage extends BasePage {
             });
         });
         $el.drivingBtn.trigger('tap.directions');
+    }
+
+    initialize() {
+        //alert('run');
+        let self = this;
+        super.initialize();
+        let $el = {};
+        this.$el = $el;
+        let iscrolls = {};
+        this.iscrolls = iscrolls;
+        $el.page = $('#page_directions');
+        super.startPage();
+        env.mainScroll = iscrolls.content = new iscroll($el.page.get(0));
+
+        this.onReview = function () {
+            iscrolls.content.refresh();
+        };
+        env.mainlayout.on('review', this.onReview);
+        env.mapReady.done(proxy(self.mapReady, this));
     }
 
     destroy() {

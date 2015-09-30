@@ -90,6 +90,11 @@ System.register(['jquery', 'lodash', 'iscroll', 'hammer', 'canvas2blob', 'loadIm
                         this.public_init();
                         $el.scroll = $el.modal.find('.scroll');
                         env.mainScroll = iscrolls.content = new iscroll($el.scroll.get(0));
+                        $el.swichBox = $el.modal.find('.swich-box');
+                        $el.checkbox = $el.swichBox.find('input[type=checkbox]');
+                        $el.swichBox.on('tap.modalmanage', function () {
+                            $el.checkbox.prop('checked', !$el.checkbox.prop('checked'));
+                        });
                     }
                 }, {
                     key: 'modal_selectMap',

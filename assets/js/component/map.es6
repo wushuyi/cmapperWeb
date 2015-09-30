@@ -3,6 +3,7 @@
  */
 import $ from 'jquery';
 import sweetalert from 'sweetalert';
+import env from '../utils/env';
 
 let CurrPosition = (function createCurrPosition() {
     function CurrPosition(map) {
@@ -105,7 +106,9 @@ export default function initGmap() {
         $el.map.append($map_dw);
         $el.map.append($map_popinfo);
         $el.map.append($map_add_btn);
-
+        env.mapReady.resolve();
+    });
+    env.mapReady.done(function () {
         GMaps.geolocate({
             success: function (position) {
                 env.nowPosition = position;
@@ -147,6 +150,7 @@ export default function initGmap() {
             }
         });
     });
+
 
     $map_xjdd.on('tap', function () {
         env.router.setRoute('/add_addr');

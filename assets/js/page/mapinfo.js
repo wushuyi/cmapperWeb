@@ -105,7 +105,7 @@ System.register(['jquery', './base.js', 'iscroll', '../utils/wsy_utils.js', '../
                 }, {
                     key: 'pullUpAction',
                     value: function pullUpAction() {
-                        var temp = '<li>' + '<div class="comment clearfix">' + '<div class="avatar"></div>' + '<div class="msg">评论这是一条评论它评论评论这是一条评论它评论评论这是一条评论它评论</div>' + '<div class="btn-bar">' + '<div class="btn"></div>' + '<div class="btn"></div>' + '<div class="btn"></div>' + '</div>' + '</div>' + '</li>';
+                        var temp = '<li>' + '<div class="comment clearfix">' + '<div class="avatar"></div>' + '<div class="msg">评论这是一条评论它评论评论这是一条评论它评论评论这是一条评论它评论</div>' + '<div class="btn-bar">' + '<div class="btn btn-del"></div>' + '<div class="btn btn-report"></div>' + '<div class="btn btn-like"></div>' + '</div>' + '</div>' + '</li>';
                         var reshtml = '';
                         for (var i = 10; i > 0; i--) {
                             reshtml = reshtml + temp;
@@ -115,7 +115,7 @@ System.register(['jquery', './base.js', 'iscroll', '../utils/wsy_utils.js', '../
                         var iscrolls = this.iscrolls;
                         var scrollTo = $el.commentList.find('.comment:last').get(0);
 
-                        $el.loading = $('<li class="loading">loging...</li>');
+                        $el.loading = $('<li class="loading"></li>');
                         $el.prompt.hide();
                         $el.commentList.append($el.loading);
                         iscrolls.content.refresh();

@@ -18,12 +18,12 @@
     <!-- 移动端视图 -->
     <meta name="viewport" content="width=640,target-densitydpi=device-dpi,user-scalable=no"/>
     <!--<script src="http://192.168.0.105:8080/target/target-script-min.js#anonymous"></script>-->
-    <link rel="stylesheet" href="./cache/cache.css"/>
+    <link rel="stylesheet" href="./build/build.css"/>
     <link rel="stylesheet" href="assets/css/style.css?v=1"/>
     <script src="./local_packages/systemjs/system.js"></script>
-    <script src="./system.config.js"></script>
-    <!--<script src="./build/build.js"></script>-->
-    <script src="./cache/cache.js"></script>
+    <!--<script src="./system.config.js"></script>-->
+    <script src="./build/build.js"></script>
+    <!--<script src="./cache/cache.js"></script>-->
 </head>
 
 <body>
@@ -730,7 +730,7 @@
                         <div class="direction-model">
                             <ul class="clearfix">
                                 <li>
-                                    <div class="btn bicycling">步行</div>
+                                    <div class="btn walking">步行</div>
                                 </li>
                                 <li>
                                     <div class="btn transit">公交</div>
@@ -894,7 +894,7 @@
                                 <ul class="horizontal-list">
                                     <li>
                                         <div class="addr-box clearfix" data-router="/modal/address/123">
-                                            <div class="addr-img"></div>
+                                            <div class="addr-img spot spot-1">1</div>
                                             <span class="addr-name">地点名称地点名称地点名称</span>
                                             <ul class="clearfix num-status-box">
                                                 <li>
@@ -911,7 +911,7 @@
                                     </li>
                                     <li>
                                         <div class="addr-box clearfix" data-router="/modal/address/123">
-                                            <div class="addr-img"></div>
+                                            <div class="addr-img spot spot-2">2</div>
                                             <span class="addr-name">地点名称地点名称地点名称</span>
                                             <ul class="clearfix num-status-box">
                                                 <li>
@@ -928,7 +928,7 @@
                                     </li>
                                     <li>
                                         <div class="addr-box clearfix" data-router="/modal/address/123">
-                                            <div class="addr-img"></div>
+                                            <div class="addr-img spot spot-3">3</div>
                                             <span class="addr-name">地点名称地点名称地点名称</span>
                                             <ul class="clearfix num-status-box">
                                                 <li>
@@ -945,7 +945,7 @@
                                     </li>
                                     <li>
                                         <div class="addr-box clearfix" data-router="/modal/address/123">
-                                            <div class="addr-img"></div>
+                                            <div class="addr-img spot spot-1">88</div>
                                             <span class="addr-name">地点名称地点名称地点名称</span>
                                             <ul class="clearfix num-status-box">
                                                 <li>
@@ -1354,12 +1354,19 @@
                 <div class="btn_use" data-router="/modal/select-map/null"></div>
             </div>
             <div class="scroll">
+
                 <div>
+                    <div class="swich-box">
+                        <label class="label-switch">
+                            <input type="checkbox">
+                            <div class="checkbox"></div>
+                        </label>
+                    </div>
                     <div class="top-content">
                         <span class="map-name">地点所属的地图名称</span>
 
                         <div class="addr-box clearfix">
-                            <div class="addr-img"></div>
+                            <div class="addr-img spot spot-1">88</div>
                             <span class="addr-name">地点名称地点名称地点名称</span>
                             <ul class="clearfix num-status-box">
                                 <li>
@@ -1392,19 +1399,19 @@
                     <div class="addr-info-box">
                         <ul>
                             <li>
-                                <div class="addr-info" data-router="/directions">
+                                <div class="addr-info addr" data-router="/directions">
                                     <div class="tit">地址</div>
                                     <div class="info">Blue Lagoon, lceland</div>
                                 </div>
                             </li>
                             <li>
-                                <div class="addr-info">
+                                <div class="addr-info tel">
                                     <div class="tit">电话</div>
                                     <div class="info">+354 420 8800</div>
                                 </div>
                             </li>
                             <li>
-                                <div class="addr-info last">
+                                <div class="addr-info url last">
                                     <div class="tit">网址</div>
                                     <div class="info">http://www.bluelagoon.com</div>
                                 </div>

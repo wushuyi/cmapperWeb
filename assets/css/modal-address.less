@@ -36,6 +36,37 @@
     overflow: hidden;
   }
 
+  .swich-box {
+    position: absolute;
+    top: 14px;
+    right: 20px;
+    width: 130px;
+    height: 50px;
+    z-index: 10;
+    .label-switch {
+      position: absolute;
+      left: 50%;
+      margin-left: -26px;
+    }
+    &:before {
+      content: '';
+      display: block;
+      position: absolute;
+      left: 0;
+      width: 30px;
+      height: 30px;
+      background: transparent url('../images/icons/private.svg') no-repeat;
+    }
+    &:after {
+      content: '';
+      display: block;
+      position: absolute;
+      right: 0;
+      width: 30px;
+      height: 30px;
+      background: transparent url('../images/icons/public.svg') no-repeat;
+    }
+  }
   .btn_edit, .btn_use {
     position: absolute;
     right: 0;
@@ -87,7 +118,7 @@
     float: left;
     margin-top: 24px;
     margin-left: 20px;
-    background: red;
+    //background: red;
     height: 70px;
     width: 66px;
   }
@@ -185,13 +216,23 @@
       position: absolute;
       top: 24px;
       &:before {
-        width: 30px;
-        height: 30px;
-        margin-left: -30px;
+        width: 40px;
+        height: 40px;
+        margin-left: -40px;
+        margin-bottom: -8px;
         display: inline-block;
-        background: red;
+        //background: red;
         content: '';
       }
+    }
+    &.addr .tit:before {
+      background: transparent url('../images/icons/address.svg') no-repeat;
+    }
+    &.tel .tit:before {
+      background: transparent url('../images/icons/tel.svg') no-repeat;
+    }
+    &.url .tit:before {
+      background: transparent url('../images/icons/url.svg') no-repeat;
     }
     .info {
       position: absolute;

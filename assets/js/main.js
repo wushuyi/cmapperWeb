@@ -1,13 +1,12 @@
-System.register(['Modernizr', 'holder', 'jquery', './router/index.js', './utils/env.js', 'device', './utils/androidInputBug.js'], function (_export) {
+System.register(['./style.js', 'Modernizr', 'holder', 'jquery', './router/index.js', './utils/env.js', 'device', './utils/androidInputBug.js'], function (_export) {
     /**
      * Created by wushuyi on 2015/9/13.
      */
-    //import './style.js';
     'use strict';
 
     var $, register_all, router, env, device, androidInputBug;
     return {
-        setters: [function (_Modernizr) {}, function (_holder) {}, function (_jquery) {
+        setters: [function (_styleJs) {}, function (_Modernizr) {}, function (_holder) {}, function (_jquery) {
             $ = _jquery['default'];
         }, function (_routerIndexJs) {
             register_all = _routerIndexJs['default'];

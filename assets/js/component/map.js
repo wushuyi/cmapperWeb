@@ -1,10 +1,10 @@
-System.register(['jquery', 'sweetalert'], function (_export) {
+System.register(['jquery', 'sweetalert', '../utils/env'], function (_export) {
     /**
      * Created by wushuyi on 2015/9/20.
      */
     'use strict';
 
-    var $, sweetalert, CurrPosition, watchPosition;
+    var $, sweetalert, env, CurrPosition, watchPosition;
 
     _export('default', initGmap);
 
@@ -32,7 +32,9 @@ System.register(['jquery', 'sweetalert'], function (_export) {
             $el.map.append($map_dw);
             $el.map.append($map_popinfo);
             $el.map.append($map_add_btn);
-
+            env.mapReady.resolve();
+        });
+        env.mapReady.done(function () {
             GMaps.geolocate({
                 success: function success(position) {
                     env.nowPosition = position;
@@ -130,6 +132,8 @@ System.register(['jquery', 'sweetalert'], function (_export) {
             $ = _jquery['default'];
         }, function (_sweetalert) {
             sweetalert = _sweetalert['default'];
+        }, function (_utilsEnv) {
+            env = _utilsEnv['default'];
         }],
         execute: function () {
             CurrPosition = (function createCurrPosition() {

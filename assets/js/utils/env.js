@@ -1,20 +1,20 @@
-System.register(['./signal'], function (_export) {
+System.register(['./signal', 'jquery'], function (_export) {
   /**
    * Created by wushuyi on 2015/9/13.
    */
   'use strict';
 
-  var signal;
+  var signal, $;
   return {
     setters: [function (_signal) {
       signal = _signal.signal;
+    }, function (_jquery) {
+      $ = _jquery['default'];
     }],
     execute: function () {
-
-      console.log(signal);
-
       _export('default', {
-        signal: signal
+        signal: signal,
+        mapReady: $.Deferred()
       });
     }
   };
