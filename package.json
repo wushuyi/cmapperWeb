@@ -27,7 +27,8 @@
       "lodash/lodash": "github:lodash/lodash@^3.10.1",
       "matthewhudson/device.js": "github:matthewhudson/device.js@^0.2.7",
       "necolas/normalize.css": "github:necolas/normalize.css@^3.0.3",
-      "nolimits4web/Swiper": "github:nolimits4web/Swiper@^3.1.2"
+      "nolimits4web/Swiper": "github:nolimits4web/Swiper@^3.1.2",
+      "t4t5/sweetalert": "github:t4t5/sweetalert@^1.1.0"
     },
     "devDependencies": {
       "babel": "npm:babel-core@^5.8.24",

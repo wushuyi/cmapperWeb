@@ -5,3 +5,4 @@ import 'holder';
 import '../css/reset.css!';
 import 'Swiper/dist/css/swiper.css!';
 import 'cropper/dist/cropper.css!';
+import 'sweetalert/dist/sweetalert.css!';

@@ -3,7 +3,7 @@
  */
 //import 'babel';
 
-//import './assets/js/style'
+import './assets/js/style'
 
 import 'EventEmitter';
 import 'Modernizr';
@@ -19,3 +19,4 @@ import 'device';
 import 'canvas2blob';
 import 'loadImage';
 import 'cropper';
+import 'sweetalert';

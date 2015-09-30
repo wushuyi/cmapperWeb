@@ -1,10 +1,10 @@
-System.register(['jquery'], function (_export) {
+System.register(['jquery', 'sweetalert'], function (_export) {
     /**
      * Created by wushuyi on 2015/9/20.
      */
     'use strict';
 
-    var $, CurrPosition;
+    var $, sweetalert, CurrPosition, watchPosition;
 
     _export('default', initGmap);
 
@@ -21,12 +21,7 @@ System.register(['jquery'], function (_export) {
             el: $el.map.get(0),
             lat: 35.710841,
             lng: 139.735039,
-            zoom: 16,
-            zoomControl: false,
-            panControl: false,
-            streetViewControl: false,
-            mapTypeControl: false,
-            overviewMapControl: false
+            zoom: 16
         });
         var $map_popinfo = $('<div id=""></div>');
         var $map_xjdd = $('<div id="map-xjdd"></div>');
@@ -37,47 +32,24 @@ System.register(['jquery'], function (_export) {
             $el.map.append($map_dw);
             $el.map.append($map_popinfo);
             $el.map.append($map_add_btn);
-        });
 
-        $map_xjdd.on('tap', function () {
-            env.router.setRoute('/add_addr');
-        });
-        $map_add_btn.on('touchstart', function (evt) {
-            evt.preventDefault();
-        }).on('tap', function (evt) {
-            var position = map.getCenter();
-            console.log(position);
-            map.addMarker({
-                lat: position.H,
-                lng: position.L,
-                title: 'Marker',
-                click: function click(e) {
-                    alert('You clicked in this marker');
-                }
-            });
-            env.router.setRoute('/modal/select-map/null');
-        });
-        var currposition = new CurrPosition(map);
-        $el.map.on('tap', '#map-dw', function (evt) {
             GMaps.geolocate({
                 success: function success(position) {
-                    console.log(position);
-                    //var position = {
-                    //    timestamp: 1442740446453,
-                    //    coords: {
-                    //        accuracy: 24,
-                    //        altitude: null,
-                    //        altitudeAccuracy: null,
-                    //        heading: null,
-                    //        latitude: 31.225098552560077,
-                    //        longitude: 121.4441679418087,
-                    //        speed: null,
-                    //    }
-                    //};
+                    env.nowPosition = position;
                     currposition.setPosition(position);
+
+                    if (watchGps) {
+                        watchGps();
+                    }
+                    watchGps = watchPosition(function (position) {
+                        env.nowPosition = position;
+                        currposition.setPosition(position);
+                    }, function (err) {
+                        console.log(err);
+                    });
                 },
                 error: function error(_error) {
-                    alert('定位失败!');
+                    sweetalert('定位失败!');
                     var position = {
                         timestamp: 1442740446453,
                         coords: {
@@ -99,6 +71,55 @@ System.register(['jquery'], function (_export) {
                 always: function always() {}
             });
         });
+
+        $map_xjdd.on('tap', function () {
+            env.router.setRoute('/add_addr');
+        });
+        $map_add_btn.on('touchstart', function (evt) {
+            evt.preventDefault();
+        }).on('tap', function (evt) {
+            var position = map.getCenter();
+            console.log(position);
+            map.addMarker({
+                lat: position.H,
+                lng: position.L,
+                title: 'Marker',
+                click: function click(e) {
+                    alert('You clicked in this marker');
+                }
+            });
+            env.router.setRoute('/modal/select-map/null');
+        });
+        var currposition = new CurrPosition(map);
+        var watchGps = null;
+        env.nowPosition = {
+            timestamp: 1442740446453,
+            coords: {
+                accuracy: 24,
+                altitude: null,
+                altitudeAccuracy: null,
+                heading: null,
+                latitude: 35.710841,
+                longitude: 139.735039,
+                speed: null
+            }
+        };
+
+        $el.map.on('tap', '#map-dw', function (evt) {
+            var position = env.nowPosition;
+            map.setZoom(18);
+            map.setCenter(position.coords.latitude, position.coords.longitude);
+
+            //map.drawRoute({
+            //    origin: [position.coords.latitude, position.coords.longitude],
+            //    destination: [27.661044385063104, 117.97987619762262],
+            //    travelMode: 'driving',
+            //    strokeColor: '#131540',
+            //    strokeOpacity: 0.6,
+            //    strokeWeight: 6
+            //});
+        });
+
         env.mainlayout.on('moveEnd', function () {
             google.maps.event.trigger(env.gmap.map, 'resize');
         });
@@ -107,6 +128,8 @@ System.register(['jquery'], function (_export) {
     return {
         setters: [function (_jquery) {
             $ = _jquery['default'];
+        }, function (_sweetalert) {
+            sweetalert = _sweetalert['default'];
         }],
         execute: function () {
             CurrPosition = (function createCurrPosition() {
@@ -166,16 +189,26 @@ System.register(['jquery'], function (_export) {
 
                 p.setPosition = function (position) {
                     this.checkDraw() ? this.refreshPosition(position) : this.drawPosition(position);
-
-                    this.map.setCenter(position.coords.latitude, position.coords.longitude);
-                    this.map.setZoom(18);
                 };
 
                 return CurrPosition;
             })();
+
+            watchPosition = function watchPosition(success, error, options) {
+                var watchId = navigator.geolocation.watchPosition(success, error, options);
+
+                var clear = function clear() {
+                    navigator.geolocation.clearWatch(watchId);
+                };
+            };
         }
     };
 });
+//zoomControl: false,
+//panControl: false,
+//streetViewControl: false,
+//mapTypeControl: false,
+//overviewMapControl: false
 
 //alert("Done!");
 

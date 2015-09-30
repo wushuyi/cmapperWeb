@@ -1487,6 +1487,50 @@ html.android .label-switch input[type="checkbox"] + .checkbox:before {
 #page_add_addr .num-status.num-checkin:before {
   background: transparent url('../images/icons/checkin.svg') no-repeat;
 }
+#page_directions {
+  background: #EEEEEE;
+}
+#page_directions > .scroll {
+  border-radius: 8px;
+  overflow: hidden;
+  background: #EEEEEE;
+}
+#page_directions .direction-model li {
+  float: left;
+  width: 33.3333%;
+}
+#page_directions .direction-model .btn {
+  width: 100%;
+  height: 80px;
+  font-size: 40px;
+  text-align: center;
+  line-height: 80px;
+  color: #fff;
+  border-radius: 3px;
+  border-top: #4c82b7 solid 1px;
+  border-left: #4c82b7 solid 1px;
+  border-bottom: #3e6d9c solid 1px;
+  border-right: #3e6d9c solid 1px;
+  background: #4477aa;
+  background-image: -webkit-linear-gradient(bottom, #3b6895 50%, #4477aa 100%);
+  background-image: linear-gradient(bottom, #3b6895 50%, #4477aa 100%);
+}
+#page_directions .direction-model .btn.active {
+  background: transparent;
+  color: #000;
+  border-color: transparent;
+}
+#page_directions .address-list {
+  font-size: 28px;
+  text-indent: 2em;
+}
+#page_directions .info-box {
+  width: 100%;
+  height: 120px;
+  background: #EEEEEE;
+  border-bottom: 1px solid #979797;
+  padding: 20px;
+}
 #modal-set {
   -webkit-transform: translateY(-100%);
       -ms-transform: translateY(-100%);
